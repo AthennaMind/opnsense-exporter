@@ -1,0 +1,7 @@
+./opnsense-exporter-local
+README.md
+.git/
+.gitignore
+.github
+LICENSE
+.golangci.yml

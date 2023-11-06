@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  tests:
+    name: Tests/Linters
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.21'  # Use the version of Go your project requires
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: "Run Linters"
+      uses: golangci/golangci-lint-action@latest
+      with:
+        version: latest
+        args: --verbose
+
+    - name: Run tests
+      run: go test -v ./...
