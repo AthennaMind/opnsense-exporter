@@ -71,7 +71,6 @@ jobs:
         id: release_build
         uses: docker/build-push-action@v3
         with:
-          outputs: "type=registry,push=true"
           platforms: linux/amd64,linux/arm/v6,linux/arm64
           build-args: |
             Version=${{ env.TAG }}
