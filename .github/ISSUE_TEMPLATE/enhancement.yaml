@@ -1,0 +1,30 @@
+name: Enhancement suggestion
+title: "[FEATURE]: "
+description: Provide supporting details for a feature
+labels: ["feature"]
+assignees: 
+  - ihatemodels
+
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: What would you like to be added?
+      description: |
+        Please desribe what you like to be added. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why is this needed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: Any implementation details that are not related to source code may be included here.
+    validations:
+      required: false

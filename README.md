@@ -4,14 +4,20 @@ The OPNsense exporter enables you to monitor your OPNsense firewall from the API
 
 `Still under heavy development. The full metrics list is not yet implemented.`
 
-# Table of Contents
+## Table of Contents
 
+0. **[About](#about)**
 1. **[OPNsense User Permissions](#opnsense-user-permissions)**  
 2. **[Usage](#usage)**  
 3. **[Configuration](#configuration)**  
       - **[SSL/TLS](#ssltls)**  
-5. **[Grafana Dashboard](#grafana-dashboard)**  
+4. **[Grafana Dashboard](#grafana-dashboard)**  
 
+## About
+
+This exporter delivers an extensive range of OPNsense-specific metrics, sourced directly from the OPNsense API. Focusing specifically on OPNsense, this exporter provides metrics about OPNsense, the plugin ecosystem and the services running on the firewall. However, it's recommended to use it with `node_exporter`. You can combine the metrics from both exporters in Grafana and in your Alert System to create a dashboard that displays the full picture of your system.
+
+While the `node_exporter` must be installed on the firewall itself, this exporter can be installed on any machine that has network access to the OPNsense API.
 
 ## OPNsense user permissions
 
@@ -29,18 +35,24 @@ To configure where your OPNsense API is located, you can use the following flags
 - `--opnsense.address` - The hostname or IP address of the OPNsense API.
 - `--opnsense.api-key` - The API key to use to connect to the OPNsense API.
 - `--opnsense.api-secret` - The API secret to use to connect to the OPNsense API
+- `--exporter.instance-label` - Label to use to identify the instance in every metric. If you have multiple instances of the exporter, you can differentiate them by using different value in this flag, that represents the instance of the target OPNsense.
 
 ### SSL/TLS
 
-- `--opnsense.insecure` - Disable TLS certificate verification. Not recommendet. Defaults to `false`.
-- If you have your api served with self-signed certificates. You should add them to the system trust store.  
-TODO: add Docker example
+If you have your api served with self-signed certificates. You should add them to the system trust store.
 
-```bash
+If you want to disable TLS certificate verification, you can use the following flag:
+
+- `--opnsense.insecure` - Disable TLS certificate verification. Defaults to `false`.
+
 You can disable parts of the exporter using the following flags:
 
 - `--exporter.disable-arp-table` - Disable the scraping of the ARP table. Defaults to `false`.
 - `--exporter.disable-cron-table` - Disable the scraping of the cron table. Defaults to `false`.
+
+You can disable the exporter metrics using the following flag:
+
+- `--web.disable-exporter-metrics` - Exclude metrics about the exporter itself (promhttp_*, process_*, go_*). Defaults to `false`.
 
 Full list
 
