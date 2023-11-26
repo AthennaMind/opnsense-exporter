@@ -6,12 +6,12 @@ The OPNsense exporter enables you to monitor your OPNsense firewall from the API
 
 ## Table of Contents
 
-0. **[About](#about)**
-1. **[OPNsense User Permissions](#opnsense-user-permissions)**  
-2. **[Usage](#usage)**  
-3. **[Configuration](#configuration)**  
+**[About](#about)**
+**[OPNsense User Permissions](#opnsense-user-permissions)**  
+**[Usage](#usage)**  
+**[Configuration](#configuration)**  
       - **[SSL/TLS](#ssltls)**  
-4. **[Grafana Dashboard](#grafana-dashboard)**  
+**[Grafana Dashboard](#grafana-dashboard)**  
 
 ## About
 
