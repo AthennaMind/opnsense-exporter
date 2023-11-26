@@ -23,5 +23,5 @@ LABEL org.opencontainers.image.authors="the st3ga Authors admins@st3ga.com"
 LABEL org.opencontainers.image.title="opnsense-exporter"
 LABEL org.opencontainers.image.description="Prometheus exporter for OPNsense metrics"
 
-COPY --from=build /usr/bin/opnsense-exporter
+COPY --from=build /usr/bin/opnsense-exporter /
 CMD ["/opnsense-exporter"]
