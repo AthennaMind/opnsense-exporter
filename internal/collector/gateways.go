@@ -30,23 +30,23 @@ func (c *gatewaysCollector) Register(namespace, instanceLabel string, log log.Lo
 	c.log = log
 	c.instance = instanceLabel
 	c.status = buildPrometheusDesc(c.subsystem, "status",
-		"Status of the gateway by name and address (1 = up, 0 = down, 2 = unkown)",
+		"Status of the gateway by name and address (1 = up, 0 = down, 2 = unknown)",
 		[]string{"name", "address"},
 	)
 	c.lossPercentage = buildPrometheusDesc(
 		c.subsystem, "loss_percentage",
 		"The current gateway loss percentage by name and address",
-		[]string{"name", "adress"},
+		[]string{"name", "address"},
 	)
 	c.rtt = buildPrometheusDesc(
 		c.subsystem, "rtt_milliseconds",
 		"RTT is the average (mean) of the round trip time in milliseconds by name and address",
-		[]string{"name", "adress"},
+		[]string{"name", "address"},
 	)
 	c.rttd = buildPrometheusDesc(
 		c.subsystem, "rttd_milliseconds",
 		"RTTd is the standard deviation of the round trip time in milliseconds by name and address",
-		[]string{"name", "adress"},
+		[]string{"name", "address"},
 	)
 }
 

@@ -1,6 +1,7 @@
 package opnsense
 
 import (
+	"reflect"
 	"regexp"
 	"testing"
 
@@ -66,5 +67,16 @@ func TestParsePercentage(t *testing.T) {
 					tc.value, tc.regex, tc.replacePattern, tc.valueTypeName, tc.gatewayName, result, tc.expected)
 			}
 		})
+	}
+}
+
+func TestSliceIntToMapStringInt(t *testing.T) {
+	input := []string{"1", "2", "3"}
+	expected := map[string]int{"1": 1, "2": 2, "3": 3}
+
+	result, _ := sliceIntToMapStringInt(input, "test")
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }

@@ -41,7 +41,7 @@ type Client struct {
 }
 
 // NewClient creates a new OPNsense API Client
-func NewClient(protocol, adress, key, secret, userAgentVersion string, sslInsecure bool, log log.Logger) (Client, error) {
+func NewClient(protocol, address, key, secret, userAgentVersion string, sslInsecure bool, log log.Logger) (Client, error) {
 
 	sslPool, err := x509.SystemCertPool()
 
@@ -61,7 +61,7 @@ func NewClient(protocol, adress, key, secret, userAgentVersion string, sslInsecu
 	}
 	client := Client{
 		log:              log,
-		baseURL:          fmt.Sprintf("%s://%s", protocol, adress),
+		baseURL:          fmt.Sprintf("%s://%s", protocol, address),
 		key:              key,
 		secret:           secret,
 		gatewayLossRegex: gatewayLossRegex,

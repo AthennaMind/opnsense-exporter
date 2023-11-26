@@ -46,16 +46,16 @@ func (c *interfacesCollector) Register(namespace, instanceLabel string, log log.
 		"Bytes received on this interface by interface name and device",
 		[]string{"interface", "device", "type"},
 	)
-	c.bytesTransmited = buildPrometheusDesc(c.subsystem, "transmited_bytes_total",
-		"Bytes transmited on this interface by interface name and device",
+	c.bytesTransmited = buildPrometheusDesc(c.subsystem, "transmitted_bytes_total",
+		"Bytes transmitted on this interface by interface name and device",
 		[]string{"interface", "device", "type"},
 	)
 	c.multicastsReceived = buildPrometheusDesc(c.subsystem, "received_multicasts_total",
 		"Multicasts received on this interface by interface name and device",
 		[]string{"interface", "device", "type"},
 	)
-	c.multicastsTransmitted = buildPrometheusDesc(c.subsystem, "transmited_multicasts_total",
-		"Multicasts transmited on this interface by interface name and device",
+	c.multicastsTransmitted = buildPrometheusDesc(c.subsystem, "transmitted_multicasts_total",
+		"Multicasts transmitted on this interface by interface name and device",
 		[]string{"interface", "device", "type"},
 	)
 	c.inputErrors = buildPrometheusDesc(c.subsystem, "input_errors_total",

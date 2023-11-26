@@ -63,23 +63,6 @@ type Interfaces struct {
 	Interfaces []Interface
 }
 
-// sliceIntToMapStringInt is a helper function to convert a slice of strings to a map of string:int
-// The key of the map is the string value in the slice and
-// the value of the map is the int value of the string.
-func sliceIntToMapStringInt(strings []string, url EndpointPath) (map[string]int, *APICallError) {
-	ints := make(map[string]int)
-
-	for _, str := range strings {
-		value, err := parseStringToInt(str, url)
-		if err != nil {
-			return nil, err
-		}
-		ints[str] = value
-	}
-
-	return ints, nil
-}
-
 func (c *Client) FetchInterfaces() (Interfaces, *APICallError) {
 	var resp interfaceResponse
 	var data Interfaces
