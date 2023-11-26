@@ -92,8 +92,16 @@ func main() {
 		Level:  &promlog.AllowedLevel{},
 		Format: &promlog.AllowedFormat{},
 	}
-	promlogConfig.Level.Set(*logLevel)
-	promlogConfig.Format.Set(*logFormat)
+
+	if err := promlogConfig.Level.Set(*logLevel); err != nil {
+		fmt.Fprintf(os.Stderr, "error setting log level: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := promlogConfig.Format.Set(*logFormat); err != nil {
+		fmt.Fprintf(os.Stderr, "error setting log format: %v\n", err)
+		os.Exit(1)
+	}
 
 	logger := promlog.New(promlogConfig)
 
