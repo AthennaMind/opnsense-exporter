@@ -36,7 +36,7 @@ jobs:
 
   build:
     name: Build & Publish on Tag
-    runs-on: actuated
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
         with:
