@@ -3,8 +3,8 @@ package collector
 import (
 	"testing"
 
+	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/go-kit/log"
-	"github.com/st3ga/opnsense-exporter/opnsense"
 )
 
 func TestWithoutArpCollector(t *testing.T) {

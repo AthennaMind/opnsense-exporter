@@ -1,6 +1,6 @@
-module github.com/st3ga/opnsense-exporter
+module github.com/AthennaMind/opnsense-exporter
 
-go 1.21
+go 1.22
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.3.2

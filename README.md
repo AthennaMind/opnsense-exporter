@@ -1,29 +1,95 @@
 # OPNsense Prometheus Exporter
 
-The OPNsense exporter enables you to monitor your OPNsense firewall from the API.
+The missing OPNsense exporter for Prometheus
 
 `Still under heavy development. The full metrics list is not yet implemented.`
 
 ## Table of Contents
 
-**[About](#about)**
-**[OPNsense User Permissions](#opnsense-user-permissions)**  
-**[Usage](#usage)**  
-**[Configuration](#configuration)**  
-      - **[SSL/TLS](#ssltls)**  
-**[Grafana Dashboard](#grafana-dashboard)**  
+- **[About](#about)**
+- **[OPNsense User Permissions](#opnsense-user-permissions)**
+- **[Development](#development)**
+- **[Usage](#usage)**  
+  - **[Docker](#docker)**
+  - **[Docker Compose](#docker-compose)**
+  - **[Systemd](#systemd)**
+  - **[K8s](#k8s)**
+- **[Configuration](#configuration)**  
+  - **[SSL/TLS](#ssltls)**
+  - **[All Options](#all-options)**
+- **[Grafana Dashboard](#grafana-dashboard)**  
 
 ## About
 
-This exporter delivers an extensive range of OPNsense-specific metrics, sourced directly from the OPNsense API. Focusing specifically on OPNsense, this exporter provides metrics about OPNsense, the plugin ecosystem and the services running on the firewall. However, it's recommended to use it with `node_exporter`. You can combine the metrics from both exporters in Grafana and in your Alert System to create a dashboard that displays the full picture of your system.
+Focusing specifically on OPNsense, this exporter provides metrics about OPNsense, the plugin ecosystem and the services running on the firewall. However, it's recommended to use it with `node_exporter`. You can combine the metrics from both exporters in Grafana and in your Alert System to create a dashboard that displays the full picture of your system.
 
 While the `node_exporter` must be installed on the firewall itself, this exporter can be installed on any machine that has network access to the OPNsense API.
+
+## Development
+
+This guide is for osx and Linux.
+
+### Create API key and secret in OPNsense
+
+`SYSTEM>ACCESS>USERS>[user]>API KEYS`
+
+[OPNsense Documentation](https://docs.opnsense.org/development/how-tos/api.html#creating-keys)
+
+### Run the exporter locally
+
+```bash
+OPS_ADDRESS="ops.example.com" OPS_API_KEY=your-api-key OPS_API_SECRET=your-api-secret make local-run
+curl http://localhost:8080/metrics
+```
+
+### Before PR
+
+- Make sure to sync the vendor if the dependencies have changed.
+
+```bash
+make sync-vendor
+```
+
+- Make sure to run the tests and linters.
+
+```bash
+make test
+make lint
+```
 
 ## OPNsense user permissions
 
 **TODO**
 
 ## Usage
+
+**TODO**
+
+### Docker 
+
+To run the exporter using Docker, you can use the following command:
+
+```bash
+docker run -p 8080:8080 ghcr.io/AthennaMind/opnsense-exporter:latest \
+      /opnsense-exporter \
+      --log.level=debug \
+      --log.format=json \
+      --opnsense.protocol=https \
+      --opnsense.address=ops.example.com \
+      --opnsense.api-key=your-api-key \
+      --opnsense.api-secret=your-api-secret \
+      --exporter.instance-label=opnsense-eu1 \
+      --web.listen-address=:8080 
+```
+### Docker Compose
+
+**TODO**
+
+### Systemd
+
+**TODO**
+
+### K8s
 
 **TODO**
 
@@ -54,7 +120,7 @@ You can disable the exporter metrics using the following flag:
 
 - `--web.disable-exporter-metrics` - Exclude metrics about the exporter itself (promhttp_*, process_*, go_*). Defaults to `false`.
 
-Full list
+### All Options
 
 ```bash
 Flags:
