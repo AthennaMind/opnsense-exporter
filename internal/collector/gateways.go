@@ -1,9 +1,9 @@
 package collector
 
 import (
+	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/go-kit/log"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/st3ga/opnsense-exporter/opnsense"
 )
 
 type gatewaysCollector struct {

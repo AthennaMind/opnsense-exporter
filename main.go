@@ -8,6 +8,8 @@ import (
 	"runtime"
 	"syscall"
 
+	"github.com/AthennaMind/opnsense-exporter/internal/collector"
+	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
@@ -16,8 +18,6 @@ import (
 	"github.com/prometheus/common/promlog"
 	"github.com/prometheus/exporter-toolkit/web"
 	"github.com/prometheus/exporter-toolkit/web/kingpinflag"
-	"github.com/st3ga/opnsense-exporter/internal/collector"
-	"github.com/st3ga/opnsense-exporter/opnsense"
 )
 
 var version = ""

@@ -18,13 +18,13 @@ local-run:
 		--web.telemetry-path="/metrics" \
 		--web.listen-address=":8080" \
 		--runtime.gomaxprocs=4 \
-		--exporter.instance-label="opnsense-eu1" \
+		--exporter.instance-label="opnsense-local1" \
 		--exporter.disable-arp-table \
 		--exporter.disable-cron-table \
 		--opnsense.protocol="https" \
-		--opnsense.address="ops.domain.com" \
-		--opnsense.api-key="XXX" \
-		--opnsense.api-secret="XXX" \
+		--opnsense.address="${OPS_ADDRESS}" \
+		--opnsense.api-key="${OPS_API_KEY}" \
+		--opnsense.api-secret="${OPS_API_SECRET}" \
 		--web.disable-exporter-metrics \
 		
 test:

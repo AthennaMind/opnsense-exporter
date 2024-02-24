@@ -1,23 +1,67 @@
 # OPNsense Prometheus Exporter
 
-The OPNsense exporter enables you to monitor your OPNsense firewall from the API.
+The missing OPNsense exporter for Prometheus
+
+![GitHub License](https://img.shields.io/github/license/AthennaMind/opnsense-exporter)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AthennaMind/opnsense-exporter/ci.yml)
+![GitHub go.mod Go version (branch)](https://img.shields.io/github/go-mod/go-version/AthennaMind/opnsense-exporter/main)
 
 `Still under heavy development. The full metrics list is not yet implemented.`
 
 ## Table of Contents
 
-**[About](#about)**
-**[OPNsense User Permissions](#opnsense-user-permissions)**  
-**[Usage](#usage)**  
-**[Configuration](#configuration)**  
-      - **[SSL/TLS](#ssltls)**  
-**[Grafana Dashboard](#grafana-dashboard)**  
+- **[About](#about)**
+- **[OPNsense User Permissions](#opnsense-user-permissions)**
+- **[Development](#development)**
+- **[Usage](#usage)**  
+  - **[Docker](#docker)**
+  - **[Docker Compose](#docker-compose)**
+  - **[Systemd](#systemd)**
+  - **[K8s](#k8s)**
+- **[Configuration](#configuration)**
+  - **[OPNsense API](#opnsense-api)**
+  - **[SSL/TLS](#ssltls)**
+  - **[Exporters](#exporters)**
+  - **[All Options](#all-options)**
+- **[Grafana Dashboard](#grafana-dashboard)**  
 
 ## About
 
-This exporter delivers an extensive range of OPNsense-specific metrics, sourced directly from the OPNsense API. Focusing specifically on OPNsense, this exporter provides metrics about OPNsense, the plugin ecosystem and the services running on the firewall. However, it's recommended to use it with `node_exporter`. You can combine the metrics from both exporters in Grafana and in your Alert System to create a dashboard that displays the full picture of your system.
+Focusing specifically on OPNsense, this exporter provides metrics about OPNsense, the plugin ecosystem and the services running on the firewall. However, it's recommended to use it with `node_exporter`. You can combine the metrics from both exporters in Grafana and in your Alert System to create a dashboard that displays the full picture of your system.
 
 While the `node_exporter` must be installed on the firewall itself, this exporter can be installed on any machine that has network access to the OPNsense API.
+
+## Development
+
+This guide is for osx and Linux.
+
+### Create API key and secret in OPNsense
+
+`SYSTEM>ACCESS>USERS>[user]>API KEYS`
+
+[OPNsense Documentation](https://docs.opnsense.org/development/how-tos/api.html#creating-keys)
+
+### Run the exporter locally
+
+```bash
+OPS_ADDRESS="ops.example.com" OPS_API_KEY=your-api-key OPS_API_SECRET=your-api-secret make local-run
+curl http://localhost:8080/metrics
+```
+
+### Before PR
+
+- Make sure to sync the vendor if the dependencies have changed.
+
+```bash
+make sync-vendor
+```
+
+- Make sure to run the tests and linters.
+
+```bash
+make test
+make lint
+```
 
 ## OPNsense user permissions
 
@@ -27,34 +71,71 @@ While the `node_exporter` must be installed on the firewall itself, this exporte
 
 **TODO**
 
+### Docker 
+
+The following command will start the exporter and expose the metrics on port 8080. Replace `ops.example.com`, `your-api-key`, `your-api-secret` and `instance1` with your own values.
+
+```bash
+docker run -p 8080:8080 ghcr.io/athennamind/opnsense-exporter:latest \
+      /opnsense-exporter \
+      --log.level=debug \
+      --log.format=json \
+      --opnsense.protocol=https \
+      --opnsense.address=ops.example.com \
+      --opnsense.api-key=your-api-key \
+      --opnsense.api-secret=your-api-secret \
+      --exporter.instance-label=instance1 \
+      --web.listen-address=:8080 
+```
+
+TODO: Add example how to add custom CA certificates to the container.
+
+### Docker Compose
+
+**TODO**
+
+### Systemd
+
+**TODO**
+
+### K8s
+
+**TODO**
+
 ## Configuration
 
-To configure where your OPNsense API is located, you can use the following flags:
+The configuration of this tool is following the standart alongside the Prometheus ecosystem. This exporter can be configured using command-line flags or environment variables.
+
+### OPNsense API
+
+To configure where the connection to OPNsense is, use the following flags:
 
 - `--opnsense.protocol` - The protocol to use to connect to the OPNsense API. Can be either `http` or `https`.
 - `--opnsense.address` - The hostname or IP address of the OPNsense API.
 - `--opnsense.api-key` - The API key to use to connect to the OPNsense API.
 - `--opnsense.api-secret` - The API secret to use to connect to the OPNsense API
-- `--exporter.instance-label` - Label to use to identify the instance in every metric. If you have multiple instances of the exporter, you can differentiate them by using different value in this flag, that represents the instance of the target OPNsense.
+- `--exporter.instance-label` - Label to use to identify the instance in every metric. If you have multiple instances of the exporter, you can differentiate them by using different value in this flag, that represents the instance of the target OPNsense. You must not start more then 1 instance of the exporter with the same value in this flag.
 
 ### SSL/TLS
 
-If you have your api served with self-signed certificates. You should add them to the system trust store.
+For self-signed certificates, the CA certificate must be added to the system trust store.
 
 If you want to disable TLS certificate verification, you can use the following flag:
 
 - `--opnsense.insecure` - Disable TLS certificate verification. Defaults to `false`.
 
-You can disable parts of the exporter using the following flags:
+### Exporters
 
-- `--exporter.disable-arp-table` - Disable the scraping of the ARP table. Defaults to `false`.
-- `--exporter.disable-cron-table` - Disable the scraping of the cron table. Defaults to `false`.
+Gathering metrics for specific subsystems can be disabled with the following following flags:
 
-You can disable the exporter metrics using the following flag:
+- `--exporter.disable-arp-table` - Disable the scraping of ARP table. Defaults to `false`.
+- `--exporter.disable-cron-table` - Disable the scraping of Cron tasks. Defaults to `false`.
+
+To disable the exporter metrics itself use the following flag:
 
 - `--web.disable-exporter-metrics` - Exclude metrics about the exporter itself (promhttp_*, process_*, go_*). Defaults to `false`.
 
-Full list
+### All Options
 
 ```bash
 Flags:

@@ -8,8 +8,8 @@ import (
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 
+	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/st3ga/opnsense-exporter/opnsense"
 )
 
 const namespace = "opnsense"

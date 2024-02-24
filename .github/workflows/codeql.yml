@@ -1,14 +1,6 @@
 name: codeql
 
 on:
-  push:
-    branches:
-       - 'main'
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - '**/*.yaml'
-      - '**/*_test.go'
   pull_request:
     branches:
         - 'main'

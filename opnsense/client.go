@@ -156,6 +156,13 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 		switch resp.Header.Get("Content-Encoding") {
 		case "gzip":
 			reader, err = gzip.NewReader(resp.Body)
+			if err != nil {
+				return &APICallError{
+					Endpoint:   string(path),
+					Message:    fmt.Sprintf("failed to decompress gzip response body: %s", err.Error()),
+					StatusCode: resp.StatusCode,
+				}
+			}
 		default:
 			reader = resp.Body
 		}
