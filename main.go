@@ -60,6 +60,10 @@ func main() {
 			"exporter.disable-cron-table",
 			"Disable the scraping of the cron table",
 		).Envar("OPNSENSE_EXPORTER_DISABLE_CRON_TABLE").Default("false").Bool()
+		wireguardCollectorDisabled = kingpin.Flag(
+			"exporter.disable-wireguard",
+			"Disable the scraping of Wireguard service",
+		).Envar("OPNSENSE_EXPORTER_DISABLE_WIREGUARD").Default("false").Bool()
 		opnsenseProtocol = kingpin.Flag(
 			"opnsense.protocol",
 			"Protocol to use to connect to OPNsense API. One of: [http, https]",
@@ -150,6 +154,10 @@ func main() {
 
 	if *cronTableCollectorDisabled {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCronCollector())
+	}
+
+	if *wireguardCollectorDisabled {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutWireguardCollector())
 	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *instanceLabel, collectorOptionFuncs...)
