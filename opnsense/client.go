@@ -78,6 +78,7 @@ func NewClient(protocol, address, key, secret, userAgentVersion string, sslInsec
 			"gatewaysStatus":     "api/routes/gateway/status",
 			"unboundDNSStatus":   "api/unbound/diagnostics/stats",
 			"cronJobs":           "api/cron/settings/searchJobs",
+			"wireguardClients":   "api/wireguard/service/show",
 		},
 		headers: map[string]string{
 			"Accept":          "application/json",

@@ -65,6 +65,12 @@ func WithoutCronCollector() Option {
 	return withoutCollectorInstance("cron")
 }
 
+// WithoutWireguardCollector Option
+// removes the wireguard collector from the list of collectors
+func WithoutWireguardCollector() Option {
+	return withoutCollectorInstance("wireguard")
+}
+
 // New creates a new Collector instance.
 func New(client *opnsense.Client, log log.Logger, instanceName string, options ...Option) (*Collector, error) {
 
