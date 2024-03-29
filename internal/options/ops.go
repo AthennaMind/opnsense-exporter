@@ -88,6 +88,7 @@ func opsAPIKey() (string, error) {
 	return *opnsenseAPIKey, nil
 }
 
+// OPNSenseConfig holds the configuration for the OPNsense API.
 type OPNSenseConfig struct {
 	Protocol  string
 	Host      string
@@ -96,11 +97,8 @@ type OPNSenseConfig struct {
 	Insecure  bool
 }
 
-func (c *OPNSenseConfig) String() string {
-	return fmt.Sprintf("Protocol: %s, Host: %s, APIKey: %s, APISecret: %s, Insecure: %t",
-		c.Protocol, c.Host, c.APIKey, c.APISecret, c.Insecure)
-}
-
+// Validate checks if the configuration is valid.
+// returns an error on any missing value
 func (c *OPNSenseConfig) Validate() error {
 	if c.Protocol != "http" && c.Protocol != "https" {
 		return fmt.Errorf("protocol must be one of: [http, https]")

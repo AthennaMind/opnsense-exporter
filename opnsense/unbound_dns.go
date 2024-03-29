@@ -233,11 +233,11 @@ func (c *Client) FetchUnboundOverview() (UnboundDNSOverview, *APICallError) {
 		}
 	}
 	data.AnnswerBogusTotal, errConvertion = parseStringToInt(response.Data.Num.Answer.Bogus, url)
-	if err != nil {
+	if errConvertion != nil {
 		return data, errConvertion
 	}
 	data.AnswerSecureTotal, errConvertion = parseStringToInt(response.Data.Num.Answer.Secure, url)
-	if err != nil {
+	if errConvertion != nil {
 		return data, errConvertion
 	}
 	return data, nil
