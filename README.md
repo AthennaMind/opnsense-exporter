@@ -38,8 +38,6 @@ While the `node_exporter` must be installed on the firewall itself, this exporte
 
 ## Usage
 
-**TODO**
-
 ### Docker
 
 The following command will start the exporter and expose the metrics on port 8080. Replace `ops.example.com`, `your-api-key`, `your-api-secret` and `instance1` with your own values.
@@ -115,8 +113,8 @@ services:
       OPS_API_KEY_FILE: /run/secrets/opnsense-api-key
       OPS_API_SECRET_FILE: /run/secrets/opnsense-api-secret
     secrets:
-      - opnsense_api_key
-      - opnsense_api_secret
+      - opnsense-api-key
+      - opnsense-api-secret
     ports:
       - "8080:8080"
 ```
@@ -167,36 +165,57 @@ To disable the exporter metrics itself use the following flag:
 
 ```bash
 Flags:
-  -h, --[no-]help                Show context-sensitive help (also try --help-long and --help-man).
-      --log.level="info"         Log level. One of: [debug, info, warn, error]
-      --log.format="logfmt"      Log format. One of: [logfmt, json]
+  -h, --[no-]help                Show context-sensitive help (also try --help-long
+                                 and --help-man).
+      --[no-]exporter.disable-arp-table
+                                 Disable the scraping of the ARP table
+                                 ($OPNSENSE_EXPORTER_DISABLE_ARP_TABLE)
+      --[no-]exporter.disable-cron-table
+                                 Disable the scraping of the cron table
+                                 ($OPNSENSE_EXPORTER_DISABLE_CRON_TABLE)
+      --[no-]exporter.disable-wireguard
+                                 Disable the scraping of Wireguard service
+                                 ($OPNSENSE_EXPORTER_DISABLE_WIREGUARD)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics
-                                 Exclude metrics about the exporter itself (promhttp_*, process_*, go_*). ($OPNSENSE_EXPORTER_DISABLE_EXPORTER_METRICS)
-      --runtime.gomaxprocs=2     The target number of CPUs that the Go runtime will run on (GOMAXPROCS) ($GOMAXPROCS)
+                                 Exclude metrics about the exporter
+                                 itself (promhttp_*, process_*, go_*).
+                                 ($OPNSENSE_EXPORTER_DISABLE_EXPORTER_METRICS)
+      --runtime.gomaxprocs=2     The target number of CPUs that the Go runtime will
+                                 run on (GOMAXPROCS) ($GOMAXPROCS)
       --exporter.instance-label=EXPORTER.INSTANCE-LABEL
-                                 Label to use to identify the instance in every metric. If you have multiple instances of the exporter, you can differentiate them by using different value in this flag, that represents the instance of the target OPNsense.
+                                 Label to use to identify the instance in
+                                 every metric. If you have multiple instances
+                                 of the exporter, you can differentiate them
+                                 by using different value in this flag, that
+                                 represents the instance of the target OPNsense.
                                  ($OPNSENSE_EXPORTER_INSTANCE_LABEL)
-      --[no-]exporter.disable-arp-table
-                                 Disable the scraping of the ARP table ($OPNSENSE_EXPORTER_DISABLE_ARP_TABLE)
-      --[no-]exporter.disable-cron-table
-                                 Disable the scraping of the cron table ($OPNSENSE_EXPORTER_DISABLE_CRON_TABLE)
-      --[no-]exporter.disable-wireguard
-                                 Disable the scraping of Wireguard service ($OPNSENSE_EXPORTER_DISABLE_WIREGUARD)
-      --opnsense.protocol=OPNSENSE.PROTOCOL
-                                 Protocol to use to connect to OPNsense API. One of: [http, https] ($OPNSENSE_EXPORTER_OPS_PROTOCOL)
-      --opnsense.address=OPNSENSE.ADDRESS
-                                 Hostname or IP address of OPNsense API ($OPNSENSE_EXPORTER_OPS_API)
-      --opnsense.api-key=OPNSENSE.API-KEY
-                                 API key to use to connect to OPNsense API ($OPNSENSE_EXPORTER_OPS_API_KEY)
-      --opnsense.api-secret=OPNSENSE.API-SECRET
-                                 API secret to use to connect to OPNsense API ($OPNSENSE_EXPORTER_OPS_API_SECRET)
-      --[no-]opnsense.insecure   Disable TLS certificate verification ($OPNSENSE_EXPORTER_OPS_INSECURE)
-      --[no-]web.systemd-socket  Use systemd socket activation listeners instead of port listeners (Linux only).
+      --[no-]web.systemd-socket  Use systemd socket activation listeners instead of
+                                 port listeners (Linux only).
       --web.listen-address=:8080 ...
-                                 Addresses on which to expose metrics and web interface. Repeatable for multiple addresses.
-      --web.config.file=""       [EXPERIMENTAL] Path to configuration file that can enable TLS or authentication. See: https://github.com/prometheus/exporter-toolkit/blob/master/docs/web-configuration.md
+                                 Addresses on which to expose metrics and web
+                                 interface. Repeatable for multiple addresses.
+      --web.config.file=""       [EXPERIMENTAL] Path to configuration file
+                                 that can enable TLS or authentication. See:
+                                 https://github.com/prometheus/exporter-toolkit/blob/master/docs/web-configuration.md
+      --log.level="info"         Log level. One of: [debug, info, warn, error]
+      --log.format="logfmt"      Log format. One of: [logfmt, json]
+      --opnsense.protocol=OPNSENSE.PROTOCOL
+                                 Protocol to use to connect to
+                                 OPNsense API. One of: [http, https]
+                                 ($OPNSENSE_EXPORTER_OPS_PROTOCOL)
+      --opnsense.address=OPNSENSE.ADDRESS
+                                 Hostname or IP address of OPNsense API
+                                 ($OPNSENSE_EXPORTER_OPS_API)
+      --opnsense.api-key=""      API key to use to connect to OPNsense API.
+                                 This flag/ENV or the $OPS_API_KEY_FILE my be set.
+                                 ($OPNSENSE_EXPORTER_OPS_API_KEY)
+      --opnsense.api-secret=""   API secret to use to connect to OPNsense API. This
+                                 flag/ENV or the $OPS_API_SECRET_FILE my be set.
+                                 ($OPNSENSE_EXPORTER_OPS_API_SECRET)
+      --[no-]opnsense.insecure   Disable TLS certificate verification
+                                 ($OPNSENSE_EXPORTER_OPS_INSECURE)
 ```
 
 ## Grafana Dashboard
