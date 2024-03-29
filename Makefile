@@ -19,8 +19,6 @@ local-run:
 		--web.listen-address=":8080" \
 		--runtime.gomaxprocs=4 \
 		--exporter.instance-label="opnsense-local1" \
-		--exporter.disable-arp-table \
-		--exporter.disable-cron-table \
 		--opnsense.protocol="https" \
 		--opnsense.address="${OPS_ADDRESS}" \
 		--opnsense.api-key="${OPS_API_KEY}" \
