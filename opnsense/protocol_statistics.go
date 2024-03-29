@@ -258,24 +258,48 @@ type protocolStatisticsResponse struct {
 }
 
 type ProtocolStatistics struct {
+	TCPSentPackets            int
+	TCPReceivedPackets        int
+	ARPSentRequests           int
+	ARPReceivedRequests       int
 	TCPConnectionCountByState map[string]int
 }
 
 func (c *Client) FetchProtocolStatistics() (ProtocolStatistics, *APICallError) {
 	var (
 		resp protocolStatisticsResponse
-		data ProtocolStatistics
 	)
 	url, ok := c.endpoints["protocolStatistics"]
 	if !ok {
-		return data, &APICallError{
+		return ProtocolStatistics{}, &APICallError{
 			Endpoint:   "protocolStatistics",
 			StatusCode: 404,
 			Message:    "endpoint not found in client endpoints",
 		}
 	}
 	if err := c.do("GET", url, nil, &resp); err != nil {
-		return data, err
+		return ProtocolStatistics{}, err
 	}
-	return data, nil
+
+	out := ProtocolStatistics{
+		TCPSentPackets:      resp.Statistics.TCP.SentPackets,
+		TCPReceivedPackets:  resp.Statistics.TCP.ReceivedPackets,
+		ARPSentRequests:     resp.Statistics.Arp.SentRequests,
+		ARPReceivedRequests: resp.Statistics.Arp.ReceivedRequests,
+		TCPConnectionCountByState: map[string]int{
+			"CLOSED":      resp.Statistics.TCP.TCPConnectionCountByState.Closed,
+			"LISTEN":      resp.Statistics.TCP.TCPConnectionCountByState.Listen,
+			"SYN_SENT":    resp.Statistics.TCP.TCPConnectionCountByState.SynSent,
+			"SYN_RCVD":    resp.Statistics.TCP.TCPConnectionCountByState.SynRcvd,
+			"ESTABLISHED": resp.Statistics.TCP.TCPConnectionCountByState.Established,
+			"CLOSE_WAIT":  resp.Statistics.TCP.TCPConnectionCountByState.CloseWait,
+			"FIN_WAIT_1":  resp.Statistics.TCP.TCPConnectionCountByState.FinWait1,
+			"CLOSING":     resp.Statistics.TCP.TCPConnectionCountByState.Closing,
+			"LAST_ACK":    resp.Statistics.TCP.TCPConnectionCountByState.LastAck,
+			"FIN_WAIT_2":  resp.Statistics.TCP.TCPConnectionCountByState.FinWait2,
+			"TIME_WAIT":   resp.Statistics.TCP.TCPConnectionCountByState.TimeWait,
+		},
+	}
+
+	return out, nil
 }
