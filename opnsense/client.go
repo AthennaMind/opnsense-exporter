@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/AthennaMind/opnsense-exporter/internal/options"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 )
@@ -42,7 +43,7 @@ type Client struct {
 }
 
 // NewClient creates a new OPNsense API Client
-func NewClient(protocol, address, key, secret, userAgentVersion string, sslInsecure bool, log log.Logger) (Client, error) {
+func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log log.Logger) (Client, error) {
 
 	sslPool, err := x509.SystemCertPool()
 
@@ -62,9 +63,9 @@ func NewClient(protocol, address, key, secret, userAgentVersion string, sslInsec
 	}
 	client := Client{
 		log:              log,
-		baseURL:          fmt.Sprintf("%s://%s", protocol, address),
-		key:              key,
-		secret:           secret,
+		baseURL:          fmt.Sprintf("%s://%s", cfg.Protocol, cfg.Host),
+		key:              cfg.APIKey,
+		secret:           cfg.APISecret,
 		gatewayLossRegex: gatewayLossRegex,
 		gatewayRTTRegex:  gatewayRTTRegex,
 		endpoints: map[EndpointName]EndpointPath{
@@ -85,12 +86,12 @@ func NewClient(protocol, address, key, secret, userAgentVersion string, sslInsec
 			"User-Agent":      fmt.Sprintf("prometheus-opnsense-exporter/%s", userAgentVersion),
 			"Accept-Encoding": "gzip, deflate, br",
 		},
-		sslInsecure: sslInsecure,
+		sslInsecure: cfg.Insecure,
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: sslInsecure,
+					InsecureSkipVerify: cfg.Insecure,
 					RootCAs:            sslPool,
 				},
 				IdleConnTimeout:       90 * time.Second,

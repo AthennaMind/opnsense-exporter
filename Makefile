@@ -28,7 +28,7 @@ local-run:
 		--web.disable-exporter-metrics \
 		
 test:
-	go test -v ./...
+	go test ./...
 
 clean:
 	gofmt -s -w $(shell find . -type f -name '*.go'| grep -v "/vendor/\|/.git/")

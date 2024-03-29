@@ -21,3 +21,5 @@
 go.work
 *opnsense-exporter-local
 local.Makefile
+key
+secret
