@@ -3,20 +3,23 @@ package collector
 import (
 	"testing"
 
+	"github.com/AthennaMind/opnsense-exporter/internal/options"
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/go-kit/log"
 )
 
 func TestWithoutArpCollector(t *testing.T) {
+	conf := options.OPNSenseConfig{
+		Protocol: "http",
+		APIKey:   "test",
+	}
+
 	client, err := opnsense.NewClient(
+		conf,
 		"test",
-		"test",
-		"test",
-		"test",
-		"test",
-		false,
 		log.NewNopLogger(),
 	)
+
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}

@@ -11,8 +11,8 @@ The missing OPNsense exporter for Prometheus
 ## Table of Contents
 
 - **[About](#about)**
+- **[Contributing](./CONTRIBUTING.md)**
 - **[OPNsense User Permissions](#opnsense-user-permissions)**
-- **[Development](#development)**
 - **[Usage](#usage)**
   - **[Docker](#docker)**
   - **[Docker Compose](#docker-compose)**
@@ -31,37 +31,6 @@ Focusing specifically on OPNsense, this exporter provides metrics about OPNsense
 
 While the `node_exporter` must be installed on the firewall itself, this exporter can be installed on any machine that has network access to the OPNsense API.
 
-## Development
-
-This guide is for osx and Linux.
-
-### Create API key and secret in OPNsense
-
-`SYSTEM>ACCESS>USERS>[user]>API KEYS`
-
-[OPNsense Documentation](https://docs.opnsense.org/development/how-tos/api.html#creating-keys)
-
-### Run the exporter locally
-
-```bash
-OPS_ADDRESS="ops.example.com" OPS_API_KEY=your-api-key OPS_API_SECRET=your-api-secret make local-run
-curl http://localhost:8080/metrics
-```
-
-### Before PR
-
-- Make sure to sync the vendor if the dependencies have changed.
-
-```bash
-make sync-vendor
-```
-
-- Make sure to run the tests and linters.
-
-```bash
-make test
-make lint
-```
 
 ## OPNsense user permissions
 
@@ -92,6 +61,8 @@ TODO: Add example how to add custom CA certificates to the container.
 
 ### Docker Compose
 
+- With environment variables
+
 ```yaml
 version: '3'
 services:
@@ -110,6 +81,42 @@ services:
     environment:
       OPS_API_KEY: <OPS_API_KEY>
       OPS_API_SECRET: <OPS_API_SECRET>
+    ports:
+      - "8080:8080"
+```
+
+- With docker secrets
+
+Create the secrets
+
+```bash
+echo "<OPS_API_KEY>" | docker secret create opnsense-api-key -
+echo "<OPS_API_SECRET>" | docker secret create opnsense-api-secret -
+```
+
+Run the compose
+
+```yaml
+version: '3'
+services:
+  opnsense-exporter:
+    image: ghcr.io/athennamind/opnsense-exporter:latest
+    container_name: opensense-exporter
+    restart: always
+    command:
+      - /opnsense-exporter
+      - --opnsense.protocol=https
+      - --opnsense.address=ops.example.com
+      - --exporter.instance-label=instance1
+      - --web.listen-address=:8080
+      #- --exporter.disable-arp-table
+      #- --exporter.disable-cron-table
+    environment:
+      OPS_API_KEY_FILE: /run/secrets/opnsense-api-key
+      OPS_API_SECRET_FILE: /run/secrets/opnsense-api-secret
+    secrets:
+      - opnsense_api_key
+      - opnsense_api_secret
     ports:
       - "8080:8080"
 ```
