@@ -46,7 +46,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("opnsConfig: %v+\n", opnsConfig)
 	opnsenseClient, err := opnsense.NewClient(
 		*opnsConfig,
 		version,
