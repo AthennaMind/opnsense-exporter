@@ -23,7 +23,7 @@ type interfacesCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &interfacesCollector{
-		subsystem: "interfaces",
+		subsystem: InterfacesSubsystem,
 	})
 }
 

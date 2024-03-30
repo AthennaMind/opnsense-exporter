@@ -18,7 +18,7 @@ type arpTableCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &arpTableCollector{
-		subsystem: "arp_table",
+		subsystem: ArpTableSubsystem,
 	})
 }
 

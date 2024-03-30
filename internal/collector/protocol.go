@@ -20,7 +20,7 @@ type protocolCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &protocolCollector{
-		subsystem: "proto_statistics",
+		subsystem: ProtocolSubsystem,
 	})
 }
 

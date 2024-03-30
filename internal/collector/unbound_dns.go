@@ -16,7 +16,7 @@ type unboundDNSCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &unboundDNSCollector{
-		subsystem: "unbound_dns",
+		subsystem: UnboundDNSSubsystem,
 	})
 }
 

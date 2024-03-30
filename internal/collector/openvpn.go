@@ -16,7 +16,7 @@ type openVPNCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &openVPNCollector{
-		subsystem: "openvpn",
+		subsystem: OpenVPNSubsystem,
 	})
 }
 
