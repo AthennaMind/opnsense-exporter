@@ -18,7 +18,7 @@ type servicesCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &servicesCollector{
-		subsystem: "services",
+		subsystem: ServicesSubsystem,
 	})
 }
 

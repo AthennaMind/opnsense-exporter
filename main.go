@@ -62,29 +62,31 @@ func main() {
 		"msg", fmt.Sprintf("OPNsense registered endpoints %s", opnsenseClient.Endpoints()),
 	)
 
-	r := prometheus.NewRegistry()
+	registry := prometheus.NewRegistry()
 
 	if !*options.DisableExporterMetrics {
-		r.MustRegister(
+		registry.MustRegister(
 			promcollectors.NewProcessCollector(promcollectors.ProcessCollectorOpts{}),
 		)
-		r.MustRegister(promcollectors.NewGoCollector())
+		registry.MustRegister(promcollectors.NewGoCollector())
 	}
 
+	collectorsSwitches := options.CollectorsSwitches()
 	collectorOptionFuncs := []collector.Option{}
 
-	collectorsSwitches := options.Collectors()
-
-	if collectorsSwitches.ARP {
-		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutArpTableCollector())
-	}
-
-	if collectorsSwitches.Cron {
-		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCronCollector())
-	}
-
-	if collectorsSwitches.Wireguard {
+	switch {
+	case !collectorsSwitches.Unbound:
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutUnboundCollector())
+		level.Info(logger).Log("msg", "unbound collector disabled")
+	case !collectorsSwitches.Wireguard:
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutWireguardCollector())
+		level.Info(logger).Log("msg", "wireguard collector disabled")
+	case !collectorsSwitches.Cron:
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCronCollector())
+		level.Info(logger).Log("msg", "cron collector disabled")
+	case !collectorsSwitches.ARP:
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutArpTableCollector())
+		level.Info(logger).Log("msg", "arp collector disabled")
 	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
@@ -95,8 +97,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	r.MustRegister(collectorInstance)
-	handler := promhttp.HandlerFor(r, promhttp.HandlerOpts{})
+	registry.MustRegister(collectorInstance)
+	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
 	http.Handle(*options.MetricsPath, handler)
 
 	if *options.MetricsPath != "/" && *options.MetricsPath != "" {

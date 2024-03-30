@@ -8,7 +8,7 @@ import (
 	"github.com/go-kit/log"
 )
 
-func TestWithoutArpCollector(t *testing.T) {
+func TestCollector(t *testing.T) {
 	conf := options.OPNSenseConfig{
 		Protocol: "http",
 		APIKey:   "test",
@@ -21,16 +21,32 @@ func TestWithoutArpCollector(t *testing.T) {
 	)
 
 	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
+		t.Errorf("expected no error, got %v", err)
 	}
-	collector, err := New(&client, log.NewNopLogger(), "test", WithoutArpTableCollector())
+
+	collectOpts := []Option{
+		WithoutArpTableCollector(),
+		WithoutCronCollector(),
+		WithoutUnboundCollector(),
+		WithoutWireguardCollector(),
+	}
+
+	collector, err := New(&client, log.NewNopLogger(), "test", collectOpts...)
+
 	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
+		t.Errorf("expected no error when creating collector, got %v", err)
 	}
 
 	for _, c := range collector.collectors {
-		if c.Name() == "arp_table" {
-			t.Errorf("Expected no arp collector, but it was found")
+		switch c.Name() {
+		case "arp_table":
+			t.Errorf("expected arp_table collector to be removed")
+		case "cron":
+			t.Errorf("expected cron collector to be removed")
+		case "unbound_dns":
+			t.Errorf("expected unbound_dns collector to be removed")
+		case "wireguard":
+			t.Errorf("expected wireguard collector to be removed")
 		}
 	}
 }

@@ -18,7 +18,7 @@ type gatewaysCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &gatewaysCollector{
-		subsystem: "gateways",
+		subsystem: GatewaysSubsystem,
 	})
 }
 
