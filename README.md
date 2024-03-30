@@ -11,6 +11,7 @@ The missing OPNsense exporter for Prometheus
 ## Table of Contents
 
 - **[About](#about)**
+- **[Metrics List](./docs/metrics.md)**
 - **[Contributing](./CONTRIBUTING.md)**
 - **[OPNsense User Permissions](#opnsense-user-permissions)**
 - **[Usage](#usage)**
