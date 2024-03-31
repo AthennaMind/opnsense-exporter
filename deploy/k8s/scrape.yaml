@@ -6,7 +6,6 @@ apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
     name: opnsense-exporter
-    namespace: o11y
     labels:
         # If Prometheus Operator is installed with Helm chart, default config requires ScrapeConfig to have this label
         release: "kube-prom"

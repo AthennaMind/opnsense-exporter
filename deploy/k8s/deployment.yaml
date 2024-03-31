@@ -3,7 +3,6 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: opnsense-exporter
-  namespace: o11y
 spec:
   replicas: 1
   selector:
@@ -49,10 +48,6 @@ spec:
               port: metrics-http
           # See main readme; some configuration options can be set via env-vars
           ##
-          # For now, the container image has no Entrypoint so we need to specify it here.
-          # See: https://github.com/AthennaMind/opnsense-exporter/pulls
-          command:
-            - "/opnsense-exporter"
           args:
             - "--log.level=info"
             - "--log.format=json"
@@ -100,7 +95,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: opnsense-exporter
-  namespace: o11y
 spec:
   selector:
     app.kubernetes.io/name: opnsense-exporter

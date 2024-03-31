@@ -39,7 +39,7 @@ protocol=https
 Then create the secret in your Kubernetes cluster:
 
 ```shell
-❯ kubectl create secret generic opnsense-exporter-cfg --namespace=o11y --from-env-file=opnsense_apikey.txt 
+❯ kubectl create secret generic opnsense-exporter-cfg --from-env-file=opnsense_apikey.txt 
 secret/opnsense-exporter-cfg created
 ```
 
@@ -54,8 +54,8 @@ service/opnsense-exporter unchanged
 Check your work:
 
 ```shell
-❯ kubectl run debug --rm -i --tty --restart=Never --image=alpine --namespace=o11y
+❯ kubectl run debug --rm -i --tty --restart=Never --image=alpine
 <...>
-/ # wget --quiet -O- opnsense-exporter.o11y.svc.cluster.local:8080/metrics
+/ # wget --quiet -O- opnsense-exporter.svc.cluster.local:8080/metrics
 <...>
 ```
