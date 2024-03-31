@@ -124,7 +124,7 @@ services:
 
 ### K8s
 
-**TODO**
+Is covered in the [deploy/k8s](./deploy/k8s/readme.md) directory.
 
 ## Configuration
 
