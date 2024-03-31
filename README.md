@@ -69,7 +69,6 @@ services:
     container_name: opensense-exporter
     restart: always
     command:
-      - /opnsense-exporter
       - --opnsense.protocol=https
       - --opnsense.address=ops.example.com
       - --exporter.instance-label=instance1
@@ -102,7 +101,6 @@ services:
     container_name: opensense-exporter
     restart: always
     command:
-      - /opnsense-exporter
       - --opnsense.protocol=https
       - --opnsense.address=ops.example.com
       - --exporter.instance-label=instance1
