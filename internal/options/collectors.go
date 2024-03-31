@@ -15,20 +15,26 @@ var (
 		"exporter.disable-wireguard",
 		"Disable the scraping of Wireguard service",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_WIREGUARD").Default("false").Bool()
+	unboundCollectorDisabled = kingpin.Flag(
+		"exporter.disable-unbound",
+		"Disable the scraping of Unbound service",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_UNBOUND").Default("false").Bool()
 )
 
-// Collectors holds the configuration for the collectors
-type CollectorsSwitches struct {
+// CollectorsDisableSwitch hold the enabled/disabled state of the collectors
+type CollectorsDisableSwitch struct {
 	ARP       bool
 	Cron      bool
 	Wireguard bool
+	Unbound   bool
 }
 
-// Collectors returns the configuration for the collectors
-func Collectors() CollectorsSwitches {
-	return CollectorsSwitches{
+// CollectorsSwitches returns configured instances of CollectorsDisableSwitch
+func CollectorsSwitches() CollectorsDisableSwitch {
+	return CollectorsDisableSwitch{
 		ARP:       !*arpTableCollectorDisabled,
 		Cron:      !*cronTableCollectorDisabled,
 		Wireguard: !*wireguardCollectorDisabled,
+		Unbound:   !*unboundCollectorDisabled,
 	}
 }

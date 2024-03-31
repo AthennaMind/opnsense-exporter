@@ -19,7 +19,7 @@ type WireguardCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &WireguardCollector{
-		subsystem: "wireguard",
+		subsystem: WireguardSubsystem,
 	})
 }
 

@@ -11,6 +11,7 @@ The missing OPNsense exporter for Prometheus
 ## Table of Contents
 
 - **[About](#about)**
+- **[Metrics List](./docs/metrics.md)**
 - **[Contributing](./CONTRIBUTING.md)**
 - **[OPNsense User Permissions](#opnsense-user-permissions)**
 - **[Usage](#usage)**
@@ -154,6 +155,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-arp-table` - Disable the scraping of ARP table. Defaults to `false`.
 - `--exporter.disable-cron-table` - Disable the scraping of Cron tasks. Defaults to `false`.
 - `--exporter.disable-wireguard` - Disable the scraping of Wireguard service. Defaults to `false`.
+- `--exporter.disable-unbound` - Disable the scraping of Unbound service. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -174,6 +176,9 @@ Flags:
       --[no-]exporter.disable-wireguard
                                  Disable the scraping of Wireguard service
                                  ($OPNSENSE_EXPORTER_DISABLE_WIREGUARD)
+      --[no-]exporter.disable-unbound
+                                 Disable the scraping of Unbound service
+                                 ($OPNSENSE_EXPORTER_DISABLE_UNBOUND)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics
@@ -194,8 +199,8 @@ Flags:
       --web.listen-address=:8080 ...
                                  Addresses on which to expose metrics and web
                                  interface. Repeatable for multiple addresses.
-      --web.config.file=""       [EXPERIMENTAL] Path to configuration file
-                                 that can enable TLS or authentication. See:
+      --web.config.file=""       Path to configuration file that can
+                                 enable TLS or authentication. See:
                                  https://github.com/prometheus/exporter-toolkit/blob/master/docs/web-configuration.md
       --log.level="info"         Log level. One of: [debug, info, warn, error]
       --log.format="logfmt"      Log format. One of: [logfmt, json]
@@ -207,10 +212,10 @@ Flags:
                                  Hostname or IP address of OPNsense API
                                  ($OPNSENSE_EXPORTER_OPS_API)
       --opnsense.api-key=""      API key to use to connect to OPNsense API.
-                                 This flag/ENV or the $OPS_API_KEY_FILE my be set.
+                                 This flag/ENV or the OPS_API_KEY_FILE my be set.
                                  ($OPNSENSE_EXPORTER_OPS_API_KEY)
       --opnsense.api-secret=""   API secret to use to connect to OPNsense API. This
-                                 flag/ENV or the $OPS_API_SECRET_FILE my be set.
+                                 flag/ENV or the OPS_API_SECRET_FILE my be set.
                                  ($OPNSENSE_EXPORTER_OPS_API_SECRET)
       --[no-]opnsense.insecure   Disable TLS certificate verification
                                  ($OPNSENSE_EXPORTER_OPS_INSECURE)
