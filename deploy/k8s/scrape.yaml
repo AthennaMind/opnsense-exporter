@@ -18,4 +18,4 @@ spec:
               # if the job label is not set, one will be automatically generated from the scrape-config name and namespace
               job: opnsense-exporter
           targets:
-              - opnsense-exporter.o11y.svc:8080
+              - opnsense-exporter.svc:8080
