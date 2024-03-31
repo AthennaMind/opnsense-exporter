@@ -11,9 +11,9 @@ COPY . .
 
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 \
     go build \
-	    -tags osusergo,netgo \
-	    -ldflags "-s -w -X main.version=${Version}" \
-        -o /usr/bin/opnsense-exporter .
+    -tags osusergo,netgo \
+    -ldflags "-s -w -X main.version=${Version}" \
+    -o /usr/bin/opnsense-exporter .
 
 FROM --platform=${BUILDPLATFORM:-linux/amd64} gcr.io/distroless/static-debian12:latest
 
@@ -24,4 +24,4 @@ LABEL org.opencontainers.image.title="OPNsense Prometheus Exporter"
 LABEL org.opencontainers.image.description="Prometheus exporter for OPNsense"
 
 COPY --from=build /usr/bin/opnsense-exporter /
-CMD ["/opnsense-exporter"]
+ENTRYPOINT ["/opnsense-exporter"]
