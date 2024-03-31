@@ -16,7 +16,7 @@ type cronCollector struct {
 
 func init() {
 	collectorInstances = append(collectorInstances, &cronCollector{
-		subsystem: "cron",
+		subsystem: CronTableSubsystem,
 	})
 }
 

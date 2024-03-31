@@ -12,7 +12,23 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// namespace is the prefix for all metrics.
 const namespace = "opnsense"
+
+// instanceLabelName is the label name for the current instance that is used
+// to identify the instance in the metrics when there are
+// multiple instances of the exporter running.
+const instanceLabelName = "opnsense_instance"
+
+const ArpTableSubsystem = "arp_table"
+const GatewaysSubsystem = "gateways"
+const CronTableSubsystem = "cron"
+const WireguardSubsystem = "wireguard"
+const UnboundDNSSubsystem = "unbound_dns"
+const InterfacesSubsystem = "interfaces"
+const ProtocolSubsystem = "protocol"
+const OpenVPNSubsystem = "openvpn"
+const ServicesSubsystem = "services"
 
 // CollectorInstance is the interface a service specific collectors must implement.
 type CollectorInstance interface {
@@ -56,19 +72,25 @@ func withoutCollectorInstance(name string) Option {
 // WithoutArpTableCollector Option
 // removes the arp_table collector from the list of collectors
 func WithoutArpTableCollector() Option {
-	return withoutCollectorInstance("arp_table")
+	return withoutCollectorInstance(ArpTableSubsystem)
 }
 
 // WithoutCronCollector Option
 // removes the cron collector from the list of collectors
 func WithoutCronCollector() Option {
-	return withoutCollectorInstance("cron")
+	return withoutCollectorInstance(CronTableSubsystem)
 }
 
 // WithoutWireguardCollector Option
 // removes the wireguard collector from the list of collectors
 func WithoutWireguardCollector() Option {
-	return withoutCollectorInstance("wireguard")
+	return withoutCollectorInstance(WireguardSubsystem)
+}
+
+// WithoutUnboundCollector Option
+// removes the unbound_dns collector from the list of collectors
+func WithoutUnboundCollector() Option {
+	return withoutCollectorInstance(UnboundDNSSubsystem)
 }
 
 // New creates a new Collector instance.
