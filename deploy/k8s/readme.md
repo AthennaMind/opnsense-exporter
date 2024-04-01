@@ -1,7 +1,5 @@
 # Simple Kubernetes Deployment
 
-Included are two files:
-
 - `deployment.yaml`: sets up a bare-bones deployment for just the exporter and a service to expose it to the rest of the cluster.
 - `scrape.yaml`: a [`ScrapeConfig`](https://prometheus-operator.dev/docs/user-guides/scrapeconfig/) CRD which will configure Prometheus to scrape metrics from the exporter
 

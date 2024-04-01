@@ -24,4 +24,5 @@ LABEL org.opencontainers.image.title="OPNsense Prometheus Exporter"
 LABEL org.opencontainers.image.description="Prometheus exporter for OPNsense"
 
 COPY --from=build /usr/bin/opnsense-exporter /
+EXPOSE 8080
 ENTRYPOINT ["/opnsense-exporter"]

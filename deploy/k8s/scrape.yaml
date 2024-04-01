@@ -5,17 +5,17 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
-    name: opnsense-exporter
-    labels:
-        # If Prometheus Operator is installed with Helm chart, default config requires ScrapeConfig to have this label
-        release: "kube-prom"
+  name: opnsense-exporter
+  labels:
+    # If Prometheus Operator is installed with Helm chart, default config requires ScrapeConfig to have this label
+    release: "kube-prom"
 spec:
-    scrapeInterval: 60s
-    scrapeTimeout: 3s
-    metricsPath: /metrics
-    staticConfigs:
-        - labels:
-              # if the job label is not set, one will be automatically generated from the scrape-config name and namespace
-              job: opnsense-exporter
-          targets:
-              - opnsense-exporter.svc:8080
+  scrapeInterval: 60s
+  scrapeTimeout: 3s
+  metricsPath: /metrics
+  staticConfigs:
+    - labels:
+        # if the job label is not set, one will be automatically generated from the scrape-config name and namespace
+        job: opnsense-exporter
+      targets:
+        - opnsense-exporter.svc:8080
