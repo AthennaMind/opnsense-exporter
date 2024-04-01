@@ -181,22 +181,14 @@ type protocolStatisticsResponse struct {
 			DiscardBadAddress             int `json:"discard-bad-address"`
 		} `json:"ip"`
 		Icmp struct {
-			IcmpCalls            int `json:"icmp-calls"`
-			ErrorsNotFromMessage int `json:"errors-not-from-message"`
-			OutputHistogram      []struct {
-				Name  string `json:"name"`
-				Count int    `json:"count"`
-			} `json:"output-histogram"`
-			DroppedBadCode            int `json:"dropped-bad-code"`
-			DroppedTooShort           int `json:"dropped-too-short"`
-			DroppedBadChecksum        int `json:"dropped-bad-checksum"`
-			DroppedBadLength          int `json:"dropped-bad-length"`
-			DroppedMulticastEcho      int `json:"dropped-multicast-echo"`
-			DroppedMulticastTimestamp int `json:"dropped-multicast-timestamp"`
-			InputHistogram            []struct {
-				Name  string `json:"name"`
-				Count int    `json:"count"`
-			} `json:"input-histogram"`
+			IcmpCalls                   int    `json:"icmp-calls"`
+			ErrorsNotFromMessage        int    `json:"errors-not-from-message"`
+			DroppedBadCode              int    `json:"dropped-bad-code"`
+			DroppedTooShort             int    `json:"dropped-too-short"`
+			DroppedBadChecksum          int    `json:"dropped-bad-checksum"`
+			DroppedBadLength            int    `json:"dropped-bad-length"`
+			DroppedMulticastEcho        int    `json:"dropped-multicast-echo"`
+			DroppedMulticastTimestamp   int    `json:"dropped-multicast-timestamp"`
 			SentPackets                 int    `json:"sent-packets"`
 			DiscardInvalidReturnAddress int    `json:"discard-invalid-return-address"`
 			DiscardNoRoute              int    `json:"discard-no-route"`
@@ -263,6 +255,13 @@ type ProtocolStatistics struct {
 	ARPSentRequests           int
 	ARPReceivedRequests       int
 	TCPConnectionCountByState map[string]int
+	ICMPCalls                 int
+	ICMPSentPackets           int
+	ICMPDroppedByReason       map[string]int
+	UDPDeliveredPackets       int
+	UDPOutputPackets          int
+	UDPReceivedDatagrams      int
+	UDPDroppedByReason        map[string]int
 }
 
 func (c *Client) FetchProtocolStatistics() (ProtocolStatistics, *APICallError) {
@@ -298,6 +297,28 @@ func (c *Client) FetchProtocolStatistics() (ProtocolStatistics, *APICallError) {
 			"LAST_ACK":    resp.Statistics.TCP.TCPConnectionCountByState.LastAck,
 			"FIN_WAIT_2":  resp.Statistics.TCP.TCPConnectionCountByState.FinWait2,
 			"TIME_WAIT":   resp.Statistics.TCP.TCPConnectionCountByState.TimeWait,
+		},
+		ICMPCalls:       resp.Statistics.Icmp.IcmpCalls,
+		ICMPSentPackets: resp.Statistics.Icmp.SentPackets,
+		ICMPDroppedByReason: map[string]int{
+			"BAD_CODE":            resp.Statistics.Icmp.DroppedBadCode,
+			"TOO_SHORT":           resp.Statistics.Icmp.DroppedTooShort,
+			"BAD_CHECKSUM":        resp.Statistics.Icmp.DroppedBadChecksum,
+			"BAD_LENGTH":          resp.Statistics.Icmp.DroppedBadLength,
+			"MULTICAST_ECHO":      resp.Statistics.Icmp.DroppedMulticastEcho,
+			"MULTICAST_TIMESTAMP": resp.Statistics.Icmp.DroppedMulticastTimestamp,
+		},
+		UDPDeliveredPackets:  resp.Statistics.UDP.DeliveredPackets,
+		UDPOutputPackets:     resp.Statistics.UDP.OutputPackets,
+		UDPReceivedDatagrams: resp.Statistics.UDP.ReceivedDatagrams,
+		UDPDroppedByReason: map[string]int{
+			"INCOMPLETE_HEADERS":  resp.Statistics.UDP.DroppedIncompleteHeaders,
+			"BAD_DATA_LENGTH":     resp.Statistics.UDP.DroppedBadDataLength,
+			"BAD_CHECKSUM":        resp.Statistics.UDP.DroppedBadChecksum,
+			"NO_CHECKSUM":         resp.Statistics.UDP.DroppedNoChecksum,
+			"NO_SOCKET":           resp.Statistics.UDP.DroppedNoSocket,
+			"BROADCAST_MULTICAST": resp.Statistics.UDP.DroppedBroadcastMulticast,
+			"FULL_SOCKET_BUFFER":  resp.Statistics.UDP.DroppedFullSocketBuffer,
 		},
 	}
 

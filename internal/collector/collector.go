@@ -49,6 +49,7 @@ type Collector struct {
 	log           log.Logger
 	collectors    []CollectorInstance
 
+	isUp           prometheus.Gauge
 	scrapes        prometheus.CounterVec
 	endpointErrors prometheus.CounterVec
 }
@@ -113,6 +114,15 @@ func New(client *opnsense.Client, log log.Logger, instanceName string, options .
 		collector.Register(namespace, instanceName, c.log)
 	}
 
+	c.isUp = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace: namespace,
+		Name:      "up",
+		Help:      "Was the last scrape of OPNsense successful. (1 = yes, 0 = no)",
+		ConstLabels: prometheus.Labels{
+			instanceLabelName: instanceName,
+		},
+	})
+
 	c.scrapes = *prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace: namespace,
 		Name:      "exporter_scrapes_total",
@@ -125,8 +135,9 @@ func New(client *opnsense.Client, log log.Logger, instanceName string, options .
 		Help:      "Total number of errors by endpoint returned by the OPNsense API during data fetching",
 	}, []string{"endpoint", "opnsense_instance"})
 
-	prometheus.MustRegister(c.scrapes)
-	prometheus.MustRegister(c.endpointErrors)
+	for _, metric := range []prometheus.Collector{c.isUp, c.scrapes, c.endpointErrors} {
+		prometheus.MustRegister(metric)
+	}
 
 	c.scrapes.WithLabelValues(c.instanceLabel).Add(0)
 
@@ -140,6 +151,7 @@ func New(client *opnsense.Client, log log.Logger, instanceName string, options .
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	c.scrapes.Describe(ch)
 	c.endpointErrors.Describe(ch)
+	c.isUp.Describe(ch)
 
 	for _, collector := range c.collectors {
 		collector.Describe(ch)
@@ -150,6 +162,26 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+
+	systemStatus, err := c.Client.HealthCheck()
+
+	if err != nil {
+		level.Error(c.log).Log(
+			"msg", "failed to fetch system status",
+			"err", err,
+		)
+		c.isUp.Set(0)
+		c.isUp.Collect(ch)
+		return
+	}
+
+	if systemStatus.System.Status != opnsense.HealthCheckStatusOK {
+		c.isUp.Set(0)
+		c.isUp.Collect(ch)
+		return
+	}
+
+	c.isUp.Set(1)
 
 	var wg sync.WaitGroup
 	wg.Add(len(c.collectors))
@@ -173,4 +205,5 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.scrapes.WithLabelValues(c.instanceLabel).Inc()
 	c.scrapes.Collect(ch)
 	c.endpointErrors.Collect(ch)
+	c.isUp.Collect(ch)
 }

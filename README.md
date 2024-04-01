@@ -18,7 +18,7 @@ The missing OPNsense exporter for Prometheus
   - **[Docker](#docker)**
   - **[Docker Compose](#docker-compose)**
   - **[Systemd](#systemd)**
-  - **[K8s](#k8s)**
+  - **[K8s](./deploy/k8s/readme.md)**
 - **[Configuration](#configuration)**
   - **[OPNsense API](#opnsense-api)**
   - **[SSL/TLS](#ssltls)**
@@ -76,9 +76,10 @@ services:
       - --web.listen-address=:8080
       #- --exporter.disable-arp-table
       #- --exporter.disable-cron-table
+      #- ....
     environment:
-      OPS_API_KEY: <OPS_API_KEY>
-      OPS_API_SECRET: <OPS_API_SECRET>
+      OPNSENSE_EXPORTER_OPS_API_KEY: "<your-key>"
+      OPNSENSE_EXPORTER_OPS_API_SECRET: "<your-secret>"
     ports:
       - "8080:8080"
 ```
@@ -88,8 +89,8 @@ services:
 Create the secrets
 
 ```bash
-echo "<OPS_API_KEY>" | docker secret create opnsense-api-key -
-echo "<OPS_API_SECRET>" | docker secret create opnsense-api-secret -
+echo "<your-key>" | docker secret create opnsense-api-key -
+echo "<your-secret>" | docker secret create opnsense-api-secret -
 ```
 
 Run the compose
@@ -108,6 +109,7 @@ services:
       - --web.listen-address=:8080
       #- --exporter.disable-arp-table
       #- --exporter.disable-cron-table
+      #- ....
     environment:
       OPS_API_KEY_FILE: /run/secrets/opnsense-api-key
       OPS_API_SECRET_FILE: /run/secrets/opnsense-api-secret
@@ -122,9 +124,6 @@ services:
 
 **TODO**
 
-### K8s
-
-Is covered in the [deploy/k8s](./deploy/k8s/readme.md) directory.
 
 ## Configuration
 
