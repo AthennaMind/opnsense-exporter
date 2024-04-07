@@ -6,7 +6,7 @@ The missing OPNsense exporter for Prometheus
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AthennaMind/opnsense-exporter/ci.yml)
 ![GitHub go.mod Go version (branch)](https://img.shields.io/github/go-mod/go-version/AthennaMind/opnsense-exporter/main)
 
-`Still under heavy development. The full metrics list is not yet implemented.`
+`Still under heavy development. The full metrics list is not yet implemented. May include breaking changes of the configuration and metrics list.`
 
 ## Table of Contents
 
@@ -155,6 +155,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-cron-table` - Disable the scraping of Cron tasks. Defaults to `false`.
 - `--exporter.disable-wireguard` - Disable the scraping of Wireguard service. Defaults to `false`.
 - `--exporter.disable-unbound` - Disable the scraping of Unbound service. Defaults to `false`.
+- `--exporter.disable-openvpn` - Disable the scraping of OpenVPN service. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -178,6 +179,9 @@ Flags:
       --[no-]exporter.disable-unbound
                                  Disable the scraping of Unbound service
                                  ($OPNSENSE_EXPORTER_DISABLE_UNBOUND)
+      --[no-]exporter.disable-openvpn
+                                  Disable the scraping of OpenVPN service
+                                  ($OPNSENSE_EXPORTER_DISABLE_OPENVPN)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics

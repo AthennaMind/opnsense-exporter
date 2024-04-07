@@ -49,9 +49,10 @@ type Collector struct {
 	log           log.Logger
 	collectors    []CollectorInstance
 
-	isUp           prometheus.Gauge
-	scrapes        prometheus.CounterVec
-	endpointErrors prometheus.CounterVec
+	isUp                 prometheus.Gauge
+	firewallHealthStatus prometheus.Gauge
+	scrapes              prometheus.CounterVec
+	endpointErrors       prometheus.CounterVec
 }
 
 type Option func(*Collector) error
@@ -106,7 +107,7 @@ func New(client *opnsense.Client, log log.Logger, instanceName string, options .
 
 	for _, option := range options {
 		if err := option(&c); err != nil {
-			return nil, errors.Join(err, fmt.Errorf("failed to apply option"))
+			return nil, errors.Join(err, fmt.Errorf("failed to apply collector option"))
 		}
 	}
 
@@ -118,6 +119,15 @@ func New(client *opnsense.Client, log log.Logger, instanceName string, options .
 		Namespace: namespace,
 		Name:      "up",
 		Help:      "Was the last scrape of OPNsense successful. (1 = yes, 0 = no)",
+		ConstLabels: prometheus.Labels{
+			instanceLabelName: instanceName,
+		},
+	})
+
+	c.firewallHealthStatus = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace: namespace,
+		Name:      "firewall_status",
+		Help:      "Status of the firewall reported by the system health check (1 = ok, 0 = errors)",
 		ConstLabels: prometheus.Labels{
 			instanceLabelName: instanceName,
 		},
@@ -158,30 +168,43 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	}
 }
 
-// Collect implements the prometheus.Collector interface.
-func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
-
+func (c *Collector) collectHealthMetrics(ch chan<- prometheus.Metric) error {
 	systemStatus, err := c.Client.HealthCheck()
-
 	if err != nil {
-		level.Error(c.log).Log(
-			"msg", "failed to fetch system status",
-			"err", err,
-		)
 		c.isUp.Set(0)
 		c.isUp.Collect(ch)
-		return
+		return err
 	}
 
 	if systemStatus.System.Status != opnsense.HealthCheckStatusOK {
 		c.isUp.Set(0)
 		c.isUp.Collect(ch)
-		return
+		return nil
 	}
 
 	c.isUp.Set(1)
+	c.firewallHealthStatus.Set(1)
+
+	if systemStatus.Firewall.Status != opnsense.HealthCheckStatusOK {
+		c.firewallHealthStatus.Set(0)
+	}
+
+	c.isUp.Collect(ch)
+	c.firewallHealthStatus.Collect(ch)
+	return nil
+}
+
+// Collect implements the prometheus.Collector interface.
+func (c *Collector) Collect(ch chan<- prometheus.Metric) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	if err := c.collectHealthMetrics(ch); err != nil {
+		level.Error(c.log).Log(
+			"msg", "failed to fetch system health status; skipping other metrics",
+			"err", err,
+		)
+	}
 
 	var wg sync.WaitGroup
 	wg.Add(len(c.collectors))
@@ -205,5 +228,5 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.scrapes.WithLabelValues(c.instanceLabel).Inc()
 	c.scrapes.Collect(ch)
 	c.endpointErrors.Collect(ch)
-	c.isUp.Collect(ch)
+
 }
