@@ -28,7 +28,7 @@ opnsense_services_status | Gauge | name, description | Services | Service status
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
 opnsense_interfaces_mtu_bytes | Gauge | interface, device, type | Interfaces | MTU of the interface by interface name and device | n/a |
-opnsese_interfaces_received_bytes_total | Counter | interface, device, type | Interfaces | Total number of received bytes on this interface by interface name and device | n/a |
+opnsense_interfaces_received_bytes_total | Counter | interface, device, type | Interfaces | Total number of received bytes on this interface by interface name and device | n/a |
 opnsense_interfaces_transmitted_bytes_total | Counter | interface, device, type | Interfaces | Total number of transmitted bytes on this interface by interface name and device | n/a |
 opnsense_interfaces_received_multicasts_total | Counter | interface, device, type | Interfaces | Total number of received multicast packets on this interface by interface name and device | n/a |
 opnsense_interfaces_transmitted_multicasts_total | Counter | interface, device, type | Interfaces | Total number of transmitted multicast packets on this interface by interface name and device | n/a |
