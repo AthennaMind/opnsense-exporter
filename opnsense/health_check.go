@@ -2,18 +2,14 @@ package opnsense
 
 type HealthCheckResponse struct {
 	CrashReporter struct {
-		StatusCode  int    `json:"statusCode"`
-		Message     string `json:"message"`
-		LogLocation string `json:"logLocation"`
-		Timestamp   string `json:"timestamp"`
-		Status      string `json:"status"`
+		StatusCode int    `json:"statusCode"`
+		Message    string `json:"message"`
+		Status     string `json:"status"`
 	} `json:"CrashReporter"`
 	Firewall struct {
-		StatusCode  int    `json:"statusCode"`
-		Message     string `json:"message"`
-		LogLocation string `json:"logLocation"`
-		Timestamp   string `json:"timestamp"`
-		Status      string `json:"status"`
+		StatusCode int    `json:"statusCode"`
+		Message    string `json:"message"`
+		Status     string `json:"status"`
 	} `json:"Firewall"`
 	System struct {
 		Status string `json:"status"`

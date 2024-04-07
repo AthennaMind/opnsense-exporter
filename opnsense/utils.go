@@ -18,7 +18,7 @@ func parseStringToInt(value string, endpoint EndpointPath) (int, *APICallError) 
 	if err != nil {
 		return 0, &APICallError{
 			Endpoint:   string(endpoint),
-			Message:    fmt.Sprintf("error parsing %s to int: %s", value, err.Error()),
+			Message:    fmt.Sprintf("error parsing '%s' to int: %s", value, err.Error()),
 			StatusCode: 0,
 		}
 	}

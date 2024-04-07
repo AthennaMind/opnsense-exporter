@@ -19,6 +19,10 @@ var (
 		"exporter.disable-unbound",
 		"Disable the scraping of Unbound service",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_UNBOUND").Default("false").Bool()
+	openVPNCollectorDisabled = kingpin.Flag(
+		"exporter.disable-openvpn",
+		"Disable the scraping of OpenVPN service",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_OPENVPN").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
@@ -27,6 +31,7 @@ type CollectorsDisableSwitch struct {
 	Cron      bool
 	Wireguard bool
 	Unbound   bool
+	OpenVPN   bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
@@ -36,5 +41,6 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		Cron:      !*cronTableCollectorDisabled,
 		Wireguard: !*wireguardCollectorDisabled,
 		Unbound:   !*unboundCollectorDisabled,
+		OpenVPN:   !*openVPNCollectorDisabled,
 	}
 }
