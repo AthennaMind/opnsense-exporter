@@ -74,10 +74,6 @@ func main() {
 	collectorsSwitches := options.CollectorsSwitches()
 	collectorOptionFuncs := []collector.Option{}
 
-	// convert this to if statments to make it easier to read
-	// and to avoid the nested switch statements
-	// also, the switch statements are not needed here
-	//
 	if !collectorsSwitches.Unbound {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutUnboundCollector())
 		level.Info(logger).Log("msg", "unbound collector disabled")
