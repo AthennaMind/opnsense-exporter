@@ -74,17 +74,23 @@ func main() {
 	collectorsSwitches := options.CollectorsSwitches()
 	collectorOptionFuncs := []collector.Option{}
 
-	switch {
-	case !collectorsSwitches.Unbound:
+	// convert this to if statments to make it easier to read
+	// and to avoid the nested switch statements
+	// also, the switch statements are not needed here
+	//
+	if !collectorsSwitches.Unbound {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutUnboundCollector())
 		level.Info(logger).Log("msg", "unbound collector disabled")
-	case !collectorsSwitches.Wireguard:
+	}
+	if !collectorsSwitches.Wireguard {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutWireguardCollector())
 		level.Info(logger).Log("msg", "wireguard collector disabled")
-	case !collectorsSwitches.Cron:
+	}
+	if !collectorsSwitches.Cron {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCronCollector())
 		level.Info(logger).Log("msg", "cron collector disabled")
-	case !collectorsSwitches.ARP:
+	}
+	if !collectorsSwitches.ARP {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutArpTableCollector())
 		level.Info(logger).Log("msg", "arp collector disabled")
 	}
