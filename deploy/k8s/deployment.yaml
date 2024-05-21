@@ -39,11 +39,11 @@ spec:
           # e.g.: exporter comes up with _some_ metrics even if invalid API key...
           livenessProbe:
             httpGet:
-              path: /metrics
+              path: /
               port: metrics-http
           readinessProbe:
             httpGet:
-              path: /metrics
+              path: /
               port: metrics-http
           # See main readme; some configuration options can be set via env-vars
           ##
