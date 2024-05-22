@@ -35,7 +35,7 @@ While the `node_exporter` must be installed on the firewall itself, this exporte
 
 ## Grafana Dashboard
 
-**[OPNsense Exporter Dashboard](https://grafana.com/grafana/dashboards/211134)**
+**[OPNsense Exporter Dashboard](https://grafana.com/grafana/dashboards/21113)**
 
 ![gateways](docs/assets/gateways.png)
 
