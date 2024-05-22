@@ -24,3 +24,5 @@ local.Makefile
 key
 secret
 local.docker-compose.yml
+*.DS_Store
+

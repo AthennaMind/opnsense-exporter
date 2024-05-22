@@ -2,8 +2,9 @@
 
 This table represent each metric and it's labels, the subsystem that it belongs, its description and how to disable it. The opnsense_instance label is applied to all metrics.
 
-
 ### General 
+
+![status](assets/status.png)
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
@@ -13,8 +14,9 @@ opnsense_exporter_scrapes_total | Counter | n/a | n/a | Total number of scrapes 
 opnsense_exporter_endpoint_errors_total | Counter | endpoint | n/a | Total number of errors by endpoint returned by the OPNsense API during data fetching | n/a |
 opnsense_cron_job_status | Gauge | command, description, origin, schedule | Cron Table | Cron job status by name and description (1 = enabled, 0 = disabled) | --exporter.disable-cron-table |
 
-
 ### Services 
+
+![services](assets/services.png)
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
@@ -22,8 +24,9 @@ opnsense_services_running_total | Gauge | n/a | Services | Total number of runni
 opnsense_services_stopped_total | Gauge | n/a | Services | Total number of stopped services | n/a |
 opnsense_services_status | Gauge | name, description | Services | Service status by name and description (1 = running, 0 = stopped) | n/a |
 
-
 ### Interfaces
+
+![interfaces](assets/interfaces.png)
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
@@ -38,14 +41,17 @@ opnsense_interfaces_collisions_total | Counter | interface, device, type | Inter
 
 ### ARP
 
+![arp](assets/arp.png)
+
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
 opnsense_arp_table_entries | Gauge | expired, hostname, interface_description, ip, mac, permanent, type | ARP Table | Arp entries by ip, mac, hostname, interface description, type, expired and permanent | --exporter.disable-arp-table |
 opnsense_protocol_arp_sent_requests_total | Counter | n/a | Protocol Statistics | Total Number of sent ARP requests  | n/a |
 opnsense_protocol_arp_received_requests_total | Counter | n/a | Protocol Statistics | Total Number of received ARP requests  | n/a |
 
-
 ### Gateways
+
+![gateways](assets/gateways.png)
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
@@ -53,7 +59,6 @@ opnsense_gateways_status | Gauge | address, name | Gateways | Status of the gate
 opnsense_gateways_loss_percentage | Gauge | address, name | Gateways | The current gateway loss percentage by name and address | n/a |
 opnsense_gateways_rtt_milliseconds | Gauge | address, name | Gateways | RTT is the average (mean) of the round trip time in milliseconds by name and address | n/a |
 opnsense_gateways_rttd_milliseconds | Gauge | address, name | Gateways | RTTd is the standard deviation of the round trip time in milliseconds by name and address | n/a |
-
 
 ### Protocol Statistics
 
@@ -69,8 +74,6 @@ opnsense_protocol_udp_dropped_by_reason_total | CounterVector | reason | Protoco
 opnsense_protocol_icmp_calls_total | Counter | n/a | Protocol Statistics | Total Number of ICMP calls | n/a |
 opnsense_protocol_icmp_sent_packets_total | Counter | n/a | Protocol Statistics | Total Number of sent ICMP packets | n/a |
 opnsense_protocol_icmp_dropped_by_reason_total | CounterVector | reason | Protocol Statistics | Total Number of dropped ICMP packets by reason | n/a |
-
-
 
 ### Unbound DNS
 
