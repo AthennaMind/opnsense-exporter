@@ -37,7 +37,7 @@ While the `node_exporter` must be installed on the firewall itself, this exporte
 
 **[OPNsense Exporter Dashboard](https://grafana.com/grafana/dashboards/211134)**
 
-![gateways](assets/gateways.png)
+![gateways](docs/assets/gateways.png)
 
 Finaly we have a Grafana dashboard to visualize the data from this exporter. The dashboard can be imported into Grafana by using the id `21113` or by importing the `deploy/grafana/dashboard-v1.json` file. Please give a review to the dashboard if you like our work. Thank you! 
 
