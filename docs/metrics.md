@@ -36,6 +36,8 @@ opnsense_interfaces_input_errors_total | Counter | interface, device, type | Int
 opnsense_interfaces_output_errors_total | Counter | interface, device, type | Interfaces | Output errors on this interface by interface name and device | n/a |
 opnsense_interfaces_collisions_total | Counter | interface, device, type | Interfaces | Collisions on this interface by interface name and device | n/a |
 
+![interfaces](images/interfaces.png)
+
 ### ARP
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
