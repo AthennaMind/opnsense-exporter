@@ -11,6 +11,7 @@ The missing OPNsense exporter for Prometheus
 ## Table of Contents
 
 - **[About](#about)**
+- **[Grafana Dashboard](#grafana-dashboard)**
 - **[Metrics List](./docs/metrics.md)**
 - **[Contributing](./CONTRIBUTING.md)**
 - **[OPNsense User Permissions](#opnsense-user-permissions)**
@@ -24,7 +25,6 @@ The missing OPNsense exporter for Prometheus
   - **[SSL/TLS](#ssltls)**
   - **[Exporters](#exporters)**
   - **[All Options](#all-options)**
-- **[Grafana Dashboard](#grafana-dashboard)**
 
 ## About
 
@@ -32,6 +32,14 @@ Focusing specifically on OPNsense, this exporter provides metrics about OPNsense
 
 While the `node_exporter` must be installed on the firewall itself, this exporter can be installed on any machine that has network access to the OPNsense API.
 
+
+## Grafana Dashboard
+
+**[OPNsense Exporter Dashboard](https://grafana.com/grafana/dashboards/211134)**
+
+![gateways](assets/gateways.png)
+
+Finaly we have a Grafana dashboard to visualize the data from this exporter. The dashboard can be imported into Grafana by using the id `21113` or by importing the `deploy/grafana/dashboard-v1.json` file. Please give a review to the dashboard if you like our work. Thank you! 
 
 ## OPNsense user permissions
 
@@ -223,7 +231,3 @@ Flags:
       --[no-]opnsense.insecure   Disable TLS certificate verification
                                  ($OPNSENSE_EXPORTER_OPS_INSECURE)
 ```
-
-## Grafana Dashboard
-
-**TODO**
