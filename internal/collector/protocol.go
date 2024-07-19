@@ -8,9 +8,7 @@ import (
 )
 
 type protocolCollector struct {
-	log       log.Logger
-	subsystem string
-	instance  string
+	log log.Logger
 
 	tcpConnectionCountByState *prometheus.Desc
 	tcpSentPackets            *prometheus.Desc
@@ -27,6 +25,9 @@ type protocolCollector struct {
 	udpOutputPackets     *prometheus.Desc
 	udpReceivedDatagrams *prometheus.Desc
 	udpDroppedByReason   *prometheus.Desc
+
+	subsystem string
+	instance  string
 }
 
 func init() {

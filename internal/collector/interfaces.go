@@ -8,9 +8,8 @@ import (
 )
 
 type interfacesCollector struct {
-	log                   log.Logger
-	subsystem             string
-	instance              string
+	log log.Logger
+
 	mtu                   *prometheus.Desc
 	bytesReceived         *prometheus.Desc
 	bytesTransmited       *prometheus.Desc
@@ -19,6 +18,9 @@ type interfacesCollector struct {
 	inputErrors           *prometheus.Desc
 	outputErrors          *prometheus.Desc
 	collisions            *prometheus.Desc
+
+	subsystem string
+	instance  string
 }
 
 func init() {
@@ -70,7 +72,6 @@ func (c *interfacesCollector) Register(namespace, instanceLabel string, log log.
 		"Collisions on this interface by interface name and device",
 		[]string{"interface", "device", "type"},
 	)
-
 }
 
 func (c *interfacesCollector) Describe(ch chan<- *prometheus.Desc) {
@@ -92,7 +93,6 @@ func (c *interfacesCollector) update(ch chan<- prometheus.Metric, desc *promethe
 
 func (c *interfacesCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
 	data, err := client.FetchInterfaces()
-
 	if err != nil {
 		return err
 	}

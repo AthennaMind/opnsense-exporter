@@ -9,12 +9,13 @@ import (
 
 type WireguardCollector struct {
 	log             log.Logger
-	subsystem       string
-	instance        string
 	instances       *prometheus.Desc
 	TransferRx      *prometheus.Desc
 	TransferTx      *prometheus.Desc
 	LatestHandshake *prometheus.Desc
+
+	subsystem string
+	instance  string
 }
 
 func init() {
@@ -70,7 +71,6 @@ func (c *WireguardCollector) update(ch chan<- prometheus.Metric, desc *prometheu
 
 func (c *WireguardCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
 	data, err := client.FetchWireguardConfig()
-
 	if err != nil {
 		return err
 	}

@@ -9,12 +9,12 @@ type wireguardClientsResponse struct {
 	Rows []struct {
 		IfId            string  `json:"if"`
 		IfType          string  `json:"type"`
-		LatestHandshake float64 `json:"latest-handshake"`
-		TransferRx      float64 `json:"transfer-rx"`
-		TransferTx      float64 `json:"transfer-tx"`
 		Status          string  `json:"status"`
 		Name            string  `json:"name"`
 		IfName          string  `json:"ifname"`
+		LatestHandshake float64 `json:"latest-handshake"`
+		TransferRx      float64 `json:"transfer-rx"`
+		TransferTx      float64 `json:"transfer-tx"`
 	} `json:"rows"`
 	RowCount int `json:"rowCount"`
 	Total    int `json:"total"`
@@ -34,18 +34,18 @@ type WireguardPeers struct {
 	Device          string
 	DeviceName      string
 	DeviceType      string
+	Name            string
 	LatestHandshake float64
 	TransferRx      float64
 	TransferTx      float64
-	Name            string
 }
 
 type WireguardInterfaces struct {
 	Device     string
 	DeviceType string
-	Status     WGInterfaceStatus
 	Name       string
 	DeviceName string
+	Status     WGInterfaceStatus
 }
 
 type WireguardClients struct {

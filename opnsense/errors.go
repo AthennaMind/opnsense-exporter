@@ -5,8 +5,8 @@ import "fmt"
 // APICallError is an error returned by the OPNsense API
 type APICallError struct {
 	Endpoint   string
-	StatusCode int
 	Message    string
+	StatusCode int
 }
 
 func (e APICallError) Error() string {

@@ -30,7 +30,7 @@ func parseStringToInt(value string, endpoint EndpointPath) (int, *APICallError) 
 // The regex is first used to check if the value matches the regex format.
 func parseStringToFloatWithReplace(value string, regex *regexp.Regexp, replacePattern string, valueTypeName string, logger log.Logger) float64 {
 	if regex.MatchString(value) {
-		cleanValue := strings.Replace(value, replacePattern, "", -1)
+		cleanValue := strings.ReplaceAll(value, replacePattern, "")
 		parsedValue, err := strconv.ParseFloat(cleanValue, 64)
 		if err != nil {
 			level.Warn(logger).

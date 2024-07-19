@@ -34,16 +34,16 @@ const (
 
 type Cron struct {
 	UUID        string
-	Status      CronStatus
 	Schedule    string
 	Description string
 	Command     string
 	Origin      string
+	Status      CronStatus
 }
 
 type CronTable struct {
-	TotalEntries int
 	Cron         []Cron
+	TotalEntries int
 }
 
 const fetchCronPayload = `{"current":1,"rowCount":-1,"sort":{},"searchPhrase":"","resolve":"no"}`

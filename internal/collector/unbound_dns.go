@@ -8,10 +8,11 @@ import (
 )
 
 type unboundDNSCollector struct {
-	log       log.Logger
+	log    log.Logger
+	uptime *prometheus.Desc
+
 	subsystem string
 	instance  string
-	uptime    *prometheus.Desc
 }
 
 func init() {
@@ -34,7 +35,6 @@ func (c *unboundDNSCollector) Register(namespace, instanceLabel string, log log.
 		"Uptime of the unbound DNS service in seconds",
 		nil,
 	)
-
 }
 
 func (c *unboundDNSCollector) Describe(ch chan<- *prometheus.Desc) {
