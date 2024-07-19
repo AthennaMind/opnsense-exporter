@@ -9,9 +9,10 @@ import (
 
 type openVPNCollector struct {
 	log       log.Logger
+	instances *prometheus.Desc
+
 	subsystem string
 	instance  string
-	instances *prometheus.Desc
 }
 
 func init() {

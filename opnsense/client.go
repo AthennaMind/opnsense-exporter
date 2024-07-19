@@ -30,29 +30,26 @@ type EndpointPath string
 
 // Client is an OPNsense API client
 type Client struct {
+	httpClient       *http.Client
+	gatewayLossRegex *regexp.Regexp
+	gatewayRTTRegex  *regexp.Regexp
 	log              log.Logger
+	headers          map[string]string
+	endpoints        map[EndpointName]EndpointPath
 	baseURL          string
 	key              string
 	secret           string
 	sslInsecure      bool
-	endpoints        map[EndpointName]EndpointPath
-	httpClient       *http.Client
-	headers          map[string]string
-	gatewayLossRegex *regexp.Regexp
-	gatewayRTTRegex  *regexp.Regexp
 }
 
 // NewClient creates a new OPNsense API Client
 func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log log.Logger) (Client, error) {
-
 	sslPool, err := x509.SystemCertPool()
-
 	if err != nil {
 		return Client{}, errors.Join(fmt.Errorf("failed to load system cert pool"), err)
 	}
 
 	gatewayLossRegex, err := regexp.Compile(`\d\.\d %`)
-
 	if err != nil {
 		return Client{}, errors.Join(fmt.Errorf("failed to build regex for gatewayLoss calculation"), err)
 	}
@@ -117,11 +114,9 @@ func (c *Client) Endpoints() map[EndpointName]EndpointPath {
 // The response is unmarshalled
 // into the responseStruc
 func (c *Client) do(method string, path EndpointPath, body io.Reader, responseStruct any) *APICallError {
-
 	url := fmt.Sprintf("%s/%s", c.baseURL, string(path))
 
 	req, err := http.NewRequest(method, url, body)
-
 	if err != nil {
 		return &APICallError{
 			Endpoint:   string(path),
@@ -171,7 +166,6 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 		}
 
 		body, err := io.ReadAll(reader)
-
 		if err != nil {
 			return &APICallError{
 				Endpoint:   string(path),

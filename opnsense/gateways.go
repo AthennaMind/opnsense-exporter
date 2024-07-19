@@ -12,7 +12,8 @@ import (
 // ---> https://github.com/opnsense/core/blob/master/src/etc/inc/plugins.inc.d/dpinger.inc#L368
 // From this file we know that Loss and Delay always have the same format of '%0.1f ms'
 type gatewaysStatusResponse struct {
-	Items []struct {
+	Status string `json:"status"`
+	Items  []struct {
 		Name             string `json:"name"`
 		Address          string `json:"address"`
 		Status           string `json:"status"`
@@ -21,7 +22,6 @@ type gatewaysStatusResponse struct {
 		Stddev           string `json:"stddev"`
 		StatusTranslated string `json:"status_translated"`
 	} `json:"items"`
-	Status string `json:"status"`
 }
 
 // GatewayStatus is the custom type that represents the status of a gateway

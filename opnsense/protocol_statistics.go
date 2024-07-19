@@ -265,9 +265,7 @@ type ProtocolStatistics struct {
 }
 
 func (c *Client) FetchProtocolStatistics() (ProtocolStatistics, *APICallError) {
-	var (
-		resp protocolStatisticsResponse
-	)
+	var resp protocolStatisticsResponse
 	url, ok := c.endpoints["protocolStatistics"]
 	if !ok {
 		return ProtocolStatistics{}, &APICallError{

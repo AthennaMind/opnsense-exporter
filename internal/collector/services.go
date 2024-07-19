@@ -9,11 +9,12 @@ import (
 
 type servicesCollector struct {
 	log             log.Logger
-	subsystem       string
-	instance        string
 	services        *prometheus.Desc
 	servicesRunning *prometheus.Desc
 	servicesStopped *prometheus.Desc
+
+	subsystem string
+	instance  string
 }
 
 func init() {
@@ -46,7 +47,6 @@ func (c *servicesCollector) Register(namespace, instanceLabel string, log log.Lo
 		"Total number of stopped services",
 		nil,
 	)
-
 }
 
 func (c *servicesCollector) Describe(ch chan<- *prometheus.Desc) {
@@ -56,9 +56,7 @@ func (c *servicesCollector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *servicesCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
-
 	services, err := client.FetchServices()
-
 	if err != nil {
 		return err
 	}
@@ -83,7 +81,6 @@ func (c *servicesCollector) Update(client *opnsense.Client, ch chan<- prometheus
 			service.Description,
 			c.instance,
 		)
-
 	}
 
 	return nil

@@ -1,16 +1,16 @@
 package opnsense
 
 type servicesSearchResponse struct {
+	Rows []struct {
+		ID          string `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Locked      int    `json:"locked"`
+		Running     int    `json:"running"`
+	} `json:"rows"`
 	Total    int `json:"total"`
 	RowCount int `json:"rowCount"`
 	Current  int `json:"current"`
-	Rows     []struct {
-		ID          string `json:"id"`
-		Locked      int    `json:"locked"`
-		Running     int    `json:"running"`
-		Description string `json:"description"`
-		Name        string `json:"name"`
-	} `json:"rows"`
 }
 
 type ServiceStatus int
@@ -22,15 +22,15 @@ const (
 )
 
 type Service struct {
-	Status      ServiceStatus
 	Description string
 	Name        string
+	Status      ServiceStatus
 }
 
 type Services struct {
+	Services     []Service
 	TotalRunning int
 	TotalStopped int
-	Services     []Service
 }
 
 func (c *Client) FetchServices() (Services, *APICallError) {
@@ -47,7 +47,6 @@ func (c *Client) FetchServices() (Services, *APICallError) {
 		}
 	}
 	err := c.do("GET", url, nil, &resp)
-
 	if err != nil {
 		return services, err
 	}

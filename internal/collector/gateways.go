@@ -8,12 +8,12 @@ import (
 
 type gatewaysCollector struct {
 	log            log.Logger
-	subsystem      string
-	instance       string
 	status         *prometheus.Desc
 	lossPercentage *prometheus.Desc
 	rtt            *prometheus.Desc
 	rttd           *prometheus.Desc
+	subsystem      string
+	instance       string
 }
 
 func init() {

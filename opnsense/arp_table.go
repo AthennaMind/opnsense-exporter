@@ -5,37 +5,37 @@ import (
 )
 
 type arpSearchResponse struct {
-	Total    int `json:"total"`
-	RowCount int `json:"rowCount"`
-	Current  int `json:"current"`
-	Rows     []struct {
+	Rows []struct {
 		Mac             string `json:"mac"`
 		IP              string `json:"ip"`
 		Intf            string `json:"intf"`
-		Expired         bool   `json:"expired"`
-		Expires         int    `json:"expires"`
-		Permanent       bool   `json:"permanent"`
 		Type            string `json:"type"`
 		Manufacturer    string `json:"manufacturer"`
 		Hostname        string `json:"hostname"`
 		IntfDescription string `json:"intf_description"`
+		Permanent       bool   `json:"permanent"`
+		Expired         bool   `json:"expired"`
+		Expires         int    `json:"expires"`
 	} `json:"rows"`
+	Total    int `json:"total"`
+	RowCount int `json:"rowCount"`
+	Current  int `json:"current"`
 }
 
 type Arp struct {
 	Mac             string
 	IP              string
-	Expired         bool
-	Expires         int
-	Permanent       bool
 	Type            string
 	Hostname        string
 	IntfDescription string
+	Expired         bool
+	Permanent       bool
+	Expires         int
 }
 
 type ArpTable struct {
-	TotalEntries int
 	Arp          []Arp
+	TotalEntries int
 }
 
 const fetchArpPayload = `{"current":1,"rowCount":-1,"sort":{},"searchPhrase":"","resolve":"no"}`

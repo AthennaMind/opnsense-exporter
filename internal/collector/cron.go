@@ -9,9 +9,10 @@ import (
 
 type cronCollector struct {
 	log        log.Logger
-	subsystem  string
-	instance   string
 	jobsStatus *prometheus.Desc
+
+	subsystem string
+	instance  string
 }
 
 func init() {

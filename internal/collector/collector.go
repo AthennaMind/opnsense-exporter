@@ -20,15 +20,17 @@ const namespace = "opnsense"
 // multiple instances of the exporter running.
 const instanceLabelName = "opnsense_instance"
 
-const ArpTableSubsystem = "arp_table"
-const GatewaysSubsystem = "gateways"
-const CronTableSubsystem = "cron"
-const WireguardSubsystem = "wireguard"
-const UnboundDNSSubsystem = "unbound_dns"
-const InterfacesSubsystem = "interfaces"
-const ProtocolSubsystem = "protocol"
-const OpenVPNSubsystem = "openvpn"
-const ServicesSubsystem = "services"
+const (
+	ArpTableSubsystem   = "arp_table"
+	GatewaysSubsystem   = "gateways"
+	CronTableSubsystem  = "cron"
+	WireguardSubsystem  = "wireguard"
+	UnboundDNSSubsystem = "unbound_dns"
+	InterfacesSubsystem = "interfaces"
+	ProtocolSubsystem   = "protocol"
+	OpenVPNSubsystem    = "openvpn"
+	ServicesSubsystem   = "services"
+)
 
 // CollectorInstance is the interface a service specific collectors must implement.
 type CollectorInstance interface {
@@ -43,16 +45,16 @@ type CollectorInstance interface {
 var collectorInstances []CollectorInstance
 
 type Collector struct {
-	instanceLabel string
-	mutex         sync.RWMutex
-	Client        *opnsense.Client
-	log           log.Logger
-	collectors    []CollectorInstance
+	Client *opnsense.Client
+	mutex  sync.RWMutex
+	log    log.Logger
 
 	isUp                 prometheus.Gauge
 	firewallHealthStatus prometheus.Gauge
 	scrapes              prometheus.CounterVec
 	endpointErrors       prometheus.CounterVec
+	instanceLabel        string
+	collectors           []CollectorInstance
 }
 
 type Option func(*Collector) error
@@ -97,7 +99,6 @@ func WithoutUnboundCollector() Option {
 
 // New creates a new Collector instance.
 func New(client *opnsense.Client, log log.Logger, instanceName string, options ...Option) (*Collector, error) {
-
 	c := Collector{
 		Client:        client,
 		log:           log,
@@ -228,5 +229,4 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.scrapes.WithLabelValues(c.instanceLabel).Inc()
 	c.scrapes.Collect(ch)
 	c.endpointErrors.Collect(ch)
-
 }

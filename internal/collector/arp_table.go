@@ -10,10 +10,10 @@ import (
 )
 
 type arpTableCollector struct {
+	entries   *prometheus.Desc
 	log       log.Logger
 	subsystem string
 	instance  string
-	entries   *prometheus.Desc
 }
 
 func init() {
@@ -37,24 +37,6 @@ func (c *arpTableCollector) Register(namespace, instance string, log log.Logger)
 		"Arp entries by ip, mac, hostname, interface description, type, expired and permanent",
 		[]string{"ip", "mac", "hostname", "interface_description", "type", "expired", "permanent"},
 	)
-
-	// c.protocolStatistics = map[string]*prometheus.Desc{
-	// 	"arpSentRequests": buildPrometheusDesc(c.subsystem, "sent_requests_total",
-	// 		"Total number of sent arp requests.", nil),
-	// 	"arpReceivedRequests": buildPrometheusDesc(c.subsystem, "received_requests_total",
-	// 		"Total number of received arp requests", nil),
-	// 	"arpSentReplies": buildPrometheusDesc(c.subsystem, "sent_replies_total",
-	// 		"Total number of sent arp replies since OPNsense start.", nil),
-	// 	"arpReceivedReplies": buildPrometheusDesc(c.subsystem, "received_replies_total",
-	// 		"Total number of received arp replies", nil),
-	// 	"arpDroppedDuplicateAddress": buildPrometheusDesc(c.subsystem, "dropped_duplicate_address_total",
-	// 		"Total number of dropped arp requests due to duplicate address", nil),
-	// 	"arpEntriesTimeout": buildPrometheusDesc(c.subsystem, "entries_timeout_total",
-	// 		"Total number of arp entries that timed out", nil),
-	// 	"arpDroppedNoEntry": buildPrometheusDesc(c.subsystem, "dropped_no_entry_total",
-	// 		"Total number of dropped arp requests due to no entry", nil),
-	// }
-
 }
 
 func (c *arpTableCollector) Describe(ch chan<- *prometheus.Desc) {
@@ -63,7 +45,6 @@ func (c *arpTableCollector) Describe(ch chan<- *prometheus.Desc) {
 
 func (c *arpTableCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
 	data, err := client.FetchArpTable()
-
 	if err != nil {
 		return err
 	}

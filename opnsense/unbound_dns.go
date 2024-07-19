@@ -190,15 +190,15 @@ type unboundDNSStatusResponse struct {
 }
 
 type UnboundDNSOverview struct {
+	AnswerRcodes      map[string]int
+	QueryTypes        map[string]int
 	Total             int
 	BlocklistSize     int
 	Passed            int
-	UptimeSeconds     float64
-	AnswerRcodes      map[string]int
 	AnswerRcodesTotal int
 	AnnswerBogusTotal int
 	AnswerSecureTotal int
-	QueryTypes        map[string]int
+	UptimeSeconds     float64
 }
 
 func (c *Client) FetchUnboundOverview() (UnboundDNSOverview, *APICallError) {
