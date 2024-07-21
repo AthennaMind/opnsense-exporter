@@ -30,6 +30,7 @@ const (
 	ProtocolSubsystem   = "protocol"
 	OpenVPNSubsystem    = "openvpn"
 	ServicesSubsystem   = "services"
+	FirewallSubsystem   = "firewall"
 )
 
 // CollectorInstance is the interface a service specific collectors must implement.
@@ -95,6 +96,12 @@ func WithoutWireguardCollector() Option {
 // removes the unbound_dns collector from the list of collectors
 func WithoutUnboundCollector() Option {
 	return withoutCollectorInstance(UnboundDNSSubsystem)
+}
+
+// WithoutFirewallCollector Option
+// removes the firewall (pf) collector from the list of collectors
+func WithoutFirewallCollector() Option {
+	return withoutCollectorInstance(FirewallSubsystem)
 }
 
 // New creates a new Collector instance.

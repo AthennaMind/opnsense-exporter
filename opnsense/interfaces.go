@@ -1,7 +1,5 @@
 package opnsense
 
-// TODO: Add client fetching
-
 type InterfaceDetails struct {
 	Device                    string `json:"device"`
 	Driver                    string `json:"driver"`
@@ -93,7 +91,6 @@ func (c *Client) FetchInterfaces() (Interfaces, *APICallError) {
 			},
 			url,
 		)
-
 		if err != nil {
 			return data, err
 		}

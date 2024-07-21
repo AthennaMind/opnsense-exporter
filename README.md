@@ -164,6 +164,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-wireguard` - Disable the scraping of Wireguard service. Defaults to `false`.
 - `--exporter.disable-unbound` - Disable the scraping of Unbound service. Defaults to `false`.
 - `--exporter.disable-openvpn` - Disable the scraping of OpenVPN service. Defaults to `false`.
+- `--exporter.disable-firewall` - Disable the scraping of Firewall (pf) metrics. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -190,6 +191,9 @@ Flags:
       --[no-]exporter.disable-openvpn
                                   Disable the scraping of OpenVPN service
                                   ($OPNSENSE_EXPORTER_DISABLE_OPENVPN)
+      --[no-]exporter.disable-firewall
+                                  Disable the scraping of Firewall (pf) metrics
+                                  ($OPNSENSE_EXPORTER_DISABLE_FIREWALL)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics

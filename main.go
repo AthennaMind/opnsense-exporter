@@ -24,7 +24,6 @@ func main() {
 	options.Init()
 
 	logger, err := options.Logger()
-
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error creating logger: %v\n", err)
 		os.Exit(1)
@@ -39,7 +38,6 @@ func main() {
 		Log("msg", "settings Go MAXPROCS", "procs", runtime.GOMAXPROCS(0))
 
 	opnsConfig, err := options.OPNSense()
-
 	if err != nil {
 		level.Error(logger).
 			Log("msg", "failed to assemble OPNsense configuration", "err", err)
@@ -51,7 +49,6 @@ func main() {
 		version,
 		logger,
 	)
-
 	if err != nil {
 		level.Error(logger).
 			Log("msg", "opnsense client build failed", "err", err)
@@ -90,9 +87,12 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutArpTableCollector())
 		level.Info(logger).Log("msg", "arp collector disabled")
 	}
+	if !collectorsSwitches.Firewall {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutFirewallCollector())
+		level.Info(logger).Log("msg", "firewall collector disabled")
+	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
-
 	if err != nil {
 		level.Error(logger).
 			Log("msg", "failed to construct the collecotr", "err", err)

@@ -19,7 +19,6 @@ func TestCollector(t *testing.T) {
 		"test",
 		log.NewNopLogger(),
 	)
-
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -29,10 +28,10 @@ func TestCollector(t *testing.T) {
 		WithoutCronCollector(),
 		WithoutUnboundCollector(),
 		WithoutWireguardCollector(),
+		WithoutFirewallCollector(),
 	}
 
 	collector, err := New(&client, log.NewNopLogger(), "test", collectOpts...)
-
 	if err != nil {
 		t.Errorf("expected no error when creating collector, got %v", err)
 	}
@@ -47,6 +46,8 @@ func TestCollector(t *testing.T) {
 			t.Errorf("expected unbound_dns collector to be removed")
 		case "wireguard":
 			t.Errorf("expected wireguard collector to be removed")
+		case "firewall":
+			t.Errorf("expected firewall collector to be removed")
 		}
 	}
 }
