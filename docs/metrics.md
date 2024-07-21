@@ -39,6 +39,21 @@ opnsense_interfaces_input_errors_total | Counter | interface, device, type | Int
 opnsense_interfaces_output_errors_total | Counter | interface, device, type | Interfaces | Output errors on this interface by interface name and device | n/a |
 opnsense_interfaces_collisions_total | Counter | interface, device, type | Interfaces | Collisions on this interface by interface name and device | n/a |
 
+### Firewall
+
+| Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
+| --- | --- | --- | --- | --- | --- |
+opnsense_firewall_in_ipv4_block_packets | Gauge | interface | Firewall | The number of IPv4 incoming packets that were blocked by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_in_ipv4_pass_packets | Gauge | interface | Firewall | The number of IPv4 incoming packets that were passed by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_out_ipv4_block_packets | Gauge | interface | Firewall | The number of IPv4 outgoing packets that were blocked by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_out_ipv4_pass_packets | Gauge | interface | Firewall | The number of IPv4 outgoing packets that were passed by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_in_ipv6_block_packets | Gauge | interface | Firewall | The number of IPv6 incoming packets that were blocked by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_in_ipv6_pass_packets | Gauge | interface | Firewall | The number of IPv6 incoming packets that were passed by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_out_ipv6_block_packets | Gauge | interface | Firewall | The number of IPv6 outgoing packets that were blocked by the firewall by interface | --exporter.disable-firewall |
+opnsense_firewall_out_ipv6_pass_packets | Gauge | interface | Firewall | The number of IPv6 outgoing packets that were passed by the firewall by interface | --exporter.disable-firewall |
+
+
+
 ### ARP
 
 ![arp](assets/arp.png)

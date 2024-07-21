@@ -108,7 +108,7 @@ func (c *Client) FetchSystemInfo() (SystemInfo, *APICallError) {
 
 	if !ok {
 		return data, &APICallError{
-			Endpoint:   "system_info",
+			Endpoint:   "systemInfo",
 			Message:    "endpoint not found",
 			StatusCode: 0,
 		}

@@ -23,6 +23,10 @@ var (
 		"exporter.disable-openvpn",
 		"Disable the scraping of OpenVPN service",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_OPENVPN").Default("false").Bool()
+	firewallCollectorDisabled = kingpin.Flag(
+		"exporter.disable-firewall",
+		"Disable the scraping of the firewall (pf) metrics",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_FIREWALL").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
@@ -32,6 +36,7 @@ type CollectorsDisableSwitch struct {
 	Wireguard bool
 	Unbound   bool
 	OpenVPN   bool
+	Firewall  bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
@@ -42,5 +47,6 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		Wireguard: !*wireguardCollectorDisabled,
 		Unbound:   !*unboundCollectorDisabled,
 		OpenVPN:   !*openVPNCollectorDisabled,
+		Firewall:  !*firewallCollectorDisabled,
 	}
 }

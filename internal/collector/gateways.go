@@ -3,6 +3,7 @@ package collector
 import (
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -29,6 +30,9 @@ func (c *gatewaysCollector) Name() string {
 func (c *gatewaysCollector) Register(namespace, instanceLabel string, log log.Logger) {
 	c.log = log
 	c.instance = instanceLabel
+	level.Debug(c.log).
+		Log("msg", "Registering collector", "collector", c.Name())
+
 	c.status = buildPrometheusDesc(c.subsystem, "status",
 		"Status of the gateway by name and address (1 = up, 0 = down, 2 = unknown)",
 		[]string{"name", "address"},

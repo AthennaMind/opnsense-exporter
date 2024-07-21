@@ -35,7 +35,7 @@ func (c *Client) FetchOpenVPNInstances() (OpenVPNInstances, *APICallError) {
 	url, ok := c.endpoints["openVPNInstances"]
 	if !ok {
 		return data, &APICallError{
-			Endpoint:   "openvpn",
+			Endpoint:   "openVPNInstances",
 			Message:    "endpoint not found in client endpoints",
 			StatusCode: 0,
 		}

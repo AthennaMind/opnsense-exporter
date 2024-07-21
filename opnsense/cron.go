@@ -55,7 +55,7 @@ func (c *Client) FetchCronTable() (CronTable, *APICallError) {
 	path, ok := c.endpoints["cronJobs"]
 	if !ok {
 		return cronTable, &APICallError{
-			Endpoint:   "cron",
+			Endpoint:   "cronJobs",
 			Message:    "endpoint not found",
 			StatusCode: 0,
 		}
