@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.22 as build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.23 as build
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -10,10 +10,10 @@ WORKDIR /go/src/github.com/AthennaMind/opnsense-exporter
 COPY . .
 
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 \
-    go build \
-    -tags osusergo,netgo \
-    -ldflags "-s -w -X main.version=${Version}" \
-    -o /usr/bin/opnsense-exporter .
+  go build \
+  -tags osusergo,netgo \
+  -ldflags "-s -w -X main.version=${Version}" \
+  -o /usr/bin/opnsense-exporter .
 
 FROM --platform=${BUILDPLATFORM:-linux/amd64} gcr.io/distroless/static-debian12:latest
 

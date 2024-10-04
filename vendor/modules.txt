@@ -1,7 +1,7 @@
 # github.com/alecthomas/kingpin/v2 v2.4.0
 ## explicit; go 1.17
 github.com/alecthomas/kingpin/v2
-# github.com/alecthomas/units v0.0.0-20240626203959-61d1e3462e30
+# github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b
 ## explicit; go 1.15
 github.com/alecthomas/units
 # github.com/beorn7/perks v1.0.1
@@ -23,14 +23,31 @@ github.com/go-logfmt/logfmt
 # github.com/jpillora/backoff v1.0.0
 ## explicit; go 1.13
 github.com/jpillora/backoff
+# github.com/klauspost/compress v1.17.10
+## explicit; go 1.21
+github.com/klauspost/compress
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/internal/cpuinfo
+github.com/klauspost/compress/internal/snapref
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
+# github.com/mdlayher/socket v0.5.1
+## explicit; go 1.20
+github.com/mdlayher/socket
+# github.com/mdlayher/vsock v1.2.1
+## explicit; go 1.20
+github.com/mdlayher/vsock
 # github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
 ## explicit
 github.com/munnerz/goautoneg
 # github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 ## explicit
 github.com/mwitkow/go-conntrack
-# github.com/prometheus/client_golang v1.19.1
+# github.com/prometheus/client_golang v1.20.4
 ## explicit; go 1.20
+github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil
+github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil/header
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/collectors
 github.com/prometheus/client_golang/prometheus/internal
@@ -38,14 +55,14 @@ github.com/prometheus/client_golang/prometheus/promhttp
 # github.com/prometheus/client_model v0.6.1
 ## explicit; go 1.19
 github.com/prometheus/client_model/go
-# github.com/prometheus/common v0.55.0
-## explicit; go 1.20
+# github.com/prometheus/common v0.60.0
+## explicit; go 1.21
 github.com/prometheus/common/config
 github.com/prometheus/common/expfmt
 github.com/prometheus/common/model
 github.com/prometheus/common/promlog
-# github.com/prometheus/exporter-toolkit v0.11.0
-## explicit; go 1.18
+# github.com/prometheus/exporter-toolkit v0.12.0
+## explicit; go 1.22
 github.com/prometheus/exporter-toolkit/web
 github.com/prometheus/exporter-toolkit/web/kingpinflag
 # github.com/prometheus/procfs v0.15.1
@@ -56,12 +73,13 @@ github.com/prometheus/procfs/internal/util
 # github.com/xhit/go-str2duration/v2 v2.1.0
 ## explicit; go 1.13
 github.com/xhit/go-str2duration/v2
-# golang.org/x/crypto v0.25.0
+# golang.org/x/crypto v0.28.0
 ## explicit; go 1.20
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
-# golang.org/x/net v0.27.0
+# golang.org/x/net v0.30.0
 ## explicit; go 1.18
+golang.org/x/net/bpf
 golang.org/x/net/http/httpguts
 golang.org/x/net/http/httpproxy
 golang.org/x/net/http2
@@ -69,19 +87,19 @@ golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
-# golang.org/x/oauth2 v0.21.0
+# golang.org/x/oauth2 v0.23.0
 ## explicit; go 1.18
 golang.org/x/oauth2
 golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
-# golang.org/x/sync v0.7.0
+# golang.org/x/sync v0.8.0
 ## explicit; go 1.18
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.22.0
+# golang.org/x/sys v0.26.0
 ## explicit; go 1.18
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.16.0
+# golang.org/x/text v0.19.0
 ## explicit; go 1.18
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform

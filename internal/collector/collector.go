@@ -104,6 +104,12 @@ func WithoutFirewallCollector() Option {
 	return withoutCollectorInstance(FirewallSubsystem)
 }
 
+// WithoutOpenVPNCollector Option
+// removes the openvpn collector from the list of collectors
+func WithoutOpenVPNCollector() Option {
+	return withoutCollectorInstance(OpenVPNSubsystem)
+}
+
 // New creates a new Collector instance.
 func New(client *opnsense.Client, log log.Logger, instanceName string, options ...Option) (*Collector, error) {
 	c := Collector{
