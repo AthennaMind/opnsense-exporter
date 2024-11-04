@@ -166,7 +166,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-openvpn` - Disable the scraping of OpenVPN service. Defaults to `false`.
 - `--exporter.disable-firewall` - Disable the scraping of Firewall (pf) metrics. Defaults to `false`.
 
-To disable the exporter metrics itself use the following flag:
+To disable the exporter metrics itself, use the following flag:
 
 - `--web.disable-exporter-metrics` - Exclude metrics about the exporter itself (promhttp_*, process_*, go_*). Defaults to `false`.
 
@@ -227,10 +227,10 @@ Flags:
                                  Hostname or IP address of OPNsense API
                                  ($OPNSENSE_EXPORTER_OPS_API)
       --opnsense.api-key=""      API key to use to connect to OPNsense API.
-                                 This flag/ENV or the OPS_API_KEY_FILE my be set.
+                                 This flag/ENV or the OPS_API_KEY_FILE may be set.
                                  ($OPNSENSE_EXPORTER_OPS_API_KEY)
       --opnsense.api-secret=""   API secret to use to connect to OPNsense API. This
-                                 flag/ENV or the OPS_API_SECRET_FILE my be set.
+                                 flag/ENV or the OPS_API_SECRET_FILE may be set.
                                  ($OPNSENSE_EXPORTER_OPS_API_SECRET)
       --[no-]opnsense.insecure   Disable TLS certificate verification
                                  ($OPNSENSE_EXPORTER_OPS_INSECURE)
