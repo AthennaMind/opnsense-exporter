@@ -42,8 +42,22 @@ While the `node_exporter` must be installed on the firewall itself, this exporte
 Finaly we have a Grafana dashboard to visualize the data from this exporter. The dashboard can be imported into Grafana by using the id `21113` or by importing the `deploy/grafana/dashboard-v1.json` file. Please give a review to the dashboard if you like our work. Thank you! 
 
 ## OPNsense user permissions
-
-**TODO**
+| Type     |      Name                    |
+|----------|:-------------:               |
+| GUI |  Diagnostics: ARP Table           |
+| GUI |  Diagnostics: Firewall statistics |
+| GUI |  Diagnostics: Netstat             |
+| GUI |  Reporting: Traffic               |
+| GUI |  Services: Unbound (MVC)          |
+| GUI |  Status: DHCP leases              |   
+| GUI |  Status: DNS Overview             |
+| GUI |  Status: OpenVPN                  |
+| GUI |  Status: Services                 |
+| GUI |  System: Gateways                 |
+| GUI |  System: Settings: Cron           |
+| GUI |  System: Status                   | 
+| GUI |  VPN: OpenVPN: Instances          |
+| GUI |  VPN: WireGuard                   |
 
 ## Usage
 
