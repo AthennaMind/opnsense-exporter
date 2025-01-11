@@ -78,6 +78,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log log.Logg
 			"cronJobs":                "api/cron/settings/searchJobs",
 			"wireguardClients":        "api/wireguard/service/show",
 			"healthCheck":             "api/core/system/status",
+			"firmware":                "api/core/firmware/status",
 		},
 		headers: map[string]string{
 			"Accept":          "application/json",
