@@ -52,7 +52,21 @@ opnsense_firewall_in_ipv6_pass_packets | Gauge | interface | Firewall | The numb
 opnsense_firewall_out_ipv6_block_packets | Gauge | interface | Firewall | The number of IPv6 outgoing packets that were blocked by the firewall by interface | --exporter.disable-firewall |
 opnsense_firewall_out_ipv6_pass_packets | Gauge | interface | Firewall | The number of IPv6 outgoing packets that were passed by the firewall by interface | --exporter.disable-firewall |
 
+### Firmware
 
+![firmware](assets/firmware.png)
+
+| Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
+| --- | --- | --- | --- | --- | --- |
+opnsense_firmware_last_check | Gauge | last_check | firmware | Last upgrade check for OPNsense | --exporter.disable-firmware |
+opnsense_firmware_needs_reboot | Gauge | needs_reboot | Firmware | Wether the OPNsense has a pending reboot | --exporter.disable-firmware |
+opnsense_firmware_new_packages | Gauge | new_packages | Firmware | Amount of packages that will be newly installed during upgrade | --exporter.disable-firmware |
+opnsense_firmware_os_version | Gauge | os_version | Firmware | OS Version of OPNsense | --exporter.disable-firmware |
+opnsense_firmware_product_abi | Gauge | product_api | Firmware | Product ABI of OPNsense | --exporter.disable-firmware |
+opnsense_firmware_product_id | Gauge | product_id | Firmware | Product ID (community or business) of OPNsense | --exporter.disable-firmware |
+opnsense_firmware_product_version | Gauge | product_version | Firmware | Product version of OPNsense | --exporter.disable-firmware |
+opnsense_firmware_upgrade_needs_reboot | Gauge | upgrade_needs_reboot | Firmware | Wether the upgrade will involve a reboot | --exporter.disable-firmware |
+opnsense_firmware_upgrade_packages | Gauge | upgrade_packages | Firmware | Amount of packages that will be upgraded during upgrade | --exporter.disable-firmware |
 
 ### ARP
 

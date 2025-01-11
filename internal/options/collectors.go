@@ -27,6 +27,10 @@ var (
 		"exporter.disable-firewall",
 		"Disable the scraping of the firewall (pf) metrics",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_FIREWALL").Default("false").Bool()
+	firmwareCollectorDisabled = kingpin.Flag(
+		"exporter.disable-firmware",
+		"Disable the scraping of the firmware metrics",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_FIRMWARE").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
@@ -37,6 +41,7 @@ type CollectorsDisableSwitch struct {
 	Unbound   bool
 	OpenVPN   bool
 	Firewall  bool
+	Firmware  bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
@@ -48,5 +53,6 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		Unbound:   !*unboundCollectorDisabled,
 		OpenVPN:   !*openVPNCollectorDisabled,
 		Firewall:  !*firewallCollectorDisabled,
+		Firmware:  !*firmwareCollectorDisabled,
 	}
 }
