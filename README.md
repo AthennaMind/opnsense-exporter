@@ -53,6 +53,7 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 | GUI |  Status: DNS Overview             |
 | GUI |  Status: OpenVPN                  |
 | GUI |  Status: Services                 |
+| GUI |  System: Firmware                 |
 | GUI |  System: Gateways                 |
 | GUI |  System: Settings: Cron           |
 | GUI |  System: Status                   | 
@@ -179,6 +180,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-unbound` - Disable the scraping of Unbound service. Defaults to `false`.
 - `--exporter.disable-openvpn` - Disable the scraping of OpenVPN service. Defaults to `false`.
 - `--exporter.disable-firewall` - Disable the scraping of Firewall (pf) metrics. Defaults to `false`.
+- `--exporter.disable-firmware` - Disable the scraping of Firmware infos. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -208,6 +210,9 @@ Flags:
       --[no-]exporter.disable-firewall
                                   Disable the scraping of Firewall (pf) metrics
                                   ($OPNSENSE_EXPORTER_DISABLE_FIREWALL)
+      --[no-]exporter.disable-firmware
+                                  Disable the scraping of Firmware infos
+                                  ($OPNSENSE_EXPORTER_DISABLE_FIRMWARE)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics

@@ -31,6 +31,7 @@ const (
 	OpenVPNSubsystem    = "openvpn"
 	ServicesSubsystem   = "services"
 	FirewallSubsystem   = "firewall"
+	FirmwareSubsystem   = "firmware"
 )
 
 // CollectorInstance is the interface a service specific collectors must implement.
@@ -103,6 +104,10 @@ func WithoutUnboundCollector() Option {
 func WithoutFirewallCollector() Option {
 	return withoutCollectorInstance(FirewallSubsystem)
 }
+
+// WithoutFirmwareCollector Option
+// removes the firmware collector from the list of collectors
+func WithoutFirmwareCollector() Option { return withoutCollectorInstance(FirmwareSubsystem) }
 
 // WithoutOpenVPNCollector Option
 // removes the openvpn collector from the list of collectors
