@@ -91,6 +91,10 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutFirewallCollector())
 		level.Info(logger).Log("msg", "firewall collector disabled")
 	}
+	if !collectorsSwitches.Firmware {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutFirmwareCollector())
+		level.Info(logger).Log("msg", "firmware collector disabled")
+	}
 	if !collectorsSwitches.OpenVPN {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutOpenVPNCollector())
 		level.Info(logger).Log("msg", "openvpn collector disabled")
