@@ -87,7 +87,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log log.Logg
 		},
 		sslInsecure: cfg.Insecure,
 		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout: 15 * time.Second,
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
 					InsecureSkipVerify: cfg.Insecure,
