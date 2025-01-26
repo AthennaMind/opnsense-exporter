@@ -1,14 +1,14 @@
 package collector
 
 import (
+	"log/slog"
+
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type openVPNCollector struct {
-	log       log.Logger
+	log       *slog.Logger
 	instances *prometheus.Desc
 
 	subsystem string
@@ -25,12 +25,11 @@ func (c *openVPNCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *openVPNCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *openVPNCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
 
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.instances = buildPrometheusDesc(c.subsystem, "instances",
 		"OpenVPN instances (1 = enabled, 0 = disabled) by role (server, client)",

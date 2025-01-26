@@ -1,9 +1,6 @@
 package opnsense
 
-import (
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-)
+import "log/slog"
 
 type wireguardClientsResponse struct {
 	Rows []struct {
@@ -54,15 +51,14 @@ type WireguardClients struct {
 }
 
 // parseWGInterfaceStatus parses a string status to a WGInterfaceStatus type.
-func parseWGInterfaceStatus(statusTranslated string, logger log.Logger, originalStatus string) WGInterfaceStatus {
+func parseWGInterfaceStatus(statusTranslated string, logger *slog.Logger, originalStatus string) WGInterfaceStatus {
 	switch statusTranslated {
 	case "up":
 		return WGInterfaceStatusUp
 	case "down":
 		return WGInterfaceStatusDown
 	default:
-		level.Warn(logger).
-			Log("msg", "unknown wireguard interface status detected", "status", originalStatus)
+		logger.Warn("unknown wireguard interface status detected", "status", originalStatus)
 		return WGInterfaceStatusUnknown
 	}
 }

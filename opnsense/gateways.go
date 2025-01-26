@@ -1,9 +1,6 @@
 package opnsense
 
-import (
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-)
+import "log/slog"
 
 // gatewaysStatusResponse is the response from the OPNsense API that contains the gateways status details
 // The data is constucted in this script:
@@ -47,15 +44,14 @@ type Gateways struct {
 }
 
 // parseGatewayStatus parses a string status to a GatewayStatus type.
-func parseGatewayStatus(statusTranslated string, logger log.Logger, originalStatus string) GatewayStatus {
+func parseGatewayStatus(statusTranslated string, logger *slog.Logger, originalStatus string) GatewayStatus {
 	switch statusTranslated {
 	case "Online":
 		return GatewayStatusOnline
 	case "Offline":
 		return GatewayStatusOffline
 	default:
-		level.Warn(logger).
-			Log("msg", "unknown gateway status detected", "status", originalStatus)
+		logger.Warn("unknown gateway status detected", "status", originalStatus)
 		return GatewayStatusUnknown
 	}
 }

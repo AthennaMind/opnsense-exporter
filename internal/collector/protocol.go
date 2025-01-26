@@ -1,14 +1,14 @@
 package collector
 
 import (
+	"log/slog"
+
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type protocolCollector struct {
-	log log.Logger
+	log *slog.Logger
 
 	tcpConnectionCountByState *prometheus.Desc
 	tcpSentPackets            *prometheus.Desc
@@ -40,11 +40,10 @@ func (c *protocolCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *protocolCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *protocolCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.tcpConnectionCountByState = buildPrometheusDesc(c.subsystem, "tcp_connection_count_by_state",
 		"Number of TCP connections by state",

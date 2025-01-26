@@ -1,14 +1,14 @@
 package collector
 
 import (
+	"log/slog"
+
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type interfacesCollector struct {
-	log log.Logger
+	log *slog.Logger
 
 	mtu                   *prometheus.Desc
 	bytesReceived         *prometheus.Desc
@@ -33,12 +33,11 @@ func (c *interfacesCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *interfacesCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *interfacesCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
 
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.mtu = buildPrometheusDesc(c.subsystem, "mtu_bytes",
 		"The MTU value of the interface",

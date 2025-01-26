@@ -1,7 +1,5 @@
 package opnsense
 
-import "github.com/go-kit/log/level"
-
 type firmwareStatusResponse struct {
 	LastCheck      string `json:"last_check"`
 	NeedsReboot    string `json:"needs_reboot"`
@@ -66,8 +64,7 @@ func (c *Client) FetchFirmwareStatus() (FirmwareStatus, *APICallError) {
 
 	tNeedsReboot, err := parseStringToInt(resp.NeedsReboot, url)
 	if err != nil {
-		level.Warn(c.log).
-			Log("msg", "firmware: failed to parse NeedsRebot", "error", err)
+		c.log.Warn("firmware: failed to parse NeedsRebot", "details", err)
 		data.NeedsReboot = -1
 	}
 	data.NeedsReboot = tNeedsReboot
@@ -77,8 +74,7 @@ func (c *Client) FetchFirmwareStatus() (FirmwareStatus, *APICallError) {
 
 	tUpgradeNeedsReboot, err := parseStringToInt(resp.Product.ProductCheck.UpgradeNeedsReboot, url)
 	if err != nil {
-		level.Warn(c.log).
-			Log("msg", "firmware: failed to parse UpgradeNeedsReboot", "error", err)
+		c.log.Warn("firmware: failed to parse UpgradeNeedsReboot", "details", err)
 		data.UpgradeNeedsReboot = -1
 	}
 	data.UpgradeNeedsReboot = tUpgradeNeedsReboot

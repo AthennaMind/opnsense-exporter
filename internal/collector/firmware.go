@@ -1,15 +1,15 @@
 package collector
 
 import (
-	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/prometheus/client_golang/prometheus"
+	"log/slog"
 	"strconv"
+
+	"github.com/AthennaMind/opnsense-exporter/opnsense"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 type firmwareCollector struct {
-	log log.Logger
+	log *slog.Logger
 
 	lastCheck          *prometheus.Desc
 	needsReboot        *prometheus.Desc
@@ -35,12 +35,11 @@ func (c *firmwareCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *firmwareCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *firmwareCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
 
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.lastCheck = buildPrometheusDesc(c.subsystem, "last_check",
 		"last check for upgrade", []string{"last_check"})

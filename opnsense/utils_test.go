@@ -5,11 +5,11 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/go-kit/log"
+	"github.com/prometheus/common/promslog"
 )
 
 func TestParsePercentage(t *testing.T) {
-	logger := log.NewNopLogger()
+	logger := promslog.NewNopLogger()
 	testRegex := regexp.MustCompile(`\d\.\d %`)
 
 	tests := []struct {

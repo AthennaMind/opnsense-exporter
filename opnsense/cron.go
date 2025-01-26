@@ -3,8 +3,6 @@ package opnsense
 import (
 	"fmt"
 	"strings"
-
-	"github.com/go-kit/log/level"
 )
 
 type cronSearchResponse struct {
@@ -70,8 +68,7 @@ func (c *Client) FetchCronTable() (CronTable, *APICallError) {
 
 		intStatus, err := parseStringToInt(cron.Enabled, path)
 		if err != nil {
-			level.Warn(c.log).
-				Log("msg", "unable to parse cron entry status", "err", err)
+			c.log.Warn("unable to parse cron entry status", "err", err.Error())
 			continue
 		}
 

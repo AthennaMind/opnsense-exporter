@@ -8,14 +8,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"regexp"
 	"runtime"
 	"time"
 
 	"github.com/AthennaMind/opnsense-exporter/internal/options"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 // MaxRetries is the maximum number of retries
@@ -33,7 +32,7 @@ type Client struct {
 	httpClient       *http.Client
 	gatewayLossRegex *regexp.Regexp
 	gatewayRTTRegex  *regexp.Regexp
-	log              log.Logger
+	log              *slog.Logger
 	headers          map[string]string
 	endpoints        map[EndpointName]EndpointPath
 	baseURL          string
@@ -43,7 +42,7 @@ type Client struct {
 }
 
 // NewClient creates a new OPNsense API Client
-func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log log.Logger) (Client, error) {
+func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Logger) (Client, error) {
 	sslPool, err := x509.SystemCertPool()
 	if err != nil {
 		return Client{}, errors.Join(fmt.Errorf("failed to load system cert pool"), err)
@@ -136,17 +135,15 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 		req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	}
 
-	level.Debug(c.log).
-		Log("msg", "fetching data", "component", "opnsense-client", "url", url, "method", method)
+	c.log.Debug("fetching data", "component", "opnsense-client", "url", url, "method", method)
 
 	// Retry the request up to MaxRetries times
 	for i := 0; i < MaxRetries; i++ {
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
-			level.Error(c.log).
-				Log("msg", "failed to send request; retrying",
-					"component", "opnsense-client",
-					"err", err.Error())
+			c.log.Error("failed to send request; retrying",
+				"component", "opnsense-client",
+				"err", err.Error())
 			time.Sleep(25 * time.Millisecond)
 			continue
 		}
@@ -180,8 +177,6 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 			err := json.Unmarshal(body, &responseStruct)
 			if err != nil {
-				fmt.Println(url)
-				fmt.Println(string(body))
 				return &APICallError{
 					Endpoint:   string(path),
 					Message:    fmt.Sprintf("failed to unmarshal response body: %s", err.Error()),

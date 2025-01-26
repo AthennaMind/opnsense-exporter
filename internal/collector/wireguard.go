@@ -1,14 +1,14 @@
 package collector
 
 import (
+	"log/slog"
+
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type WireguardCollector struct {
-	log             log.Logger
+	log             *slog.Logger
 	instances       *prometheus.Desc
 	TransferRx      *prometheus.Desc
 	TransferTx      *prometheus.Desc
@@ -28,12 +28,11 @@ func (c *WireguardCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *WireguardCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *WireguardCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
 
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.instances = buildPrometheusDesc(c.subsystem, "interfaces_status",
 		"Wireguard interface (1 = up, 0 = down)",

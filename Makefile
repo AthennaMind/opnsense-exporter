@@ -13,9 +13,7 @@ local-run:
 	-ldflags '-w -extldflags "-static" -X main.version=local-test' \
 	-v -o ${BINARY_NAME}
 
-	./${BINARY_NAME} --log.level="debug" \
-		--log.format="logfmt" \
-		--web.telemetry-path="/metrics" \
+	./${BINARY_NAME} \
 		--web.listen-address=":8080" \
 		--runtime.gomaxprocs=4 \
 		--exporter.instance-label="opnsense-local1" \

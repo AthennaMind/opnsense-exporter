@@ -2,16 +2,15 @@ package collector
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type arpTableCollector struct {
 	entries   *prometheus.Desc
-	log       log.Logger
+	log       *slog.Logger
 	subsystem string
 	instance  string
 }
@@ -26,12 +25,11 @@ func (c *arpTableCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *arpTableCollector) Register(namespace, instance string, log log.Logger) {
+func (c *arpTableCollector) Register(namespace, instance string, log *slog.Logger) {
 	c.log = log
 	c.instance = instance
 
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.entries = buildPrometheusDesc(c.subsystem, "entries",
 		"Arp entries by ip, mac, hostname, interface description, type, expired and permanent",

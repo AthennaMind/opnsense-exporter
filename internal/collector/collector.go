@@ -3,10 +3,8 @@ package collector
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"sync"
-
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/prometheus/client_golang/prometheus"
@@ -36,7 +34,7 @@ const (
 
 // CollectorInstance is the interface a service specific collectors must implement.
 type CollectorInstance interface {
-	Register(namespace, isntance string, log log.Logger)
+	Register(namespace, isntance string, log *slog.Logger)
 	Name() string
 	Describe(ch chan<- *prometheus.Desc)
 	Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError
@@ -49,7 +47,7 @@ var collectorInstances []CollectorInstance
 type Collector struct {
 	Client *opnsense.Client
 	mutex  sync.RWMutex
-	log    log.Logger
+	log    *slog.Logger
 
 	isUp                 prometheus.Gauge
 	firewallHealthStatus prometheus.Gauge
@@ -116,7 +114,7 @@ func WithoutOpenVPNCollector() Option {
 }
 
 // New creates a new Collector instance.
-func New(client *opnsense.Client, log log.Logger, instanceName string, options ...Option) (*Collector, error) {
+func New(client *opnsense.Client, log *slog.Logger, instanceName string, options ...Option) (*Collector, error) {
 	c := Collector{
 		Client:        client,
 		log:           log,
@@ -219,8 +217,8 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	defer c.mutex.Unlock()
 
 	if err := c.collectHealthMetrics(ch); err != nil {
-		level.Error(c.log).Log(
-			"msg", "failed to fetch system health status; skipping other metrics",
+		c.log.Error(
+			"failed to fetch system health status; skipping other metrics",
 			"err", err,
 		)
 	}
@@ -231,8 +229,8 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	for _, collector := range c.collectors {
 		go func(coll CollectorInstance) {
 			if err := coll.Update(c.Client, ch); err != nil {
-				level.Error(c.log).Log(
-					"msg", "failed to update",
+				c.log.Error(
+					"failed to update",
 					"component", "collector",
 					"collector_name", coll.Name(),
 					"err", err,
