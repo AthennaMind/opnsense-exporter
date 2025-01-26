@@ -2,12 +2,10 @@ package opnsense
 
 import (
 	"fmt"
+	"log/slog"
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 // parseStringToInt parses a string value to an int value.
@@ -28,25 +26,23 @@ func parseStringToInt(value string, endpoint EndpointPath) (int, *APICallError) 
 // parseStringToFloatWithReplace parses a string value to a float64 value.
 // The replace pattern is used to remove any characters that are not part of the float64 value.
 // The regex is first used to check if the value matches the regex format.
-func parseStringToFloatWithReplace(value string, regex *regexp.Regexp, replacePattern string, valueTypeName string, logger log.Logger) float64 {
+func parseStringToFloatWithReplace(value string, regex *regexp.Regexp, replacePattern string, valueTypeName string, logger *slog.Logger) float64 {
 	if regex.MatchString(value) {
 		cleanValue := strings.ReplaceAll(value, replacePattern, "")
 		parsedValue, err := strconv.ParseFloat(cleanValue, 64)
 		if err != nil {
-			level.Warn(logger).
-				Log(
-					"msg", fmt.Sprintf("parsing %s: '%s' to float64 failed", valueTypeName, value),
-					"err", err,
-				)
+			logger.Warn(
+				fmt.Sprintf("parsing %s: '%s' to float64 failed", valueTypeName, value),
+				"details", err,
+			)
 			return -1.0
 		}
 		return parsedValue
 	}
 
-	level.Warn(logger).
-		Log(
-			"msg", fmt.Sprintf("parsing %s: '%s' to float64 failed. Pattern matching failed.", valueTypeName, value),
-		)
+	logger.Warn(
+		fmt.Sprintf("parsing %s: '%s' to float64 failed. Pattern matching failed.", valueTypeName, value),
+	)
 	return -1.0
 }
 

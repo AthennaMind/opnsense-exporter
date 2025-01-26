@@ -5,7 +5,7 @@ import (
 
 	"github.com/AthennaMind/opnsense-exporter/internal/options"
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
+	"github.com/prometheus/common/promslog"
 )
 
 func TestCollector(t *testing.T) {
@@ -17,7 +17,7 @@ func TestCollector(t *testing.T) {
 	client, err := opnsense.NewClient(
 		conf,
 		"test",
-		log.NewNopLogger(),
+		promslog.NewNopLogger(),
 	)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -31,7 +31,7 @@ func TestCollector(t *testing.T) {
 		WithoutFirewallCollector(),
 	}
 
-	collector, err := New(&client, log.NewNopLogger(), "test", collectOpts...)
+	collector, err := New(&client, promslog.NewNopLogger(), "test", collectOpts...)
 	if err != nil {
 		t.Errorf("expected no error when creating collector, got %v", err)
 	}

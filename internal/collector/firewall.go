@@ -1,14 +1,14 @@
 package collector
 
 import (
+	"log/slog"
+
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type firewallCollector struct {
-	log                 log.Logger
+	log                 *slog.Logger
 	inIPv4PassPackets   *prometheus.Desc
 	outIPv4PassPackets  *prometheus.Desc
 	inIPv4BlockPackets  *prometheus.Desc
@@ -33,11 +33,10 @@ func (c *firewallCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *firewallCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *firewallCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.inIPv4PassPackets = buildPrometheusDesc(c.subsystem, "in_ipv4_pass_packets",
 		"The number of IPv4 incoming packets that were allowed to pass through the firewall by interface",

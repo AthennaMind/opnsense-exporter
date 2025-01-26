@@ -1,14 +1,14 @@
 package collector
 
 import (
+	"log/slog"
+
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type unboundDNSCollector struct {
-	log    log.Logger
+	log    *slog.Logger
 	uptime *prometheus.Desc
 
 	subsystem string
@@ -25,11 +25,10 @@ func (c *unboundDNSCollector) Name() string {
 	return c.subsystem
 }
 
-func (c *unboundDNSCollector) Register(namespace, instanceLabel string, log log.Logger) {
+func (c *unboundDNSCollector) Register(namespace, instanceLabel string, log *slog.Logger) {
 	c.log = log
 	c.instance = instanceLabel
-	level.Debug(c.log).
-		Log("msg", "Registering collector", "collector", c.Name())
+	c.log.Debug("Registering collector", "collector", c.Name())
 
 	c.uptime = buildPrometheusDesc(c.subsystem, "uptime_seconds",
 		"Uptime of the unbound DNS service in seconds",
