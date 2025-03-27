@@ -1,42 +1,105 @@
 package opnsense
 
-import "log/slog"
-
-// gatewaysStatusResponse is the response from the OPNsense API that contains the gateways status details
-// The data is constucted in this script:
-// ---> https://github.com/opnsense/core/blob/master/src/opnsense/scripts/routes/gateway_status.php
-// Following the reverse engineering of the call:
-// ---> https://github.com/opnsense/core/blob/master/src/etc/inc/plugins.inc.d/dpinger.inc#L368
-// From this file we know that Loss and Delay always have the same format of '%0.1f ms'
-type gatewaysStatusResponse struct {
-	Status string `json:"status"`
-	Items  []struct {
-		Name             string `json:"name"`
-		Address          string `json:"address"`
-		Status           string `json:"status"`
-		Loss             string `json:"loss"`
-		Delay            string `json:"delay"`
-		Stddev           string `json:"stddev"`
-		StatusTranslated string `json:"status_translated"`
-	} `json:"items"`
-}
-
-// GatewayStatus is the custom type that represents the status of a gateway
-type GatewayStatus int
-
-const (
-	GatewayStatusOffline GatewayStatus = iota
-	GatewayStatusOnline
-	GatewayStatusUnknown
+import (
+	"log/slog"
 )
 
+// GatewayStatus is the custom type that represents the status of a gateway
+type GatewayStatusType int
+
+const (
+	GatewayStatusOffline GatewayStatusType = iota
+	GatewayStatusOnline
+	GatewayStatusUnknown
+	GatewayStatusPeding
+)
+
+// gatewayConfigurationResponse is the response from the OPNsense API that contains the gateways configuration details
+type gatewayConfigurationResponse struct {
+	Total    int `json:"total"`
+	RowCount int `json:"rowCount"`
+	Current  int `json:"current"`
+	Rows     []struct {
+		Disabled             bool   `json:"disabled"`
+		Name                 string `json:"name"`
+		Description          string `json:"descr"`
+		HardwareInterface    string `json:"interface"`
+		IPProtocol           string `json:"ipprotocol"`
+		Gateway              string `json:"gateway"`
+		DefaultGateway       bool   `json:"defaultgw"`
+		FarGateway           string `json:"fargw"`
+		MonitorDisable       string `json:"monitor_disable"`
+		MonitorNoRoute       string `json:"monitor_noroute"`
+		Monitor              string `json:"monitor"`
+		ForceDown            string `json:"force_down"`
+		Priority             string `json:"priority"`
+		Weight               string `json:"weight"`
+		LatencyLow           string `json:"latencylow"`
+		CurrentLatencyLow    string `json:"current_latencylow"`
+		LatencyHigh          string `json:"latencyhigh"`
+		CurrentLatencyHigh   string `json:"current_latencyhigh"`
+		LossLow              string `json:"losslow"`
+		CurrentLossLow       string `json:"current_losslow"`
+		LossHigh             string `json:"losshigh"`
+		CurrentLossHigh      string `json:"current_losshigh"`
+		Interval             string `json:"interval"`
+		CurrentInterval      string `json:"current_interval"`
+		TimePeriod           string `json:"time_period"`
+		CurrentTimePeriod    string `json:"current_time_period"`
+		LossInterval         string `json:"loss_interval"`
+		CurrentLossInterval  string `json:"current_loss_interval"`
+		DataLength           string `json:"data_length"`
+		CurrentDataLength    string `json:"current_data_length"`
+		UUID                 string `json:"uuid"`
+		Interface            string `json:"if"`
+		Attribute            int    `json:"attribute"`
+		Dynamic              bool   `json:"dynamic"`
+		Virtual              bool   `json:"virtual"`
+		Upstream             bool   `json:"upstream"`
+		InterfaceDescription string `json:"interface_descr"`
+		Status               string `json:"status"`
+		Delay                string `json:"delay"`
+		StdDev               string `json:"stddev"`
+		Loss                 string `json:"loss"`
+		LabelClass           string `json:"label_class"`
+	} `json:"rows"`
+}
+
 type Gateway struct {
-	Name             string
-	Address          string
-	Status           GatewayStatus
-	RTTMilliseconds  float64
-	RTTDMilliseconds float64
-	LossPercentage   float64
+	Name                 string
+	Description          string
+	Enabled              bool
+	HardwareInterface    string
+	IPProtocol           string
+	Gateway              string
+	DefaultGateway       bool
+	FarGateway           string
+	MonitorEnabled       bool
+	MonitorNoRoute       bool
+	Monitor              string
+	ForceDown            bool
+	Priority             string
+	Weight               string
+	LatencyLow           string
+	LatencyHigh          string
+	LossLow              string
+	LossHigh             string
+	Interval             string
+	TimePeriod           string
+	LossInterval         string
+	DataLength           string
+	UUID                 string
+	Interface            string
+	Attribute            int
+	Dynamic              bool
+	Virtual              bool
+	Upstream             bool
+	InterfaceDescription string
+	Status               GatewayStatusType
+	Delay                float64
+	StdDev               float64
+	Loss                 float64
+	LabelClass           string
 }
 
 type Gateways struct {
@@ -44,12 +107,14 @@ type Gateways struct {
 }
 
 // parseGatewayStatus parses a string status to a GatewayStatus type.
-func parseGatewayStatus(statusTranslated string, logger *slog.Logger, originalStatus string) GatewayStatus {
+func parseGatewayStatus(statusTranslated string, logger *slog.Logger, originalStatus string) GatewayStatusType {
 	switch statusTranslated {
 	case "Online":
 		return GatewayStatusOnline
 	case "Offline":
 		return GatewayStatusOffline
+	case "Pending":
+		return GatewayStatusPeding
 	default:
 		logger.Warn("unknown gateway status detected", "status", originalStatus)
 		return GatewayStatusUnknown
@@ -59,13 +124,13 @@ func parseGatewayStatus(statusTranslated string, logger *slog.Logger, originalSt
 // FetchGateways fetches the gateways status details from the OPNsense API
 // and returns a safe wrapper Gateways struct.
 func (c *Client) FetchGateways() (Gateways, *APICallError) {
-	var resp gatewaysStatusResponse
+	var resp gatewayConfigurationResponse
 	var data Gateways
 
 	url, ok := c.endpoints["gatewaysStatus"]
 	if !ok {
 		return data, &APICallError{
-			Endpoint:   "gatewaysStatus",
+			Endpoint:   "gateways",
 			Message:    "endpoint not found in client endpoints",
 			StatusCode: 0,
 		}
@@ -75,15 +140,73 @@ func (c *Client) FetchGateways() (Gateways, *APICallError) {
 		return data, err
 	}
 
-	for _, v := range resp.Items {
-		data.Gateways = append(data.Gateways, Gateway{
-			Name:             v.Name,
-			Address:          v.Address,
-			Status:           parseGatewayStatus(v.StatusTranslated, c.log, v.Status),
-			RTTMilliseconds:  parseStringToFloatWithReplace(v.Delay, c.gatewayRTTRegex, " ms", "rtt", c.log),
-			RTTDMilliseconds: parseStringToFloatWithReplace(v.Stddev, c.gatewayRTTRegex, " ms", "rttd", c.log),
-			LossPercentage:   parseStringToFloatWithReplace(v.Loss, c.gatewayLossRegex, " %", "loss", c.log),
-		})
+	for _, v := range resp.Rows {
+		delay := -1.0
+		stdDev := -1.0
+		loss := -1.0
+		if !v.Disabled && !parseStringToBool(v.MonitorDisable) {
+			delay = parseStringToFloatWithReplace(v.Delay, c.gatewayRTTRegex, " ms", "rtt", c.log)
+			stdDev = parseStringToFloatWithReplace(v.StdDev, c.gatewayRTTRegex, " ms", "rttd", c.log)
+			loss = parseStringToFloatWithReplace(v.Loss, c.gatewayLossRegex, " %", "loss", c.log)
+		}
+
+		g := Gateway{
+			Name:                 v.Name,
+			Description:          v.Description,
+			Enabled:              !v.Disabled,
+			HardwareInterface:    v.HardwareInterface,
+			IPProtocol:           v.IPProtocol,
+			Gateway:              v.Gateway,
+			DefaultGateway:       v.DefaultGateway,
+			FarGateway:           v.FarGateway,
+			MonitorEnabled:       !parseStringToBool(v.MonitorDisable),
+			MonitorNoRoute:       parseStringToBool(v.MonitorNoRoute),
+			Monitor:              v.Monitor,
+			ForceDown:            parseStringToBool(v.ForceDown),
+			Priority:             v.Priority,
+			Weight:               v.Weight,
+			LatencyLow:           v.LatencyLow,
+			LatencyHigh:          v.LatencyHigh,
+			LossLow:              v.LossLow,
+			LossHigh:             v.LossHigh,
+			Interval:             v.Interval,
+			TimePeriod:           v.TimePeriod,
+			LossInterval:         v.LossInterval,
+			DataLength:           v.DataLength,
+			UUID:                 v.UUID,
+			Interface:            v.Interface,
+			Attribute:            v.Attribute,
+			Dynamic:              v.Dynamic,
+			Virtual:              v.Virtual,
+			Upstream:             v.Upstream,
+			InterfaceDescription: v.InterfaceDescription,
+			Status:               parseGatewayStatus(v.Status, c.log, v.Status),
+			Delay:                delay,
+			StdDev:               stdDev,
+			Loss:                 loss,
+			LabelClass:           v.LabelClass,
+		}
+
+		switch {
+		case g.LatencyLow == "":
+			g.LatencyLow = v.CurrentLatencyLow
+		case g.LatencyHigh == "":
+			g.LatencyHigh = v.CurrentLatencyHigh
+		case g.LossLow == "":
+			g.LossLow = v.CurrentLossLow
+		case g.LossHigh == "":
+			g.LossHigh = v.CurrentLossHigh
+		case g.Interval == "":
+			g.Interval = v.CurrentInterval
+		case g.TimePeriod == "":
+			g.TimePeriod = v.CurrentTimePeriod
+		case g.LossInterval == "":
+			g.LossInterval = v.CurrentLossInterval
+		case g.DataLength == "":
+			g.DataLength = v.CurrentDataLength
+		}
+
+		data.Gateways = append(data.Gateways, g)
 	}
 
 	return data, nil
