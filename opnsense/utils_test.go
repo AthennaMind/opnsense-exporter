@@ -80,3 +80,37 @@ func TestSliceIntToMapStringInt(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }
+
+func TestParseStringToBool(t *testing.T) {
+	tests := []struct {
+		name     string
+		value    string
+		expected bool
+	}{
+		{
+			name:     "Zero",
+			value:    "0",
+			expected: false,
+		},
+		{
+			name:     "One",
+			value:    "1",
+			expected: true,
+		},
+		{
+			name:     "Invalid/Unknown",
+			value:    "2",
+			expected: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := parseStringToBool(tc.value)
+			if result != tc.expected {
+				t.Errorf("parseStringToBool(%s) = %v; want %v",
+					tc.value, result, tc.expected)
+			}
+		})
+	}
+}
