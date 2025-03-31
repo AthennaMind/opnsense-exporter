@@ -15,26 +15,25 @@ jobs:
     name: Tests & Linters
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.22'
-    - name: Check out code
-      uses: actions/checkout@v4
-    - name: "Run Linters"
-      uses: golangci/golangci-lint-action@v3
-      with:
-        version: latest
-        args: --verbose
-    - name: Run tests
-      run: go test -v ./...
-
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: "Run Linters"
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          args: --verbose
+      - name: Run tests
+        run: go test -v ./...
 
   build:
     name: Build & Publish on Tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
