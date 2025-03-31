@@ -105,7 +105,7 @@ func (c *gatewaysCollector) Register(namespace, instanceLabel string, log *slog.
 	)
 	c.status = buildPrometheusDesc(c.subsystem, "status",
 		"Status of the gateway by name and address (0 = Offline, 1 = Online, 2 = Unknown, 3 = Pending)",
-		[]string{"name", "address"},
+		[]string{"name", "address", "default_gateway"},
 	)
 }
 
@@ -240,6 +240,7 @@ func (c *gatewaysCollector) Update(client *opnsense.Client, ch chan<- prometheus
 					float64(v.Status),
 					v.Name,
 					v.Monitor,
+					strconv.FormatBool(v.DefaultGateway),
 					c.instance,
 				)
 			}
