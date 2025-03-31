@@ -65,3 +65,9 @@ func sliceIntToMapStringInt(strings []string, url EndpointPath) (map[string]int,
 
 	return ints, nil
 }
+
+// parseStringToBool parses a string value to a bool value.
+// The value is considered true if it is not "0".
+func parseStringToBool(value string) bool {
+	return value != "0"
+}

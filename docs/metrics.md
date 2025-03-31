@@ -84,10 +84,19 @@ opnsense_protocol_arp_received_requests_total | Counter | n/a | Protocol Statist
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
-opnsense_gateways_status | Gauge | address, name | Gateways | Status of the gateway by name and address (1 = up, 0 = down, 2 = unknown) | n/a |
+opnsense_gateways_info | Gauge | name, description, device, protocol, enabled, weight, interface, upstream | Gateways | Configuration details of the gateway | n/a |
+opnsense_gateways_monitor_info | Gauge | name, enabled, no_route, address | Gateways | Configuration details of the gateway monitoring | n/a |
+opnsense_gateways_status | Gauge | address, name | Gateways | Status of the gateway by name and address (1 = up, 0 = down, 2 = unknown, 3 = pending) | n/a |
 opnsense_gateways_loss_percentage | Gauge | address, name | Gateways | The current gateway loss percentage by name and address | n/a |
 opnsense_gateways_rtt_milliseconds | Gauge | address, name | Gateways | RTT is the average (mean) of the round trip time in milliseconds by name and address | n/a |
 opnsense_gateways_rttd_milliseconds | Gauge | address, name | Gateways | RTTd is the standard deviation of the round trip time in milliseconds by name and address | n/a |
+opnsense_gateways_rtt_low_milliseconds | Gauge | address, name | Gateways | Lower threshold for the round trip time in milliseconds by name and address | n/a |
+opnsense_gateways_rtt_high_milliseconds | Gauge | address, name | Gateways | Upper threshold for the round trip time in milliseconds by name and address | n/a |
+opnsense_gateways_loss_low_percentage | Gauge | address, name | Gateways | Lower threshold for the packet loss ratio by name and address | n/a |
+opnsense_gateways_loss_high_percentage | Gauge | address, name | Gateways | Upper threshold for the packet loss ratio by name and address | n/a |
+opnsense_gateways_probe_interval_seconds | Gauge | address, name | Gateways | Monitoring probe interval duration by name and address | n/a |
+opnsense_gateways_probe_period_seconds | Gauge | address, name | Gateways | Monitoring probe period over which results are averaged by name and address | n/a |
+opnsense_gateways_probe_timeout_seconds | Gauge | address, name | Gateways | Monitoring probe timeout by name and address | n/a |
 
 ### Protocol Statistics
 
