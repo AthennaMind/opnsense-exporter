@@ -1,0 +1,38 @@
+name: Snapshot
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/releaser
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get TAG
+        id: get_tag
+        run: echo TAG=${GITHUB_REF#refs/tags/} >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          check-latest: true
+
+      - name: Run GoReleaser Snapshot
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --snapshot --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
