@@ -58,6 +58,12 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 | GUI |  VPN: OpenVPN: Instances          |
 | GUI |  VPN: WireGuard                   |
 
+## OPNsense settings
+
+The exporter requires that the following OPNsense settings be enabled:
+* Unbound collector:
+  * Unbound DNS > Advanced > Extended Statistics
+
 ## Usage
 
 ### Docker
