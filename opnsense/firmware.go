@@ -1,5 +1,10 @@
 package opnsense
 
+import (
+	"fmt"
+	"strings"
+)
+
 type firmwareStatusResponse struct {
 	LastCheck      string `json:"last_check"`
 	NeedsReboot    string `json:"needs_reboot"`
@@ -61,23 +66,53 @@ func (c *Client) FetchFirmwareStatus() (FirmwareStatus, *APICallError) {
 	data.ProductABI = resp.ProductAbi
 	data.ProductId = resp.ProductID
 	data.ProductVersion = resp.ProductVersion
-
-	tNeedsReboot, err := parseStringToInt(resp.NeedsReboot, url)
-	if err != nil {
-		c.log.Warn("firmware: failed to parse NeedsRebot", "details", err)
-		data.NeedsReboot = -1
-	}
-	data.NeedsReboot = tNeedsReboot
-
 	data.NewPackages = len(resp.NewPackages)
 	data.UpgradePackages = len(resp.UpgradePackages)
+	data.NeedsReboot = -1
+	data.UpgradeNeedsReboot = -1
 
-	tUpgradeNeedsReboot, err := parseStringToInt(resp.Product.ProductCheck.UpgradeNeedsReboot, url)
-	if err != nil {
-		c.log.Warn("firmware: failed to parse UpgradeNeedsReboot", "details", err)
-		data.UpgradeNeedsReboot = -1
+	// The following fields won't be set if there was not a firmware update check
+	// since the last reboot.
+	if resp.LastCheck == "" {
+		return data, nil
 	}
-	data.UpgradeNeedsReboot = tUpgradeNeedsReboot
+
+	if tNeedsReboot, err := parseStringToInt(resp.NeedsReboot, url); err != nil {
+		c.log.Warn("firmware: failed to parse NeedsReboot", "details", err)
+	} else {
+		data.NeedsReboot = tNeedsReboot
+	}
+
+	if tUpgradeNeedsReboot, err := parseStringToInt(resp.Product.ProductCheck.UpgradeNeedsReboot, url); err != nil {
+		c.log.Warn("firmware: failed to parse UpgradeNeedsReboot", "details", err)
+	} else {
+		data.UpgradeNeedsReboot = tUpgradeNeedsReboot
+	}
 
 	return data, nil
+}
+
+// Calling this function causes the OPNsense instance to check for firmware updates.
+// This is a costly operation and should not be done on every scrape.
+// This takes a long time (30s+) to complete and should not be done on every scrape.
+func (c *Client) TriggerFirmwareStatusUpdate() error {
+	url, ok := c.endpoints["firmware"]
+	if !ok {
+		return &APICallError{
+			Endpoint:   "firmware",
+			Message:    "Missing endpoint 'firmwareStatus'",
+			StatusCode: 0,
+		}
+	}
+
+	var resp any
+	if err := c.doLongRunning("POST", url, strings.NewReader("{}"), &resp); err != nil {
+		return &APICallError{
+			Endpoint:   "firmware",
+			Message:    fmt.Sprintf("failed while triggering firmware status update: %v", err),
+			StatusCode: 0,
+		}
+	}
+
+	return nil
 }

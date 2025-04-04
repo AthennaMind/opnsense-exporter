@@ -1,6 +1,10 @@
 package options
 
-import "github.com/alecthomas/kingpin/v2"
+import (
+	"time"
+
+	"github.com/alecthomas/kingpin/v2"
+)
 
 var (
 	arpTableCollectorDisabled = kingpin.Flag(
@@ -31,28 +35,34 @@ var (
 		"exporter.disable-firmware",
 		"Disable the scraping of the firmware metrics",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_FIRMWARE").Default("false").Bool()
+	firmwareCollectorUpdateCheckInterval = kingpin.Flag(
+		"exporter.firmware-update-check-interval",
+		"Minimum interval between firmware update checks. Set to 0 to disable the check.",
+	).Envar("OPNSENSE_EXPORTER_FIRMWARE_UPDATE_CHECK_INTERVAL").Default("0s").Duration()
 )
 
-// CollectorsDisableSwitch hold the enabled/disabled state of the collectors
-type CollectorsDisableSwitch struct {
-	ARP       bool
-	Cron      bool
-	Wireguard bool
-	Unbound   bool
-	OpenVPN   bool
-	Firewall  bool
-	Firmware  bool
+// CollectorsConfig hold the enabled/disabled state of the collectors
+type CollectorsConfig struct {
+	ARP                   bool
+	Cron                  bool
+	Wireguard             bool
+	Unbound               bool
+	OpenVPN               bool
+	Firewall              bool
+	Firmware              bool
+	FirmwareCheckInterval time.Duration
 }
 
-// CollectorsSwitches returns configured instances of CollectorsDisableSwitch
-func CollectorsSwitches() CollectorsDisableSwitch {
-	return CollectorsDisableSwitch{
-		ARP:       !*arpTableCollectorDisabled,
-		Cron:      !*cronTableCollectorDisabled,
-		Wireguard: !*wireguardCollectorDisabled,
-		Unbound:   !*unboundCollectorDisabled,
-		OpenVPN:   !*openVPNCollectorDisabled,
-		Firewall:  !*firewallCollectorDisabled,
-		Firmware:  !*firmwareCollectorDisabled,
+// GetCollectorsConfig returns configured instances of CollectorsDisableSwitch
+func GetCollectorsConfig() CollectorsConfig {
+	return CollectorsConfig{
+		ARP:                   !*arpTableCollectorDisabled,
+		Cron:                  !*cronTableCollectorDisabled,
+		Wireguard:             !*wireguardCollectorDisabled,
+		Unbound:               !*unboundCollectorDisabled,
+		OpenVPN:               !*openVPNCollectorDisabled,
+		Firewall:              !*firewallCollectorDisabled,
+		Firmware:              !*firmwareCollectorDisabled,
+		FirmwareCheckInterval: *firmwareCollectorUpdateCheckInterval,
 	}
 }

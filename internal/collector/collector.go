@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"sync"
+	"time"
 
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/prometheus/client_golang/prometheus"
@@ -111,6 +112,24 @@ func WithoutFirmwareCollector() Option { return withoutCollectorInstance(Firmwar
 // removes the openvpn collector from the list of collectors
 func WithoutOpenVPNCollector() Option {
 	return withoutCollectorInstance(OpenVPNSubsystem)
+}
+
+func FirmwareCollectorUpdateCheckInterval(firmwareUpdateInterval time.Duration) Option {
+	return func(o *Collector) error {
+		for _, collector := range o.collectors {
+			if collector.Name() == FirmwareSubsystem {
+				if firmwareCollector, ok := collector.(*firmwareCollector); ok {
+					firmwareCollector.updateLock.Lock()
+					defer firmwareCollector.updateLock.Unlock()
+					firmwareCollector.minimumUpdateInterval = firmwareUpdateInterval
+					return nil
+				} else {
+					return fmt.Errorf("could not cast collector of type %T to firmwareCollector (bug)", collector)
+				}
+			}
+		}
+		return fmt.Errorf("collector %s not found", FirmwareSubsystem)
+	}
 }
 
 // New creates a new Collector instance.

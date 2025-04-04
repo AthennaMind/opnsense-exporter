@@ -3,6 +3,8 @@ package collector
 import (
 	"log/slog"
 	"strconv"
+	"sync"
+	"time"
 
 	"github.com/AthennaMind/opnsense-exporter/opnsense"
 	"github.com/prometheus/client_golang/prometheus"
@@ -23,6 +25,10 @@ type firmwareCollector struct {
 
 	subsystem string
 	instance  string
+
+	updateLock            sync.Mutex
+	minimumUpdateInterval time.Duration
+	lastCheckTime         time.Time
 }
 
 func init() {
@@ -103,5 +109,45 @@ func (c *firmwareCollector) Update(client *opnsense.Client, ch chan<- prometheus
 	ch <- prometheus.MustNewConstMetric(c.upgradePackages, prometheus.GaugeValue, float64(data.UpgradePackages), strconv.Itoa(data.UpgradePackages), c.instance)
 	ch <- prometheus.MustNewConstMetric(c.upgradeNeedsReboot, prometheus.GaugeValue, float64(data.UpgradeNeedsReboot), strconv.Itoa(data.UpgradeNeedsReboot), c.instance)
 
+	// This is long running and should not block the metrics collection. Run it in a goroutine.
+	go c.maybeTriggerFirmwareUpdate(client)
+
 	return nil
+}
+
+func (c *firmwareCollector) maybeTriggerFirmwareUpdate(client *opnsense.Client) {
+	if !c.updateLock.TryLock() {
+		c.log.Debug("skipping firmware update check, already in progress")
+		return
+	}
+	defer c.updateLock.Unlock()
+
+	if c.minimumUpdateInterval == 0 {
+		return
+	}
+
+	// Check if the last check was more than the minimum update interval ago.
+	//
+	// IMPORANT: this cannot use the last_check time returned from OPNsense. This value originanates from a `date`
+	// command on the OPNsense system, which uses an ambiguous timezone. For example, it can return
+	// "Fri Apr  4 04:07:35 AM CST 2025", which is ambiguous between "Central Standard Time" and "China Standard Time".
+	// This makes the reutnred time unreliable for comparison with the exporter's time, which may or may not be in the
+	// same timezone.
+	//
+	// Note: an unforunate side effect of this approach is that multiple replicas of the exporter can trigger the firmware
+	// update check at the same time.
+
+	if time.Since(c.lastCheckTime) < c.minimumUpdateInterval {
+		c.log.Debug("skipping firmware update check, last check was too recent", "last_check", c.lastCheckTime, "minimum_interval", c.minimumUpdateInterval)
+		return
+	}
+
+	c.log.Debug("triggered firmware update check", "last_check", c.lastCheckTime)
+	c.lastCheckTime = time.Now()
+	if err := client.TriggerFirmwareStatusUpdate(); err != nil {
+		c.log.Error("failed to trigger firmware update check", "error", err)
+		return
+	}
+
+	c.log.Debug("firmware update check complete")
 }

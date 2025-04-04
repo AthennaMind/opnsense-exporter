@@ -29,16 +29,17 @@ type EndpointPath string
 
 // Client is an OPNsense API client
 type Client struct {
-	httpClient       *http.Client
-	gatewayLossRegex *regexp.Regexp
-	gatewayRTTRegex  *regexp.Regexp
-	log              *slog.Logger
-	headers          map[string]string
-	endpoints        map[EndpointName]EndpointPath
-	baseURL          string
-	key              string
-	secret           string
-	sslInsecure      bool
+	httpClient            *http.Client
+	longRunningHttpClient *http.Client // A separate client is used for long running, expensive requests
+	gatewayLossRegex      *regexp.Regexp
+	gatewayRTTRegex       *regexp.Regexp
+	log                   *slog.Logger
+	headers               map[string]string
+	endpoints             map[EndpointName]EndpointPath
+	baseURL               string
+	key                   string
+	secret                string
+	sslInsecure           bool
 }
 
 // NewClient creates a new OPNsense API Client
@@ -99,6 +100,20 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 				MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
 			},
 		},
+		longRunningHttpClient: &http.Client{
+			Timeout: 2 * time.Minute,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: cfg.Insecure,
+					RootCAs:            sslPool,
+				},
+				IdleConnTimeout:       90 * time.Second,
+				TLSHandshakeTimeout:   3 * time.Second,
+				ExpectContinueTimeout: 1 * time.Second,
+				ForceAttemptHTTP2:     true,
+				MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
+			},
+		},
 	}
 
 	return client, nil
@@ -114,6 +129,14 @@ func (c *Client) Endpoints() map[EndpointName]EndpointPath {
 // The response is unmarshalled
 // into the responseStruc
 func (c *Client) do(method string, path EndpointPath, body io.Reader, responseStruct any) *APICallError {
+	return c.doWithClient(method, path, body, responseStruct, MaxRetries, c.httpClient)
+}
+
+func (c *Client) doLongRunning(method string, path EndpointPath, body io.Reader, responseStruct any) *APICallError {
+	return c.doWithClient(method, path, body, responseStruct, 1, c.longRunningHttpClient)
+}
+
+func (c *Client) doWithClient(method string, path EndpointPath, body io.Reader, responseStruct any, maxRetries int, client *http.Client) *APICallError {
 	url := fmt.Sprintf("%s/%s", c.baseURL, string(path))
 
 	req, err := http.NewRequest(method, url, body)
@@ -138,8 +161,8 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 	c.log.Debug("fetching data", "component", "opnsense-client", "url", url, "method", method)
 
 	// Retry the request up to MaxRetries times
-	for i := 0; i < MaxRetries; i++ {
-		resp, err := c.httpClient.Do(req)
+	for i := 0; i < maxRetries; i++ {
+		resp, err := client.Do(req)
 		if err != nil {
 			c.log.Error("failed to send request; retrying",
 				"component", "opnsense-client",
