@@ -56,34 +56,36 @@ func main() {
 		registry.MustRegister(promcollectors.NewGoCollector())
 	}
 
-	collectorsSwitches := options.CollectorsSwitches()
+	collectorsConfig := options.GetCollectorsConfig()
 	collectorOptionFuncs := []collector.Option{}
 
-	if !collectorsSwitches.Unbound {
+	if !collectorsConfig.Unbound {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutUnboundCollector())
 		logger.Info("unbound collector disabled")
 	}
-	if !collectorsSwitches.Wireguard {
+	if !collectorsConfig.Wireguard {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutWireguardCollector())
 		logger.Info("wireguard collector disabled")
 	}
-	if !collectorsSwitches.Cron {
+	if !collectorsConfig.Cron {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCronCollector())
 		logger.Info("cron collector disabled")
 	}
-	if !collectorsSwitches.ARP {
+	if !collectorsConfig.ARP {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutArpTableCollector())
 		logger.Info("arp collector disabled")
 	}
-	if !collectorsSwitches.Firewall {
+	if !collectorsConfig.Firewall {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutFirewallCollector())
 		logger.Info("firewall collector disabled")
 	}
-	if !collectorsSwitches.Firmware {
+	if !collectorsConfig.Firmware {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutFirmwareCollector())
 		logger.Info("firmware collector disabled")
+	} else {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.FirmwareCollectorUpdateCheckInterval(collectorsConfig.FirmwareCheckInterval))
 	}
-	if !collectorsSwitches.OpenVPN {
+	if !collectorsConfig.OpenVPN {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutOpenVPNCollector())
 		logger.Info("openvpn collector disabled")
 	}

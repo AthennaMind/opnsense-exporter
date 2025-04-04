@@ -179,6 +179,9 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-firewall` - Disable the scraping of Firewall (pf) metrics. Defaults to `false`.
 - `--exporter.disable-firmware` - Disable the scraping of Firmware infos. Defaults to `false`.
 
+Specific collectors can be configured with the following flags:
+- `--exporter.firmware-update-check-interval` - Set the minimum time interval between Firmware update checks. Set to 0 to disable. If enabled, the minimum recommended value is `1h`. Defaults to `0s`.
+
 To disable the exporter metrics itself use the following flag:
 
 - `--web.disable-exporter-metrics` - Exclude metrics about the exporter itself (promhttp_*, process_*, go_*). Defaults to `false`.
@@ -202,6 +205,8 @@ Flags:
                                  Disable the scraping of the firewall (pf) metrics ($OPNSENSE_EXPORTER_DISABLE_FIREWALL)
       --[no-]exporter.disable-firmware
                                  Disable the scraping of the firmware metrics ($OPNSENSE_EXPORTER_DISABLE_FIRMWARE)
+      --exporter.firmware-update-check-interval=0s  
+                                 Minimum interval between firmware update checks. Set to 0 to disable the check. ($OPNSENSE_EXPORTER_FIRMWARE_UPDATE_CHECK_INTERVAL)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics
