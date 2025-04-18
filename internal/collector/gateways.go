@@ -139,7 +139,7 @@ func (c *gatewaysCollector) Update(client *opnsense.Client, ch chan<- prometheus
 			v.Interface,
 			v.IPProtocol,
 			strconv.FormatBool(v.Enabled),
-			v.Weight,
+			strconv.Itoa(v.Weight),
 			v.HardwareInterface,
 			strconv.FormatBool(v.Upstream),
 			c.instance,
