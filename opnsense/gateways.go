@@ -33,7 +33,7 @@ type gatewayConfigurationResponse struct {
 		Monitor              string `json:"monitor"`
 		ForceDown            string `json:"force_down"`
 		Priority             string `json:"priority"`
-		Weight               string `json:"weight"`
+		Weight               int `json:"weight"`
 		LatencyLow           string `json:"latencylow"`
 		CurrentLatencyLow    string `json:"current_latencylow"`
 		LatencyHigh          string `json:"latencyhigh"`
