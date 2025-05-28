@@ -26,3 +26,5 @@ secret
 local.docker-compose.yml
 *.DS_Store
 
+# IDEs
+.idea/
