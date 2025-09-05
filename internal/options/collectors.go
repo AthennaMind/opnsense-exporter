@@ -15,6 +15,10 @@ var (
 		"exporter.disable-wireguard",
 		"Disable the scraping of Wireguard service",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_WIREGUARD").Default("false").Bool()
+	ipsecCollectorDisabled = kingpin.Flag(
+		"exporter.disable-ipsec",
+		"Disable the scraping of IPSec service",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_IPSEC").Default("false").Bool()
 	unboundCollectorDisabled = kingpin.Flag(
 		"exporter.disable-unbound",
 		"Disable the scraping of Unbound service",
@@ -38,6 +42,7 @@ type CollectorsDisableSwitch struct {
 	ARP       bool
 	Cron      bool
 	Wireguard bool
+	IPsec     bool
 	Unbound   bool
 	OpenVPN   bool
 	Firewall  bool
@@ -50,6 +55,7 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		ARP:       !*arpTableCollectorDisabled,
 		Cron:      !*cronTableCollectorDisabled,
 		Wireguard: !*wireguardCollectorDisabled,
+		IPsec:     !*ipsecCollectorDisabled,
 		Unbound:   !*unboundCollectorDisabled,
 		OpenVPN:   !*openVPNCollectorDisabled,
 		Firewall:  !*firewallCollectorDisabled,

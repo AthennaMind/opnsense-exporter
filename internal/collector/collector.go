@@ -23,6 +23,7 @@ const (
 	GatewaysSubsystem   = "gateways"
 	CronTableSubsystem  = "cron"
 	WireguardSubsystem  = "wireguard"
+	IPsecSubsystem      = "ipsec"
 	UnboundDNSSubsystem = "unbound_dns"
 	InterfacesSubsystem = "interfaces"
 	ProtocolSubsystem   = "protocol"
@@ -89,6 +90,12 @@ func WithoutCronCollector() Option {
 // removes the wireguard collector from the list of collectors
 func WithoutWireguardCollector() Option {
 	return withoutCollectorInstance(WireguardSubsystem)
+}
+
+// WithoutIPsecCollector Option
+// removes the ipsec collector from the list of collectors
+func WithoutIPsecCollector() Option {
+	return withoutCollectorInstance(IPsecSubsystem)
 }
 
 // WithoutUnboundCollector Option

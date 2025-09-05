@@ -71,3 +71,13 @@ func sliceIntToMapStringInt(strings []string, url EndpointPath) (map[string]int,
 func parseStringToBool(value string) bool {
 	return value != "0"
 }
+
+func parseBoolToInt(b bool) int {
+	var i int
+	if b {
+		i = 1
+	} else {
+		i = 0
+	}
+	return i
+}

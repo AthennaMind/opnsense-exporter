@@ -67,6 +67,10 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutWireguardCollector())
 		logger.Info("wireguard collector disabled")
 	}
+	if !collectorsSwitches.IPsec {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutIPsecCollector())
+		logger.Info("ipesc collector disabled")
+	}
 	if !collectorsSwitches.Cron {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCronCollector())
 		logger.Info("cron collector disabled")
