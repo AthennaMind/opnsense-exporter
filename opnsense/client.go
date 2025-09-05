@@ -72,6 +72,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 			"arp":                     "api/diagnostics/interface/search_arp",
 			"dhcpv4":                  "api/dhcpv4/leases/searchLease",
 			"openVPNInstances":        "api/openvpn/instances/search",
+			"openVPNSessions":         "api/openvpn/service/search_sessions",
 			"gatewaysStatus":          "api/routing/settings/searchGateway",
 			"unboundDNSStatus":        "api/unbound/diagnostics/stats",
 			"cronJobs":                "api/cron/settings/searchJobs",
