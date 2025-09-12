@@ -17,6 +17,18 @@ type openVPNSearchResponse struct {
 	Current  int `json:"current"`
 }
 
+type openVPNSearchSessionsResponse struct {
+	Rows []struct {
+		Description    string `json:"description"`
+		Username       string `json:"username"`
+		VirtualAddress string `json:"virtual_address"`
+		Status         string `json:"status"`
+	} `json:"rows"`
+	RowCount int `json:"rowCount"`
+	Total    int `json:"total"`
+	Current  int `json:"current"`
+}
+
 type OpenVPN struct {
 	UUID        string
 	Description string
@@ -26,6 +38,16 @@ type OpenVPN struct {
 }
 type OpenVPNInstances struct {
 	Rows []OpenVPN
+}
+
+type Sessions struct {
+	Description    string
+	Username       string
+	VirtualAddress string
+	Status         int
+}
+type OpenVPNSessions struct {
+	Rows []Sessions
 }
 
 func (c *Client) FetchOpenVPNInstances() (OpenVPNInstances, *APICallError) {
@@ -56,6 +78,35 @@ func (c *Client) FetchOpenVPNInstances() (OpenVPNInstances, *APICallError) {
 			Role:        strings.ToLower(v.Role),
 			DevType:     v.DevType,
 			Enabled:     enabled,
+		})
+	}
+
+	return data, nil
+}
+
+func (c *Client) FetchOpenVPNSessions() (OpenVPNSessions, *APICallError) {
+	var resp openVPNSearchSessionsResponse
+	var data OpenVPNSessions
+
+	url, ok := c.endpoints["openVPNSessions"]
+	if !ok {
+		return data, &APICallError{
+			Endpoint:   "openVPNSessions",
+			Message:    "endpoint not found in client endpoints",
+			StatusCode: 0,
+		}
+	}
+
+	if err := c.do("GET", url, nil, &resp); err != nil {
+		return data, err
+	}
+
+	for _, v := range resp.Rows {
+		data.Rows = append(data.Rows, Sessions{
+			Description:    v.Description,
+			Username:       v.Username,
+			VirtualAddress: v.VirtualAddress,
+			Status:         parseOpenVPNsessionStatusToInt(v.Status),
 		})
 	}
 

@@ -71,3 +71,15 @@ func sliceIntToMapStringInt(strings []string, url EndpointPath) (map[string]int,
 func parseStringToBool(value string) bool {
 	return value != "0"
 }
+
+// parseOpenVPNsessionStatusToInt parses a string to a int
+// not sure if this is really necessary
+// as only connected VPN clients are returned by the API
+func parseOpenVPNsessionStatusToInt(status string) int {
+	switch status {
+	case "ok":
+		return 1
+	default:
+		return 0
+	}
+}
