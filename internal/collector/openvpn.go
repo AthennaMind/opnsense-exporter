@@ -10,6 +10,7 @@ import (
 type openVPNCollector struct {
 	log       *slog.Logger
 	instances *prometheus.Desc
+	sessions  *prometheus.Desc
 
 	subsystem string
 	instance  string
@@ -35,10 +36,15 @@ func (c *openVPNCollector) Register(namespace, instanceLabel string, log *slog.L
 		"OpenVPN instances (1 = enabled, 0 = disabled) by role (server, client)",
 		[]string{"uuid", "role", "description", "device_type"},
 	)
+	c.sessions = buildPrometheusDesc(c.subsystem, "sessions",
+		"OpenVPN session (1 = ok, 0 = not ok)",
+		[]string{"description", "virtual_address", "username"},
+	)
 }
 
 func (c *openVPNCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.instances
+	ch <- c.sessions
 }
 
 func (c *openVPNCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
@@ -58,5 +64,22 @@ func (c *openVPNCollector) Update(client *opnsense.Client, ch chan<- prometheus.
 			c.instance,
 		)
 	}
+
+	sessions, err := client.FetchOpenVPNSessions()
+	if err != nil {
+		return err
+	}
+	for _, session := range sessions.Rows {
+		ch <- prometheus.MustNewConstMetric(
+			c.sessions,
+			prometheus.GaugeValue,
+			float64(session.Status),
+			session.Description,
+			session.VirtualAddress,
+			session.Username,
+			c.instance,
+		)
+	}
+
 	return nil
 }

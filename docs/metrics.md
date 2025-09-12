@@ -134,8 +134,10 @@ opnsense_wireguard_peer_last_handshake_seconds | Gauge | device, device_type, de
 | --- | --- | --- | --- | --- | --- |
 opnsense_openvpn_instances | Gauge | description, device_type, role, uuid | OpenVPN | OpenVPN instances (1 = enabled, 0 = disabled) by role (server, client) | --exporter.disable-openvpn |
 
+
 ### IPsec
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
 opnsense_ipsec_phase1_status | Gauge | description | IPsec | IPsec phase1 (1 = connected, 0 = down) | --exporter.disable-ipsec |
+
