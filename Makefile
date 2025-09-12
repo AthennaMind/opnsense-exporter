@@ -16,14 +16,15 @@ local-run:
 	./${BINARY_NAME} --log.level="debug" \
 		--log.format="logfmt" \
 		--web.telemetry-path="/metrics" \
-		--web.listen-address=":8080" \
+		--web.listen-address=":$( or $(OPS_EXPORTER_PORT), 8080)" \
 		--runtime.gomaxprocs=4 \
-		--exporter.instance-label="opnsense-local1" \
+		--exporter.instance-label="$(or $(OPS_INSTANCE), opnsense-local1)" \
 		--opnsense.protocol="https" \
 		--opnsense.address="${OPS_ADDRESS}" \
 		--opnsense.api-key="${OPS_API_KEY}" \
 		--opnsense.api-secret="${OPS_API_SECRET}" \
 		--web.disable-exporter-metrics \
+		"${OPS_ADDITIONAL_ARGS}"
 		
 test:
 	go test ./...
