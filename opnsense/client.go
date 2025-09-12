@@ -67,7 +67,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 		endpoints: map[EndpointName]EndpointPath{
 			"services":                "api/core/service/search",
 			"interfaces":              "api/diagnostics/traffic/interface",
-			"protocolStatistics":      "api/diagnostics/interface/getProtocolStatistics",
+			"protocolStatistics":      "api/diagnostics/interface/get_protocol_statistics",
 			"pfStatisticsByInterface": "api/diagnostics/firewall/pf_statistics/interfaces",
 			"arp":                     "api/diagnostics/interface/search_arp",
 			"dhcpv4":                  "api/dhcpv4/leases/searchLease",
@@ -184,6 +184,9 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 					StatusCode: resp.StatusCode,
 				}
 			}
+
+			c.log.Debug("returned data", "component", "opnsense-client", "url", url, "data", string(body))
+
 			return nil
 		} else {
 			return &APICallError{
