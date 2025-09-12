@@ -49,6 +49,7 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 | GUI |  Services: Unbound (MVC)          |
 | GUI |  Status: DHCP leases              |
 | GUI |  Status: DNS Overview             |
+| GUI |  Status: IPsec                    |
 | GUI |  Status: OpenVPN                  |
 | GUI |  Status: Services                 |
 | GUI |  System: Firmware                 |
@@ -182,6 +183,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-wireguard` - Disable the scraping of Wireguard service. Defaults to `false`.
 - `--exporter.disable-unbound` - Disable the scraping of Unbound service. Defaults to `false`.
 - `--exporter.disable-openvpn` - Disable the scraping of OpenVPN service. Defaults to `false`.
+- `--exporter.disable-ipsec` - Disable the scraping of IPsec service. Defaults to `false`.
 - `--exporter.disable-firewall` - Disable the scraping of Firewall (pf) metrics. Defaults to `false`.
 - `--exporter.disable-firmware` - Disable the scraping of Firmware infos. Defaults to `false`.
 
@@ -204,6 +206,8 @@ Flags:
                                  Disable the scraping of Unbound service ($OPNSENSE_EXPORTER_DISABLE_UNBOUND)
       --[no-]exporter.disable-openvpn
                                  Disable the scraping of OpenVPN service ($OPNSENSE_EXPORTER_DISABLE_OPENVPN)
+      --[no-]exporter.disable-ipsec
+                                 Disable the scraping of IPsec service ($OPNSENSE_EXPORTER_DISABLE_IPSEC)
       --[no-]exporter.disable-firewall
                                  Disable the scraping of the firewall (pf) metrics ($OPNSENSE_EXPORTER_DISABLE_FIREWALL)
       --[no-]exporter.disable-firmware

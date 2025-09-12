@@ -72,6 +72,17 @@ func parseStringToBool(value string) bool {
 	return value != "0"
 }
 
+
+func parseBoolToInt(b bool) int {
+	var i int
+	if b {
+		i = 1
+	} else {
+		i = 0
+	}
+	return i
+}
+
 // parseOpenVPNsessionStatusToInt parses a string to a int
 // not sure if this is really necessary
 // as only connected VPN clients are returned by the API

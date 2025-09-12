@@ -77,6 +77,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 			"unboundDNSStatus":        "api/unbound/diagnostics/stats",
 			"cronJobs":                "api/cron/settings/searchJobs",
 			"wireguardClients":        "api/wireguard/service/show",
+			"ipsecPhase1":             "api/ipsec/sessions/search_phase1",
 			"healthCheck":             "api/core/system/status",
 			"firmware":                "api/core/firmware/status",
 		},
