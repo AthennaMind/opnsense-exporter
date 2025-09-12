@@ -72,7 +72,6 @@ func parseStringToBool(value string) bool {
 	return value != "0"
 }
 
-
 func parseBoolToInt(b bool) int {
 	var i int
 	if b {
