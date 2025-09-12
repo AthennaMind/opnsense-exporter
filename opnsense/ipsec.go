@@ -14,6 +14,7 @@ type IPsec struct {
 	Phase1desc string
 	Connected  int
 }
+
 type IPsecPhase1 struct {
 	Rows []IPsec
 }
