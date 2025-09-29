@@ -93,7 +93,7 @@ func (c *firmwareCollector) Update(client *opnsense.Client, ch chan<- prometheus
 		return err
 	}
 
-	ch <- prometheus.MustNewConstMetric(c.needsReboot, prometheus.GaugeValue, float64(data.NeedsReboot), strconv.Itoa(data.NeedsReboot), c.instance)
+	ch <- prometheus.MustNewConstMetric(c.needsReboot, prometheus.GaugeValue, float64(1), data.NeedsReboot, c.instance)
 	ch <- prometheus.MustNewConstMetric(c.newPackages, prometheus.GaugeValue, float64(data.NewPackages), strconv.Itoa(data.NewPackages), c.instance)
 	ch <- prometheus.MustNewConstMetric(c.lastCheck, prometheus.GaugeValue, float64(1), data.LastCheck, c.instance)
 	ch <- prometheus.MustNewConstMetric(c.osVersion, prometheus.GaugeValue, float64(1), data.OsVersion, c.instance)
@@ -101,7 +101,7 @@ func (c *firmwareCollector) Update(client *opnsense.Client, ch chan<- prometheus
 	ch <- prometheus.MustNewConstMetric(c.productId, prometheus.GaugeValue, float64(1), data.ProductId, c.instance)
 	ch <- prometheus.MustNewConstMetric(c.productVersion, prometheus.GaugeValue, float64(1), data.ProductVersion, c.instance)
 	ch <- prometheus.MustNewConstMetric(c.upgradePackages, prometheus.GaugeValue, float64(data.UpgradePackages), strconv.Itoa(data.UpgradePackages), c.instance)
-	ch <- prometheus.MustNewConstMetric(c.upgradeNeedsReboot, prometheus.GaugeValue, float64(data.UpgradeNeedsReboot), strconv.Itoa(data.UpgradeNeedsReboot), c.instance)
+	ch <- prometheus.MustNewConstMetric(c.upgradeNeedsReboot, prometheus.GaugeValue, float64(1), data.UpgradeNeedsReboot, c.instance)
 
 	return nil
 }

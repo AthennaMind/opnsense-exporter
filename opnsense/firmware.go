@@ -24,23 +24,38 @@ type firmwareStatusResponse struct {
 			UpgradeNeedsReboot string `json:"upgrade_needs_reboot"`
 		} `json:"product_check"`
 	} `json:"product"`
+	Status string `json:"status"`
 }
 
 type FirmwareStatus struct {
 	LastCheck          string
-	NeedsReboot        int
+	NeedsReboot        string
 	NewPackages        int
 	OsVersion          string
 	ProductABI         string
 	ProductId          string
 	ProductVersion     string
 	UpgradePackages    int
-	UpgradeNeedsReboot int
+	UpgradeNeedsReboot string
+}
+
+func NewFirmwareStatus() FirmwareStatus {
+	return FirmwareStatus{
+		LastCheck:          "undefined",
+		NeedsReboot:        "undefined",
+		NewPackages:        0,
+		OsVersion:          "undefined",
+		ProductABI:         "undefined",
+		ProductId:          "undefined",
+		ProductVersion:     "undefined",
+		UpgradePackages:    0,
+		UpgradeNeedsReboot: "undefined",
+	}
 }
 
 func (c *Client) FetchFirmwareStatus() (FirmwareStatus, *APICallError) {
 	var resp firmwareStatusResponse
-	var data FirmwareStatus
+	data := NewFirmwareStatus()
 
 	url, ok := c.endpoints["firmware"]
 
@@ -56,28 +71,16 @@ func (c *Client) FetchFirmwareStatus() (FirmwareStatus, *APICallError) {
 		return data, err
 	}
 
-	data.LastCheck = resp.LastCheck
-	data.OsVersion = resp.OsVersion
-	data.ProductABI = resp.ProductAbi
-	data.ProductId = resp.ProductID
-	data.ProductVersion = resp.ProductVersion
-
-	tNeedsReboot, err := parseStringToInt(resp.NeedsReboot, url)
-	if err != nil {
-		c.log.Warn("firmware: failed to parse NeedsRebot", "details", err)
-		data.NeedsReboot = -1
+	if resp.Status != "none" {
+		data.OsVersion = resp.OsVersion
+		data.ProductABI = resp.ProductAbi
+		data.ProductId = resp.ProductID
+		data.ProductVersion = resp.ProductVersion
+		data.LastCheck = resp.LastCheck
+		data.NeedsReboot = resp.NeedsReboot
+		data.UpgradeNeedsReboot = resp.Product.ProductCheck.UpgradeNeedsReboot
+		data.NewPackages = len(resp.NewPackages)
+		data.UpgradePackages = len(resp.UpgradePackages)
 	}
-	data.NeedsReboot = tNeedsReboot
-
-	data.NewPackages = len(resp.NewPackages)
-	data.UpgradePackages = len(resp.UpgradePackages)
-
-	tUpgradeNeedsReboot, err := parseStringToInt(resp.Product.ProductCheck.UpgradeNeedsReboot, url)
-	if err != nil {
-		c.log.Warn("firmware: failed to parse UpgradeNeedsReboot", "details", err)
-		data.UpgradeNeedsReboot = -1
-	}
-	data.UpgradeNeedsReboot = tUpgradeNeedsReboot
-
 	return data, nil
 }
