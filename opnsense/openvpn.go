@@ -12,9 +12,9 @@ type openVPNSearchResponse struct {
 		DevType     string `json:"dev_type"`
 		Enabled     string `json:"enabled"`
 	} `json:"rows"`
-	RowCount int `json:"rowCount"`
-	Total    int `json:"total"`
-	Current  int `json:"current"`
+	RowCount int64 `json:"rowCount"`
+	Total    int64 `json:"total"`
+	Current  int64 `json:"current"`
 }
 
 type openVPNSearchSessionsResponse struct {
@@ -24,9 +24,9 @@ type openVPNSearchSessionsResponse struct {
 		VirtualAddress string `json:"virtual_address"`
 		Status         string `json:"status"`
 	} `json:"rows"`
-	RowCount int `json:"rowCount"`
-	Total    int `json:"total"`
-	Current  int `json:"current"`
+	RowCount int64 `json:"rowCount"`
+	Total    int64 `json:"total"`
+	Current  int64 `json:"current"`
 }
 
 type OpenVPN struct {
@@ -34,7 +34,7 @@ type OpenVPN struct {
 	Description string
 	Role        string
 	DevType     string
-	Enabled     int
+	Enabled     int64
 }
 type OpenVPNInstances struct {
 	Rows []OpenVPN
