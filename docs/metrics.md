@@ -124,6 +124,7 @@ opnsense_unbound_dns_uptime_seconds | Gauge | n/a | Unbound | Uptime of the unbo
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
 opnsense_wireguard_interfaces_status | Gauge | name, description, public_key | Wireguard | Wireguard interfaces status by name, description and public key (1 = up, 0 = down) | --exporter.disable-wireguard  |
+| opnsense_wireguard_peer_status | Gauge | device, device_type, device_name, peer_name | Wireguard | Wireguard peer status (1 = up, 0 = down, 2 = unknown) | --exporter.disable-wireguard  |
 opnsense_wireguard_peer_received_bytes_total | Counter | device, device_type, device_name, peer_name | Wireguard | Bytes received by this wireguard peer | --exporter.disable-wireguard  |
 opnsense_wireguard_peer_transmitted_bytes_total | Counter | device, device_type, device_name, peer_name | Wireguard | Bytes transmitted by this wireguard peer | --exporter.disable-wireguard  |
 opnsense_wireguard_peer_last_handshake_seconds | Gauge | device, device_type, device_name, peer_name | Wireguard | Last handshake time in seconds by this wireguard peer | --exporter.disable-wireguard  |
