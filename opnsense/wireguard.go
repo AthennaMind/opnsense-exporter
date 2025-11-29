@@ -12,6 +12,7 @@ type wireguardClientsResponse struct {
 		LatestHandshake float64 `json:"latest-handshake"`
 		TransferRx      float64 `json:"transfer-rx"`
 		TransferTx      float64 `json:"transfer-tx"`
+		PeerStatus      string  `json:"peer-status"`
 	} `json:"rows"`
 	RowCount int `json:"rowCount"`
 	Total    int `json:"total"`
@@ -21,10 +22,19 @@ type wireguardClientsResponse struct {
 // WGInterfaceStatus is the custom type that represents the status of a Wireguard interface
 type WGInterfaceStatus int
 
+// WGPeerStatus is the custom type that represents the peer status
+type WGPeerStatus int
+
 const (
 	WGInterfaceStatusDown WGInterfaceStatus = iota
 	WGInterfaceStatusUp
 	WGInterfaceStatusUnknown
+)
+
+const (
+	WGPeerStatusDown WGPeerStatus = iota
+	WGPeerStatusUp
+	WGPeerStatusUnknown
 )
 
 type WireguardPeers struct {
@@ -35,6 +45,7 @@ type WireguardPeers struct {
 	LatestHandshake float64
 	TransferRx      float64
 	TransferTx      float64
+	Status          WGPeerStatus
 }
 
 type WireguardInterfaces struct {
@@ -60,6 +71,19 @@ func parseWGInterfaceStatus(statusTranslated string, logger *slog.Logger, origin
 	default:
 		logger.Warn("unknown wireguard interface status detected", "status", originalStatus)
 		return WGInterfaceStatusUnknown
+	}
+}
+
+// parseWGPeerStatus parses a string status to a WGPeerStatus type.
+func parseWGPeerStatus(statusTranslated string, logger *slog.Logger, originalStatus string) WGPeerStatus {
+	switch statusTranslated {
+	case "online":
+		return WGPeerStatusUp
+	case "offline":
+		return WGPeerStatusDown
+	default:
+		logger.Warn("unknown wireguard peer status detected", "status", originalStatus)
+		return WGPeerStatusUnknown
 	}
 }
 
@@ -100,6 +124,7 @@ func (c *Client) FetchWireguardConfig() (WireguardClients, *APICallError) {
 				Name:            v.Name,
 				DeviceName:      v.IfName,
 				Device:          v.IfId,
+				Status:          parseWGPeerStatus(v.PeerStatus, c.log, v.PeerStatus),
 			})
 		}
 	}
