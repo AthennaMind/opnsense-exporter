@@ -10,6 +10,7 @@ import (
 type WireguardCollector struct {
 	log             *slog.Logger
 	instances       *prometheus.Desc
+	peers           *prometheus.Desc
 	TransferRx      *prometheus.Desc
 	TransferTx      *prometheus.Desc
 	LatestHandshake *prometheus.Desc
@@ -39,6 +40,11 @@ func (c *WireguardCollector) Register(namespace, instanceLabel string, log *slog
 		[]string{"device", "device_type", "device_name"},
 	)
 
+	c.peers = buildPrometheusDesc(c.subsystem, "peer_status",
+		"Wireguard peer status (1 = up, 0 = down, 2 = unknown)",
+		[]string{"device", "device_type", "device_name", "peer_name"},
+	)
+
 	c.TransferRx = buildPrometheusDesc(c.subsystem, "peer_received_bytes_total",
 		"Bytes received by this wireguard peer",
 		[]string{"device", "device_type", "device_name", "peer_name"},
@@ -57,6 +63,7 @@ func (c *WireguardCollector) Register(namespace, instanceLabel string, log *slog
 
 func (c *WireguardCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.instances
+	ch <- c.peers
 	ch <- c.LatestHandshake
 	ch <- c.TransferRx
 	ch <- c.TransferTx
@@ -79,6 +86,7 @@ func (c *WireguardCollector) Update(client *opnsense.Client, ch chan<- prometheu
 	}
 
 	for _, instance := range data.Peers {
+		c.update(ch, c.peers, prometheus.GaugeValue, float64(instance.Status), instance.Device, instance.DeviceType, instance.DeviceName, instance.Name, c.instance)
 		c.update(ch, c.LatestHandshake, prometheus.CounterValue, float64(instance.LatestHandshake), instance.Device, instance.DeviceType, instance.DeviceName, instance.Name, c.instance)
 		c.update(ch, c.TransferRx, prometheus.CounterValue, float64(instance.TransferRx), instance.Device, instance.DeviceType, instance.DeviceName, instance.Name, c.instance)
 		c.update(ch, c.TransferTx, prometheus.CounterValue, float64(instance.TransferTx), instance.Device, instance.DeviceType, instance.DeviceName, instance.Name, c.instance)
