@@ -28,7 +28,7 @@ type gatewayConfigurationResponse struct {
 		Gateway              string `json:"gateway"`
 		DefaultGateway       bool   `json:"defaultgw"`
 		FarGateway           string `json:"fargw"`
-		MonitorDisable       bool   `json:"monitor_disable"`
+		MonitorDisable       string `json:"monitor_disable"`
 		MonitorNoRoute       string `json:"monitor_noroute"`
 		Monitor              string `json:"monitor"`
 		ForceDown            string `json:"force_down"`
@@ -78,7 +78,7 @@ type Gateway struct {
 	MonitorNoRoute       bool
 	Monitor              string
 	ForceDown            bool
-	Priority             int 
+	Priority             int
 	Weight               string
 	LatencyLow           string
 	LatencyHigh          string
@@ -144,7 +144,7 @@ func (c *Client) FetchGateways() (Gateways, *APICallError) {
 		delay := -1.0
 		stdDev := -1.0
 		loss := -1.0
-		if !v.Disabled && !v.MonitorDisable {
+		if !v.Disabled && !parseStringToBool(v.MonitorDisable) {
 			delay = parseStringToFloatWithReplace(v.Delay, c.gatewayRTTRegex, " ms", "rtt", c.log)
 			stdDev = parseStringToFloatWithReplace(v.StdDev, c.gatewayRTTRegex, " ms", "rttd", c.log)
 			loss = parseStringToFloatWithReplace(v.Loss, c.gatewayLossRegex, " %", "loss", c.log)
@@ -159,7 +159,7 @@ func (c *Client) FetchGateways() (Gateways, *APICallError) {
 			Gateway:              v.Gateway,
 			DefaultGateway:       v.DefaultGateway,
 			FarGateway:           v.FarGateway,
-			MonitorEnabled:       !v.MonitorDisable,
+			MonitorEnabled:       !parseStringToBool(v.MonitorDisable),
 			MonitorNoRoute:       parseStringToBool(v.MonitorNoRoute),
 			Monitor:              v.Monitor,
 			ForceDown:            parseStringToBool(v.ForceDown),
