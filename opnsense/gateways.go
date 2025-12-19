@@ -2,6 +2,7 @@ package opnsense
 
 import (
 	"log/slog"
+	"strconv"
 )
 
 // GatewayStatus is the custom type that represents the status of a gateway
@@ -163,7 +164,7 @@ func (c *Client) FetchGateways() (Gateways, *APICallError) {
 			MonitorNoRoute:       parseStringToBool(v.MonitorNoRoute),
 			Monitor:              v.Monitor,
 			ForceDown:            parseStringToBool(v.ForceDown),
-			Priority:             v.Priority,
+			Priority:             strconv.Itoa(v.Priority),
 			Weight:               v.Weight,
 			LatencyLow:           v.LatencyLow,
 			LatencyHigh:          v.LatencyHigh,
