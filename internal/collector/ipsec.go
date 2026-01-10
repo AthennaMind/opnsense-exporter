@@ -184,7 +184,7 @@ func (c *ipsecCollector) Update(client *opnsense.Client, ch chan<- prometheus.Me
 			)
 			ch <- prometheus.MustNewConstMetric(
 				c.phase2_bytes_in,
-				prometheus.GaugeValue,
+				prometheus.CounterValue,
 				float64(phase2.BytesIn),
 				phase2.Phase2desc,
 				phase2.Name,
@@ -195,7 +195,7 @@ func (c *ipsecCollector) Update(client *opnsense.Client, ch chan<- prometheus.Me
 			)
 			ch <- prometheus.MustNewConstMetric(
 				c.phase2_bytes_out,
-				prometheus.GaugeValue,
+				prometheus.CounterValue,
 				float64(phase2.BytesOut),
 				phase2.Phase2desc,
 				phase2.Name,
@@ -206,7 +206,7 @@ func (c *ipsecCollector) Update(client *opnsense.Client, ch chan<- prometheus.Me
 			)
 			ch <- prometheus.MustNewConstMetric(
 				c.phase2_packets_in,
-				prometheus.GaugeValue,
+				prometheus.CounterValue,
 				float64(phase2.PacketsIn),
 				phase2.Phase2desc,
 				phase2.Name,
@@ -217,7 +217,7 @@ func (c *ipsecCollector) Update(client *opnsense.Client, ch chan<- prometheus.Me
 			)
 			ch <- prometheus.MustNewConstMetric(
 				c.phase2_packets_out,
-				prometheus.GaugeValue,
+				prometheus.CounterValue,
 				float64(phase2.PacketsOut),
 				phase2.Phase2desc,
 				phase2.Name,
