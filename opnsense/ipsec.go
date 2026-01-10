@@ -1,9 +1,18 @@
 package opnsense
 
+import "strconv"
+
 type ipsecSearchResponse struct {
 	Rows []struct {
-		Phase1desc string `json:"phase1desc"`
-		Connected  bool   `json:"connected"`
+		Phase1desc  string `json:"phase1desc"`
+		Connected   bool   `json:"connected"`
+		IkeId       string `json:"ikeid"`
+		Name        string `json:"name"`
+		InstallTime string `json:"install-time"`
+		BytesIn     int    `json:"bytes-in"`
+		BytesOut    int    `json:"bytes-out"`
+		PacketsIn   int    `json:"packets-in"`
+		PacketsOut  int    `json:"packets-out"`
 	} `json:"rows"`
 	RowCount int `json:"rowCount"`
 	Total    int `json:"total"`
@@ -11,8 +20,15 @@ type ipsecSearchResponse struct {
 }
 
 type IPsec struct {
-	Phase1desc string
-	Connected  int
+	Phase1desc  string
+	Connected   int
+	IkeId       string
+	Name        string
+	InstallTime int
+	BytesIn     int
+	BytesOut    int
+	PacketsIn   int
+	PacketsOut  int
 }
 
 type IPsecPhase1 struct {
@@ -36,10 +52,22 @@ func (c *Client) FetchIPsecPhase1() (IPsecPhase1, *APICallError) {
 		return data, err
 	}
 
+	installTime, err := strconv.Atoi(resp.Rows[0].InstallTime)
+	if err != nil {
+		installTime = 0
+	}
+
 	for _, v := range resp.Rows {
 		data.Rows = append(data.Rows, IPsec{
-			Phase1desc: v.Phase1desc,
-			Connected:  parseBoolToInt(v.Connected),
+			Phase1desc:  v.Phase1desc,
+			IkeId:       v.IkeId,
+			Name:        v.Name,
+			InstallTime: installTime,
+			BytesIn:     v.BytesIn,
+			BytesOut:    v.BytesOut,
+			PacketsIn:   v.PacketsIn,
+			PacketsOut:  v.PacketsOut,
+			Connected:   parseBoolToInt(v.Connected),
 		})
 	}
 
