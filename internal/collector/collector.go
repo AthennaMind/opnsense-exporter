@@ -201,7 +201,7 @@ func (c *Collector) collectHealthMetrics(ch chan<- prometheus.Metric) error {
 	}
 
 	if systemStatus.System.Status != opnsense.HealthCheckStatusOK &&
-		systemStatus.Metadata.System.Status != opnsense.HealthCheckStatusOK_v25_1 {
+		systemStatus.GetMetadataSystemStatus() != opnsense.HealthCheckStatusOK_v25_1 {
 		c.isUp.Set(0)
 		c.isUp.Collect(ch)
 		return nil
@@ -211,7 +211,7 @@ func (c *Collector) collectHealthMetrics(ch chan<- prometheus.Metric) error {
 	c.firewallHealthStatus.Set(1)
 
 	if systemStatus.Firewall.Status != opnsense.HealthCheckStatusOK &&
-		systemStatus.Metadata.Firewall.Status != opnsense.HealthCheckStatusOK_v25_1 {
+		systemStatus.GetMetadataFirewallStatus() != opnsense.HealthCheckStatusOK_v25_1 {
 		c.firewallHealthStatus.Set(0)
 	}
 
