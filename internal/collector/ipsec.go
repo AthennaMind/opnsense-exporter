@@ -106,6 +106,14 @@ func (c *ipsecCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.phase1_bytes_out
 	ch <- c.phase1_packets_in
 	ch <- c.phase1_packets_out
+
+	ch <- c.phase2_install_time
+	ch <- c.phase2_bytes_in
+	ch <- c.phase2_bytes_out
+	ch <- c.phase2_packets_in
+	ch <- c.phase2_packets_out
+	ch <- c.phase2_rekey_time
+	ch <- c.phase2_life_time
 }
 
 func (c *ipsecCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
@@ -211,6 +219,28 @@ func (c *ipsecCollector) Update(client *opnsense.Client, ch chan<- prometheus.Me
 				c.phase2_packets_out,
 				prometheus.GaugeValue,
 				float64(phase2.PacketsOut),
+				phase2.Phase2desc,
+				phase2.Name,
+				phase2.SpiIn,
+				phase2.SpiOut,
+				phase1.Name,
+				c.instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.phase2_rekey_time,
+				prometheus.GaugeValue,
+				float64(phase2.RekeyTime),
+				phase2.Phase2desc,
+				phase2.Name,
+				phase2.SpiIn,
+				phase2.SpiOut,
+				phase1.Name,
+				c.instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.phase2_life_time,
+				prometheus.GaugeValue,
+				float64(phase2.LifeTime),
 				phase2.Phase2desc,
 				phase2.Name,
 				phase2.SpiIn,
