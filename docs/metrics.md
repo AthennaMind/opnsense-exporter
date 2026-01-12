@@ -140,5 +140,16 @@ opnsense_openvpn_instances | Gauge | description, device_type, role, uuid | Open
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
-opnsense_ipsec_phase1_status | Gauge | description | IPsec | IPsec phase1 (1 = connected, 0 = down) | --exporter.disable-ipsec |
-
+opnsense_ipsec_phase1_status | Gauge | description, name | IPsec | IPsec phase1 (1 = connected, 0 = down) | --exporter.disable-ipsec |
+opnsense_ipsec_phase1_install_time | Gauge | description, name | IPsec | IPsec phase1 install time (in seconds) | --exporter.disable-ipsec |
+opnsense_ipsec_phase1_bytes_in | Counter | description, name | IPsec | IPsec phase1 bytes coming in | --exporter.disable-ipsec |
+opnsense_ipsec_phase1_bytes_out | Counter | description, name | IPsec | IPsec phase1 bytes going out | --exporter.disable-ipsec |
+opnsense_ipsec_phase1_packets_in | Counter | description, name | IPsec | IPsec phase1 packets coming in | --exporter.disable-ipsec |
+opnsense_ipsec_phase1_packets_out | Counter | description, name | IPsec | IPsec phase1 packets going out | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_install_time | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 install time (in seconds) | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_rekey_time | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 rekey time (in seconds) | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_life_time | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 life time (in seconds) | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_bytes_in | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 bytes coming in | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_bytes_out | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 bytes going out | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_packets_in | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 packets coming in | --exporter.disable-ipsec |
+opnsense_ipsec_phase2_packets_out | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 packets going out | --exporter.disable-ipsec |
