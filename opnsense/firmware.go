@@ -39,6 +39,16 @@ type FirmwareStatus struct {
 	UpgradeNeedsReboot string
 }
 
+// GetNeedsReboot converts NeedsReboot field to bool, handling empty strings and integers
+func (f *FirmwareStatus) GetNeedsReboot() bool {
+	return f.NeedsReboot == "1"
+}
+
+// GetUpgradeNeedsReboot converts UpgradeNeedsReboot field to bool, handling empty strings and integers
+func (f *FirmwareStatus) GetUpgradeNeedsReboot() bool {
+	return f.UpgradeNeedsReboot == "1"
+}
+
 func NewFirmwareStatus() FirmwareStatus {
 	return FirmwareStatus{
 		LastCheck:          "undefined",

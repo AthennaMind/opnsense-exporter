@@ -2,6 +2,7 @@ package opnsense
 
 import (
 	"log/slog"
+	"strconv"
 )
 
 // GatewayStatus is the custom type that represents the status of a gateway
@@ -20,48 +21,48 @@ type gatewayConfigurationResponse struct {
 	RowCount int `json:"rowCount"`
 	Current  int `json:"current"`
 	Rows     []struct {
-		Disabled             bool   `json:"disabled"`
-		Name                 string `json:"name"`
-		Description          string `json:"descr"`
-		HardwareInterface    string `json:"interface"`
-		IPProtocol           string `json:"ipprotocol"`
-		Gateway              string `json:"gateway"`
-		DefaultGateway       bool   `json:"defaultgw"`
-		FarGateway           string `json:"fargw"`
-		MonitorDisable       string `json:"monitor_disable"`
-		MonitorNoRoute       string `json:"monitor_noroute"`
-		Monitor              string `json:"monitor"`
-		ForceDown            string `json:"force_down"`
-		Priority             string `json:"priority"`
-		Weight               string `json:"weight"`
-		LatencyLow           string `json:"latencylow"`
-		CurrentLatencyLow    string `json:"current_latencylow"`
-		LatencyHigh          string `json:"latencyhigh"`
-		CurrentLatencyHigh   string `json:"current_latencyhigh"`
-		LossLow              string `json:"losslow"`
-		CurrentLossLow       string `json:"current_losslow"`
-		LossHigh             string `json:"losshigh"`
-		CurrentLossHigh      string `json:"current_losshigh"`
-		Interval             string `json:"interval"`
-		CurrentInterval      string `json:"current_interval"`
-		TimePeriod           string `json:"time_period"`
-		CurrentTimePeriod    string `json:"current_time_period"`
-		LossInterval         string `json:"loss_interval"`
-		CurrentLossInterval  string `json:"current_loss_interval"`
-		DataLength           string `json:"data_length"`
-		CurrentDataLength    string `json:"current_data_length"`
-		UUID                 string `json:"uuid"`
-		Interface            string `json:"if"`
-		Attribute            int    `json:"attribute"`
-		Dynamic              bool   `json:"dynamic"`
-		Virtual              bool   `json:"virtual"`
-		Upstream             bool   `json:"upstream"`
-		InterfaceDescription string `json:"interface_descr"`
-		Status               string `json:"status"`
-		Delay                string `json:"delay"`
-		StdDev               string `json:"stddev"`
-		Loss                 string `json:"loss"`
-		LabelClass           string `json:"label_class"`
+		Disabled             bool        `json:"disabled"`
+		Name                 string      `json:"name"`
+		Description          string      `json:"descr"`
+		HardwareInterface    string      `json:"interface"`
+		IPProtocol           string      `json:"ipprotocol"`
+		Gateway              string      `json:"gateway"`
+		DefaultGateway       bool        `json:"defaultgw"`
+		FarGateway           string      `json:"fargw"`
+		MonitorDisable       string      `json:"monitor_disable"`
+		MonitorNoRoute       string      `json:"monitor_noroute"`
+		Monitor              string      `json:"monitor"`
+		ForceDown            string      `json:"force_down"`
+		Priority             interface{} `json:"priority"`
+		Weight               string      `json:"weight"`
+		LatencyLow           string      `json:"latencylow"`
+		CurrentLatencyLow    string      `json:"current_latencylow"`
+		LatencyHigh          string      `json:"latencyhigh"`
+		CurrentLatencyHigh   string      `json:"current_latencyhigh"`
+		LossLow              string      `json:"losslow"`
+		CurrentLossLow       string      `json:"current_losslow"`
+		LossHigh             string      `json:"losshigh"`
+		CurrentLossHigh      string      `json:"current_losshigh"`
+		Interval             string      `json:"interval"`
+		CurrentInterval      string      `json:"current_interval"`
+		TimePeriod           string      `json:"time_period"`
+		CurrentTimePeriod    string      `json:"current_time_period"`
+		LossInterval         string      `json:"loss_interval"`
+		CurrentLossInterval  string      `json:"current_loss_interval"`
+		DataLength           string      `json:"data_length"`
+		CurrentDataLength    string      `json:"current_data_length"`
+		UUID                 string      `json:"uuid"`
+		Interface            string      `json:"if"`
+		Attribute            int         `json:"attribute"`
+		Dynamic              bool        `json:"dynamic"`
+		Virtual              bool        `json:"virtual"`
+		Upstream             bool        `json:"upstream"`
+		InterfaceDescription string      `json:"interface_descr"`
+		Status               string      `json:"status"`
+		Delay                string      `json:"delay"`
+		StdDev               string      `json:"stddev"`
+		Loss                 string      `json:"loss"`
+		LabelClass           string      `json:"label_class"`
 	} `json:"rows"`
 }
 
@@ -104,6 +105,20 @@ type Gateway struct {
 
 type Gateways struct {
 	Gateways []Gateway
+}
+
+// convertPriorityToString converts priority from interface{} to string
+func convertPriorityToString(priority interface{}) string {
+	switch v := priority.(type) {
+	case string:
+		return v
+	case int:
+		return strconv.Itoa(v)
+	case float64:
+		return strconv.Itoa(int(v))
+	default:
+		return ""
+	}
 }
 
 // parseGatewayStatus parses a string status to a GatewayStatus type.
@@ -163,7 +178,7 @@ func (c *Client) FetchGateways() (Gateways, *APICallError) {
 			MonitorNoRoute:       parseStringToBool(v.MonitorNoRoute),
 			Monitor:              v.Monitor,
 			ForceDown:            parseStringToBool(v.ForceDown),
-			Priority:             v.Priority,
+			Priority:             convertPriorityToString(v.Priority),
 			Weight:               v.Weight,
 			LatencyLow:           v.LatencyLow,
 			LatencyHigh:          v.LatencyHigh,
