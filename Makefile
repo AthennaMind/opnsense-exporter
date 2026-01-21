@@ -1,18 +1,17 @@
 BINARY_NAME=opnsense-exporter-local
 
 .PHONY: default
-default: run-test
-
-sync-vendor:
-	go mod tidy
-	go mod vendor
-
-local-run:
+default:
 	go build \
 	-tags osusergo,netgo \
 	-ldflags '-w -extldflags "-static" -X main.version=local-test' \
 	-v -o ${BINARY_NAME}
 
+sync-vendor:
+	go mod tidy
+	go mod vendor
+
+local-run: default
 	./${BINARY_NAME} --log.level="debug" \
 		--log.format="logfmt" \
 		--web.telemetry-path="/metrics" \
