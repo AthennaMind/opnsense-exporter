@@ -4,6 +4,7 @@ BINARY_NAME=opnsense-exporter-local
 default:
 	go build \
 	-tags osusergo,netgo \
+	-ldflags '-w -extldflags "-static" -X main.version=local-test' \
 	-v -o ${BINARY_NAME}
 
 sync-vendor:
