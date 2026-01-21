@@ -3,6 +3,7 @@ package opnsense
 import (
 	"encoding/json"
 	"log/slog"
+	"strconv"
 )
 
 // GatewayStatus is the custom type that represents the status of a gateway
@@ -33,7 +34,7 @@ type gatewayConfigurationResponse struct {
 		MonitorNoRoute       string      `json:"monitor_noroute"`
 		Monitor              string      `json:"monitor"`
 		ForceDown            string      `json:"force_down"`
-		Priority             json.Number `json:"priority"`
+		Priority             interface{} `json:"priority"`
 		Weight               string      `json:"weight"`
 		LatencyLow           string      `json:"latencylow"`
 		CurrentLatencyLow    string      `json:"current_latencylow"`
@@ -107,6 +108,20 @@ type Gateways struct {
 	Gateways []Gateway
 }
 
+// convertPriorityToString converts priority from interface{} to string
+func convertPriorityToString(priority interface{}) string {
+	switch v := priority.(type) {
+	case string:
+		return v
+	case int:
+		return strconv.Itoa(v)
+	case float64:
+		return strconv.Itoa(int(v))
+	default:
+		return ""
+	}
+}
+
 // parseGatewayStatus parses a string status to a GatewayStatus type.
 func parseGatewayStatus(statusTranslated string, logger *slog.Logger, originalStatus string) GatewayStatusType {
 	switch statusTranslated {
@@ -164,7 +179,7 @@ func (c *Client) FetchGateways() (Gateways, *APICallError) {
 			MonitorNoRoute:       parseStringToBool(v.MonitorNoRoute),
 			Monitor:              v.Monitor,
 			ForceDown:            parseStringToBool(v.ForceDown),
-			Priority:             v.Priority.String(),
+			Priority:             convertPriorityToString(v.Priority),
 			Weight:               v.Weight,
 			LatencyLow:           v.LatencyLow,
 			LatencyHigh:          v.LatencyHigh,
