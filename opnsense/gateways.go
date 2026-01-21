@@ -1,7 +1,6 @@
 package opnsense
 
 import (
-	"encoding/json"
 	"log/slog"
 	"strconv"
 )
