@@ -76,7 +76,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
 permissions:
+  packages: write
   # Required: allow read access to the content for analysis.
   contents: read
   # Optional: allow read access to pull requests. Use with `only-new-issues` option.
   pull-requests: read
+
