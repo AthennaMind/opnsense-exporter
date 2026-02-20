@@ -11,8 +11,8 @@ import (
 // parseStringToInt parses a string value to an int value.
 // The endpoint is used to identify the EndpointPath that the caller used.
 // so we can propagate in the *APICallError.
-func parseStringToInt(value string, endpoint EndpointPath) (int, *APICallError) {
-	intValue, err := strconv.Atoi(value)
+func parseStringToInt(value string, endpoint EndpointPath) (int64, *APICallError) {
+	intValue, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
 		return 0, &APICallError{
 			Endpoint:   string(endpoint),
@@ -52,8 +52,8 @@ func parseStringToFloatWithReplace(value string, regex *regexp.Regexp, replacePa
 // The endpoint is used to identify the EndpointPath that the caller used.
 // so we can propagate in the *APICallError.
 // Fails if any of the string values in the slice cannot be parsed to an int.
-func sliceIntToMapStringInt(strings []string, url EndpointPath) (map[string]int, *APICallError) {
-	ints := make(map[string]int)
+func sliceIntToMapStringInt(strings []string, url EndpointPath) (map[string]int64, *APICallError) {
+	ints := make(map[string]int64)
 
 	for _, str := range strings {
 		value, err := parseStringToInt(str, url)

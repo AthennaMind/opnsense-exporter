@@ -92,7 +92,7 @@ type Temperature struct {
 	Device                string
 	DeviceSeq             string
 	Type                  string
-	TemperatureCelsuis    int
+	TemperatureCelsuis    int64
 	TemperatureFahrenheit float32
 }
 
