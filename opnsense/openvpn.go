@@ -21,6 +21,7 @@ type openVPNSearchSessionsResponse struct {
 	Rows []struct {
 		Description    string `json:"description"`
 		Username       string `json:"username"`
+		RealAddress    string `json:"real_address"`
 		VirtualAddress string `json:"virtual_address"`
 		Status         string `json:"status"`
 	} `json:"rows"`
@@ -43,6 +44,7 @@ type OpenVPNInstances struct {
 type Sessions struct {
 	Description    string
 	Username       string
+	RealAddress    string
 	VirtualAddress string
 	Status         int
 }
@@ -105,6 +107,7 @@ func (c *Client) FetchOpenVPNSessions() (OpenVPNSessions, *APICallError) {
 		data.Rows = append(data.Rows, Sessions{
 			Description:    v.Description,
 			Username:       v.Username,
+			RealAddress:    v.RealAddress,
 			VirtualAddress: v.VirtualAddress,
 			Status:         parseOpenVPNsessionStatusToInt(v.Status),
 		})
