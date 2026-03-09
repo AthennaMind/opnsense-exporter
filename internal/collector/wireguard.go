@@ -41,7 +41,7 @@ func (c *WireguardCollector) Register(namespace, instanceLabel string, log *slog
 	)
 
 	c.peers = buildPrometheusDesc(c.subsystem, "peer_status",
-		"Wireguard peer status (1 = up, 0 = down, 2 = unknown)",
+		"Wireguard peer status (1 = up, 0 = down, 2 = unknown, 3 = stale)",
 		[]string{"device", "device_type", "device_name", "peer_name"},
 	)
 
