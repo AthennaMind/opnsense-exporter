@@ -38,7 +38,7 @@ func (c *openVPNCollector) Register(namespace, instanceLabel string, log *slog.L
 	)
 	c.sessions = buildPrometheusDesc(c.subsystem, "sessions",
 		"OpenVPN session (1 = ok, 0 = not ok)",
-		[]string{"description", "virtual_address", "username"},
+		[]string{"description", "real_address", "virtual_address", "username"},
 	)
 }
 
@@ -75,6 +75,7 @@ func (c *openVPNCollector) Update(client *opnsense.Client, ch chan<- prometheus.
 			prometheus.GaugeValue,
 			float64(session.Status),
 			session.Description,
+			session.RealAddress,
 			session.VirtualAddress,
 			session.Username,
 			c.instance,
