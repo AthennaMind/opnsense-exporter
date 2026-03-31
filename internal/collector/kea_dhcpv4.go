@@ -108,7 +108,7 @@ func (c *keaDhcpv4Collector) Update(client *opnsense.Client, ch chan<- prometheu
 
 	for interfaceName, activeLeases := range keaDhcpv4Leases.LeaseCount {
 		ch <- prometheus.MustNewConstMetric(
-			c.leases_reserved,
+			c.lease_count,
 			prometheus.GaugeValue,
 			float64(activeLeases),
 			interfaceName,
