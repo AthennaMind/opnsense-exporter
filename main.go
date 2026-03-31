@@ -95,6 +95,10 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutKeaDHCPv4Collector())
 		logger.Info("kea dhcpv4 collector disabled")
 	}
+	if !collectorsSwitches.KeaDHCPv6 {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutKeaDHCPv6Collector())
+		logger.Info("kea dhcpv6 collector disabled")
+	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
 	if err != nil {
