@@ -1,5 +1,7 @@
 package opnsense
 
+import "fmt"
+
 type KeaDhcpv4LeasesResponse struct {
 	Total    int `json:"total"`
 	RowCount int `json:"rowCount"`
@@ -43,7 +45,11 @@ type KeaDhcpv4LeasesResponse struct {
 	Interfaces map[string]string
 }
 
+type KeaDhcpv4Lease struct {
+}
+
 type KeaDhcpv4Leases struct {
+	Leases []KeaDhcpv4Lease
 }
 
 func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
@@ -63,6 +69,8 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 	if err != nil {
 		return data, err
 	}
+
+	fmt.Printf("%v\n", resp)
 
 	return data, nil
 }
