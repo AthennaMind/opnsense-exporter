@@ -36,7 +36,7 @@ var (
 		"Disable the scraping of the firmware metrics",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_FIRMWARE").Default("false").Bool()
 	keaDhcpv4Disabled = kingpin.Flag(
-		"exporter.disable-KeaDHCPv4",
+		"exporter.disable-kea-dhcpv4",
 		"Disable the scraping of Kea DHCPv4 leases",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_KEADHCPV4").Default("false").Bool()
 )
