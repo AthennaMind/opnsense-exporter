@@ -78,8 +78,11 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 		return data, err
 	}
 
+	data.Interfaces = make(map[string]InterfaceInfo)
+	data.LeaseCount = make(map[string]int)
+	data.ReservedLeaseCount = make(map[string]int)
+
 	for _, row := range resp.Rows {
-		fmt.Printf("Interface name: %s\n", row.InterfaceName)
 		// Update total reservation count
 		data.LeaseCount[row.InterfaceName] += 1
 
@@ -117,7 +120,7 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 		})
 
 		data.Interfaces[row.InterfaceName] = InterfaceInfo{
-			Name:        row.InterfaceName,
+			Name:        row.If,
 			Description: row.InterfaceDescription,
 		}
 	}
