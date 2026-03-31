@@ -118,6 +118,13 @@ func TestParseKeaDHCPv4Leases(t *testing.T) {
 					t.Errorf("unexpected reservations for %s, expected %d, got %d\n", ifName, reservation, tt.expected.ReservedLeaseCount[ifName])
 				}
 			}
+
+			// Verify the leases come back correct
+			for ifName, leases := range data.LeaseCount {
+				if leases != tt.expected.LeaseCount[ifName] {
+					t.Errorf("unexpected current leases for %s, expected %d, got %d\n", ifName, leases, tt.expected.LeaseCount[ifName])
+				}
+			}
 		})
 	}
 }
