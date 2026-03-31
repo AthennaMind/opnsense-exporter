@@ -5,29 +5,31 @@ import (
 	"strings"
 )
 
+type KeaDhcpv4LeasesRow struct {
+	If                   string `json:"if"`
+	Address              string `json:"address"`
+	Hwaddr               string `json:"hwaddr"`
+	ClientId             string `json:"client_id"`
+	ValidLifetime        string `json:"valid_lifetime"`
+	Expiration           string `json:"expire"`
+	InterfaceDescription string `json:"if_descr"`
+	InterfaceName        string `json:"if_name"`
+	MacInfo              string `json:"mac_info"`
+	IsReserved           string `json:"is_reserved"`
+	Hostname             string `json:"hostname"`
+	FqdnForward          string `json:"fqdn_fwd"`
+	FqdnReceived         string `json:"fqdn_rev"`
+	State                string `json:"state"`
+	UserContext          string `json:"user_context"`
+	SubnetId             string `json:"subnet_id"`
+	PoolId               string `json:"pool_id"`
+}
+
 type KeaDhcpv4LeasesResponse struct {
 	Total    int `json:"total"`
 	RowCount int `json:"rowCount"`
 	Current  int `json:"current"`
-	Rows     []struct {
-		If                   string `json:"if"`
-		Address              string `json:"address"`
-		Hwaddr               string `json:"hwaddr"`
-		ClientId             string `json:"client_id"`
-		ValidLifetime        string `json:"valid_lifetime"`
-		Expiration           string `json:"expire"`
-		InterfaceDescription string `json:"if_descr"`
-		InterfaceName        string `json:"if_name"`
-		MacInfo              string `json:"mac_info"`
-		IsReserved           string `json:"is_reserved"`
-		Hostname             string `json:"hostname"`
-		FqdnForward          string `json:"fqdn_fwd"`
-		FqdnReceived         string `json:"fqdn_rev"`
-		State                string `json:"state"`
-		UserContext          string `json:"user_context"`
-		SubnetId             string `json:"subnet_id"`
-		PoolId               string `json:"pool_id"`
-	}
+	Rows     []KeaDhcpv4LeasesRow
 
 	// This follows pattern {"name": "desc"}
 	// where name is the physical interface
@@ -36,16 +38,14 @@ type KeaDhcpv4LeasesResponse struct {
 }
 
 type KeaDhcpv4Lease struct {
-	Expiration           int
-	ValidLifetime        int
-	Mac                  string
-	MacInfo              string
-	ClientId             string
-	Hostname             string
-	Address              string
-	If                   string
-	InterfaceName        string
-	InterfaceDescription string
+	Expiration    int
+	ValidLifetime int
+	Mac           string
+	MacInfo       string
+	ClientId      string
+	Hostname      string
+	Address       string
+	InterfaceName string
 }
 
 type KeaDhcpV4InterfaceInfo struct {
@@ -60,29 +60,14 @@ type KeaDhcpv4Leases struct {
 	Interfaces         map[string]KeaDhcpV4InterfaceInfo
 }
 
-func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
-	var resp KeaDhcpv4LeasesResponse
-	var data KeaDhcpv4Leases
-
-	url, ok := c.endpoints["keaDhcpv4"]
-	if !ok {
-		return data, &APICallError{
-			Endpoint:   "keaDhcpv4",
-			Message:    "endpoint not found in client endpoints",
-			StatusCode: 0,
-		}
-	}
-
-	err := c.do("GET", url, nil, &resp)
-	if err != nil {
-		return data, err
-	}
+func parseDHCPv4Leases(response KeaDhcpv4LeasesResponse) (KeaDhcpv4Leases, *APICallError) {
+	data := KeaDhcpv4Leases{}
 
 	data.Interfaces = make(map[string]KeaDhcpV4InterfaceInfo)
 	data.LeaseCount = make(map[string]int)
 	data.ReservedLeaseCount = make(map[string]int)
 
-	for _, row := range resp.Rows {
+	for _, row := range response.Rows {
 		// Update total reservation count
 		data.LeaseCount[row.InterfaceName] += 1
 
@@ -124,6 +109,32 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 			Name:        row.If,
 			Description: row.InterfaceDescription,
 		}
+	}
+
+	return data, nil
+}
+
+func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
+	var resp KeaDhcpv4LeasesResponse
+	var data KeaDhcpv4Leases
+
+	url, ok := c.endpoints["keaDhcpv4"]
+	if !ok {
+		return data, &APICallError{
+			Endpoint:   "keaDhcpv4",
+			Message:    "endpoint not found in client endpoints",
+			StatusCode: 0,
+		}
+	}
+
+	err := c.do("GET", url, nil, &resp)
+	if err != nil {
+		return data, err
+	}
+
+	data, err = parseDHCPv4Leases(resp)
+	if err != nil {
+		return data, err
 	}
 
 	return data, nil
