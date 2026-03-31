@@ -119,6 +119,15 @@ opnsense_protocol_icmp_dropped_by_reason_total | CounterVector | reason | Protoc
 | --- | --- | --- | --- | --- | --- |
 opnsense_unbound_dns_uptime_seconds | Gauge | n/a | Unbound | Uptime of the unbound DNS service in seconds | --exporter.disable-unbound |
 
+### Kea DHCPv4
+| Metric Name | Type | Labels                                                                          | Subsystem | Description                                          | Disable Flag |
+| --- | --- |---------------------------------------------------------------------------------| --- |------------------------------------------------------| --- |
+opnsense_kea_dhcpv4_lease_count | Gauge | interface_name                                                                  | Kea DHCPv4 | Number of active leases for the given interface      | --exporter.disable-keadhcpv4 |
+opnsense_kea_dhcpv4_lease_expiration | Gauge | client_id, hostname, if, interface_description, interface_name, ip_address, mac | Kea DHCPv4 | Lease's expiration in Unix time formatted in seconds | --exporter.disable-keadhcpv4 |
+opnsense_kea_dhcpv4_lease_lifetime | Gauge | client_id, hostname, if, interface_description, interface_name, ip_address, mac | Kea DHCPv4 | Lease's lifetime in seconds                          | --exporter.disable-keadhcpv4 |
+opnsense_kea_dhcpv4_leases_reserved | Gauge | interface_name                                                                  | Kea DHCPv4 | Number of reservations for the given interface | --exporter.disable-keadhcpv4 |
+
+
 ### Wireguard 
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
