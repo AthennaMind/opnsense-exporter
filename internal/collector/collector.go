@@ -31,6 +31,7 @@ const (
 	ServicesSubsystem   = "services"
 	FirewallSubsystem   = "firewall"
 	FirmwareSubsystem   = "firmware"
+	KeaDHCPv4Subsystem  = "kea_dhcpv4"
 )
 
 // CollectorInstance is the interface a service specific collectors must implement.
@@ -118,6 +119,10 @@ func WithoutFirmwareCollector() Option { return withoutCollectorInstance(Firmwar
 // removes the openvpn collector from the list of collectors
 func WithoutOpenVPNCollector() Option {
 	return withoutCollectorInstance(OpenVPNSubsystem)
+}
+
+func WithoutKeaDHCPv4Collector() Option {
+	return withoutCollectorInstance(KeaDHCPv4Subsystem)
 }
 
 // New creates a new Collector instance.

@@ -91,6 +91,10 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutOpenVPNCollector())
 		logger.Info("openvpn collector disabled")
 	}
+	if !collectorsSwitches.KeaDHCPv4 {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutKeaDHCPv4Collector())
+		logger.Info("kea dhcpv4 collector disabled")
+	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
 	if err != nil {
