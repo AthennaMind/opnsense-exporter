@@ -1,7 +1,6 @@
 package opnsense
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -110,7 +109,7 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 
 		// Add the information in
 		data.Leases = append(data.Leases, KeaDhcpv4Lease{
-			If:            row.If,
+			InterfaceName: row.InterfaceName,
 			Hostname:      row.Hostname,
 			Address:       row.Address,
 			Mac:           row.MacInfo,
