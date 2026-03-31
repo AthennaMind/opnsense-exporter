@@ -47,7 +47,7 @@ type KeaDhcpv4Lease struct {
 	InterfaceDescription string
 }
 
-type InterfaceInfo struct {
+type KeaDhcpV4InterfaceInfo struct {
 	Name        string
 	Description string
 }
@@ -56,7 +56,7 @@ type KeaDhcpv4Leases struct {
 	Leases             []KeaDhcpv4Lease
 	ReservedLeaseCount map[string]int
 	LeaseCount         map[string]int
-	Interfaces         map[string]InterfaceInfo
+	Interfaces         map[string]KeaDhcpV4InterfaceInfo
 }
 
 func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
@@ -77,7 +77,7 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 		return data, err
 	}
 
-	data.Interfaces = make(map[string]InterfaceInfo)
+	data.Interfaces = make(map[string]KeaDhcpV4InterfaceInfo)
 	data.LeaseCount = make(map[string]int)
 	data.ReservedLeaseCount = make(map[string]int)
 
@@ -118,7 +118,7 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 			ValidLifetime: lifetime,
 		})
 
-		data.Interfaces[row.InterfaceName] = InterfaceInfo{
+		data.Interfaces[row.InterfaceName] = KeaDhcpV4InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
 		}
