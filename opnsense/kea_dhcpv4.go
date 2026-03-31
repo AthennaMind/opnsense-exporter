@@ -39,6 +39,7 @@ type KeaDhcpv4Lease struct {
 	Expiration           int
 	ValidLifetime        int
 	Mac                  string
+	MacInfo              string
 	ClientId             string
 	Hostname             string
 	Address              string
@@ -112,10 +113,11 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 			InterfaceName: row.InterfaceName,
 			Hostname:      row.Hostname,
 			Address:       row.Address,
-			Mac:           row.MacInfo,
+			Mac:           row.Hwaddr,
 			ClientId:      row.ClientId,
 			Expiration:    expiration,
 			ValidLifetime: lifetime,
+			MacInfo:       row.MacInfo,
 		})
 
 		data.Interfaces[row.InterfaceName] = KeaDhcpV4InterfaceInfo{
