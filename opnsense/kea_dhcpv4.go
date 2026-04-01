@@ -1,0 +1,141 @@
+package opnsense
+
+import (
+	"strconv"
+	"strings"
+)
+
+type KeaDhcpv4LeasesRow struct {
+	If                   string `json:"if"`
+	Address              string `json:"address"`
+	Hwaddr               string `json:"hwaddr"`
+	ClientId             string `json:"client_id"`
+	ValidLifetime        string `json:"valid_lifetime"`
+	Expiration           string `json:"expire"`
+	InterfaceDescription string `json:"if_descr"`
+	InterfaceName        string `json:"if_name"`
+	MacInfo              string `json:"mac_info"`
+	IsReserved           string `json:"is_reserved"`
+	Hostname             string `json:"hostname"`
+	FqdnForward          string `json:"fqdn_fwd"`
+	FqdnReceived         string `json:"fqdn_rev"`
+	State                string `json:"state"`
+	UserContext          string `json:"user_context"`
+	SubnetId             string `json:"subnet_id"`
+	PoolId               string `json:"pool_id"`
+}
+
+type KeaDhcpv4LeasesResponse struct {
+	Total    int `json:"total"`
+	RowCount int `json:"rowCount"`
+	Current  int `json:"current"`
+	Rows     []KeaDhcpv4LeasesRow
+
+	// This follows pattern {"name": "desc"}
+	// where name is the physical interface
+	// and desc is the human-readable name as set by the user
+	Interfaces map[string]string
+}
+
+type KeaDhcpv4Lease struct {
+	Expiration    int
+	ValidLifetime int
+	Mac           string
+	MacInfo       string
+	ClientId      string
+	Hostname      string
+	Address       string
+	InterfaceName string
+}
+
+type KeaDhcpV4InterfaceInfo struct {
+	Name        string
+	Description string
+}
+
+type KeaDhcpv4Leases struct {
+	Leases             []KeaDhcpv4Lease
+	ReservedLeaseCount map[string]int
+	LeaseCount         map[string]int
+	Interfaces         map[string]KeaDhcpV4InterfaceInfo
+}
+
+func parseDHCPv4Leases(response KeaDhcpv4LeasesResponse) (KeaDhcpv4Leases, *APICallError) {
+	data := KeaDhcpv4Leases{}
+
+	data.Interfaces = make(map[string]KeaDhcpV4InterfaceInfo)
+	data.LeaseCount = make(map[string]int)
+	data.ReservedLeaseCount = make(map[string]int)
+
+	for _, row := range response.Rows {
+		// Update total reservation count
+		data.LeaseCount[row.InterfaceName] += 1
+
+		// Update reservation count
+		if strings.Compare("", row.IsReserved) != 0 {
+			data.ReservedLeaseCount[row.InterfaceName] += 1
+		}
+
+		expiration, err := strconv.Atoi(row.Expiration)
+		if err != nil {
+			return data, &APICallError{
+				Endpoint:   "keaDhcpv4",
+				Message:    "expiration time is not an integer",
+				StatusCode: 0,
+			}
+		}
+		lifetime, err := strconv.Atoi(row.ValidLifetime)
+		if err != nil {
+			return data, &APICallError{
+				Endpoint:   "keaDhcpv4",
+				Message:    "valid lifetime is not an integer",
+				StatusCode: 0,
+			}
+		}
+
+		// Add the information in
+		data.Leases = append(data.Leases, KeaDhcpv4Lease{
+			InterfaceName: row.InterfaceName,
+			Hostname:      row.Hostname,
+			Address:       row.Address,
+			Mac:           row.Hwaddr,
+			ClientId:      row.ClientId,
+			Expiration:    expiration,
+			ValidLifetime: lifetime,
+			MacInfo:       row.MacInfo,
+		})
+
+		data.Interfaces[row.InterfaceName] = KeaDhcpV4InterfaceInfo{
+			Name:        row.If,
+			Description: row.InterfaceDescription,
+		}
+	}
+
+	return data, nil
+}
+
+func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
+	var resp KeaDhcpv4LeasesResponse
+	var data KeaDhcpv4Leases
+
+	url, ok := c.endpoints["keaDhcpv4"]
+	if !ok {
+		return data, &APICallError{
+			Endpoint:   "keaDhcpv4",
+			Message:    "endpoint not found in client endpoints",
+			StatusCode: 0,
+		}
+	}
+
+	err := c.do("GET", url, nil, &resp)
+	if err != nil {
+		return data, err
+	}
+
+	data, err = parseDHCPv4Leases(resp)
+	if err != nil {
+		return data, err
+	}
+
+	return data, nil
+}

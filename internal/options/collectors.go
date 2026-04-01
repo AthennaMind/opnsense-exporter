@@ -35,6 +35,14 @@ var (
 		"exporter.disable-firmware",
 		"Disable the scraping of the firmware metrics",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_FIRMWARE").Default("false").Bool()
+	keaDhcpv4Disabled = kingpin.Flag(
+		"exporter.disable-kea-dhcpv4",
+		"Disable the scraping of Kea DHCPv4 leases",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_KEADHCPV4").Default("false").Bool()
+	keaDhcpv6Disabled = kingpin.Flag(
+		"exporter.disable-kea-dhcpv6",
+		"Disable the scraping of Kea DHCPv6 leases",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_KEADHCPV6").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
@@ -47,6 +55,8 @@ type CollectorsDisableSwitch struct {
 	OpenVPN   bool
 	Firewall  bool
 	Firmware  bool
+	KeaDHCPv4 bool
+	KeaDHCPv6 bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
@@ -60,5 +70,7 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		OpenVPN:   !*openVPNCollectorDisabled,
 		Firewall:  !*firewallCollectorDisabled,
 		Firmware:  !*firmwareCollectorDisabled,
+		KeaDHCPv4: !*keaDhcpv4Disabled,
+		KeaDHCPv6: !*keaDhcpv6Disabled,
 	}
 }

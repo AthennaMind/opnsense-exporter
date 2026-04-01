@@ -119,6 +119,23 @@ opnsense_protocol_icmp_dropped_by_reason_total | CounterVector | reason | Protoc
 | --- | --- | --- | --- | --- | --- |
 opnsense_unbound_dns_uptime_seconds | Gauge | n/a | Unbound | Uptime of the unbound DNS service in seconds | --exporter.disable-unbound |
 
+### Kea DHCPv4
+| Metric Name | Type | Labels                                                                                     | Subsystem | Description                                          | Disable Flag                  |
+| --- | --- |--------------------------------------------------------------------------------------------| --- |------------------------------------------------------|-------------------------------|
+opnsense_kea_dhcpv4_lease_count | Gauge | interface_name                                                                             | Kea DHCPv4 | Number of active leases for the given interface      | --exporter.disable-kea-dhcpv4 |
+opnsense_kea_dhcpv4_lease_expiration | Gauge | hostname, ip_address, mac, mac_info, client_id, if, interface_name, interface_description  | Kea DHCPv4 | Lease's expiration in Unix time formatted in seconds | --exporter.disable-kea-dhcpv4 |
+opnsense_kea_dhcpv4_lease_lifetime | Gauge | hostname, ip_address, mac, mac_info, client_id, if, interface_name, interface_description  | Kea DHCPv4 | Lease's lifetime in seconds                          | --exporter.disable-kea-dhcpv4 |
+opnsense_kea_dhcpv4_leases_reserved | Gauge | interface_name                                                                             | Kea DHCPv4 | Number of reservations for the given interface | --exporter.disable-kea-dhcpv4 |
+
+### Kea DHCPv6
+| Metric Name | Type | Labels                                                                                     | Subsystem  | Description                                          | Disable Flag                  |
+| --- | --- |--------------------------------------------------------------------------------------------|------------|------------------------------------------------------|-------------------------------|
+opnsense_kea_dhcpv6_lease_count | Gauge | interface_name                                                                             | Kea DHCPv6 | Number of active leases for the given interface      | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_lease_expiration | Gauge | hostname, ip_address, prefix_len, hwaddr, duid, if, interface_name, interface_description  | Kea DHCPv6 | Lease's expiration in Unix time formatted in seconds | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_lease_lifetime | Gauge | hostname, ip_address, prefix_len, hwaddr, duid, if, interface_name, interface_description  | Kea DHCPv6 | Lease's lifetime in seconds                          | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_preferred_lifetime | Gauge | hostname, ip_address, prefix_len, hwaddr, duid, if, interface_name, interface_description  | Kea DHCPv6 | Preferred lifetime of the lease in seconds                | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_leases_reserved | Gauge | interface_name                                                                             | Kea DHCPv6 | Number of reservations for the given interface       | --exporter.disable-kea-dhcpv6 |
+
 ### Wireguard 
 
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
