@@ -66,29 +66,14 @@ type KeaDhcpv6Leases struct {
 	Interfaces         map[string]KeaDhcpV6InterfaceInfo
 }
 
-func (c *Client) FetchLeasesv6() (KeaDhcpv6Leases, *APICallError) {
-	var resp KeaDhcpv6LeasesResponse
-	var data KeaDhcpv6Leases
-
-	url, ok := c.endpoints["keaDhcpv6"]
-	if !ok {
-		return data, &APICallError{
-			Endpoint:   "keaDhcpv6",
-			Message:    "endpoint not found in client endpoints",
-			StatusCode: 0,
-		}
-	}
-
-	err := c.do("GET", url, nil, &resp)
-	if err != nil {
-		return data, err
-	}
+func parseDHCPv6Leases(leases KeaDhcpv6LeasesResponse) (KeaDhcpv6Leases, *APICallError) {
+	data := KeaDhcpv6Leases{}
 
 	data.Interfaces = make(map[string]KeaDhcpV6InterfaceInfo)
 	data.LeaseCount = make(map[string]int)
 	data.ReservedLeaseCount = make(map[string]int)
 
-	for _, row := range resp.Rows {
+	for _, row := range leases.Rows {
 		// Update total reservation count
 		data.LeaseCount[row.InterfaceName] += 1
 
@@ -147,6 +132,32 @@ func (c *Client) FetchLeasesv6() (KeaDhcpv6Leases, *APICallError) {
 			Name:        row.If,
 			Description: row.InterfaceDescription,
 		}
+	}
+
+	return data, nil
+}
+
+func (c *Client) FetchLeasesv6() (KeaDhcpv6Leases, *APICallError) {
+	var resp KeaDhcpv6LeasesResponse
+	var data KeaDhcpv6Leases
+
+	url, ok := c.endpoints["keaDhcpv6"]
+	if !ok {
+		return data, &APICallError{
+			Endpoint:   "keaDhcpv6",
+			Message:    "endpoint not found in client endpoints",
+			StatusCode: 0,
+		}
+	}
+
+	err := c.do("GET", url, nil, &resp)
+	if err != nil {
+		return data, err
+	}
+
+	data, err = parseDHCPv6Leases(resp)
+	if err != nil {
+		return data, err
 	}
 
 	return data, nil
