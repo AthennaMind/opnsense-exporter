@@ -127,6 +127,14 @@ opnsense_kea_dhcpv4_lease_expiration | Gauge | client_id, hostname, if, interfac
 opnsense_kea_dhcpv4_lease_lifetime | Gauge | client_id, hostname, if, interface_description, interface_name, ip_address, mac | Kea DHCPv4 | Lease's lifetime in seconds                          | --exporter.disable-kea-dhcpv4 |
 opnsense_kea_dhcpv4_leases_reserved | Gauge | interface_name                                                                  | Kea DHCPv4 | Number of reservations for the given interface | --exporter.disable-kea-dhcpv4 |
 
+### Kea DHCPv6
+| Metric Name | Type | Labels                                                                                     | Subsystem  | Description                                          | Disable Flag                  |
+| --- | --- |--------------------------------------------------------------------------------------------|------------|------------------------------------------------------|-------------------------------|
+opnsense_kea_dhcpv6_lease_count | Gauge | interface_name                                                                             | Kea DHCPv6 | Number of active leases for the given interface      | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_lease_expiration | Gauge | hostname, ip_address, prefix_len, hwaddr, duid, if, interface_name, interface_description  | Kea DHCPv6 | Lease's expiration in Unix time formatted in seconds | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_lease_lifetime | Gauge | hostname, ip_address, prefix_len, hwaddr, duid, if, interface_name, interface_description  | Kea DHCPv6 | Lease's lifetime in seconds                          | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_preferred_lifetime | Gauge | hostname, ip_address, prefix_len, hwaddr, duid, if, interface_name, interface_description  | Kea DHCPv6 | Preferred lifetime of the lease in seconds                | --exporter.disable-kea-dhcpv6 |
+opnsense_kea_dhcpv6_leases_reserved | Gauge | interface_name                                                                             | Kea DHCPv6 | Number of reservations for the given interface       | --exporter.disable-kea-dhcpv6 |
 
 ### Wireguard 
 
