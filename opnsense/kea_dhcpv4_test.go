@@ -61,6 +61,56 @@ func TestParseKeaDHCPv4Leases(t *testing.T) {
 				},
 			},
 		},
+	}, {
+		name: "1 lease, 1 interface, 1 reservation",
+		row: KeaDhcpv4LeasesResponse{
+			Total:    1,
+			RowCount: 1,
+			Current:  1,
+			Rows: []KeaDhcpv4LeasesRow{{
+				If:                   "tst1",
+				Address:              "1.2.3.4",
+				Hwaddr:               "01:23:45:67:89:ab",
+				ClientId:             "01:23:45:67:89:ab",
+				ValidLifetime:        "86400",
+				Expiration:           "86400",
+				SubnetId:             "1",
+				FqdnForward:          "0",
+				FqdnReceived:         "0",
+				Hostname:             "test",
+				State:                "0",
+				UserContext:          "",
+				PoolId:               "0",
+				InterfaceDescription: "Test Interface",
+				InterfaceName:        "opt1",
+				MacInfo:              "CI/CD Tests, Ltd.",
+				IsReserved:           "mac",
+			}},
+		},
+		expected: KeaDhcpv4Leases{
+			Leases: []KeaDhcpv4Lease{{
+				Address:       "1.2.3.4",
+				Mac:           "01:23:45:67:89:ab",
+				ClientId:      "01:23:45:67:89:ab",
+				ValidLifetime: 86400,
+				Expiration:    86400,
+				Hostname:      "test",
+				InterfaceName: "opt1",
+				MacInfo:       "CI/CD Tests, Ltd.",
+			}},
+			LeaseCount: map[string]int{
+				"opt1": 1,
+			},
+			ReservedLeaseCount: map[string]int{
+				"opt1": 1,
+			},
+			Interfaces: map[string]KeaDhcpV4InterfaceInfo{
+				"opt1": {
+					Name:        "tst1",
+					Description: "Test Interface",
+				},
+			},
+		},
 	}}
 
 	for _, tt := range tests {
