@@ -40,24 +40,26 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 
 ## OPNsense user permissions
 
-| Type     |      Name                    |
-|----------|:-------------:               |
-| GUI |  Diagnostics: ARP Table           |
-| GUI |  Diagnostics: Firewall statistics |
-| GUI |  Diagnostics: Netstat             |
-| GUI |  Reporting: Traffic               |
-| GUI |  Services: Unbound (MVC)          |
-| GUI |  Status: DHCP leases              |
-| GUI |  Status: DNS Overview             |
-| GUI |  Status: IPsec                    |
-| GUI |  Status: OpenVPN                  |
-| GUI |  Status: Services                 |
-| GUI |  System: Firmware                 |
-| GUI |  System: Gateways                 |
-| GUI |  System: Settings: Cron           |
-| GUI |  System: Status                   |
-| GUI |  VPN: OpenVPN: Instances          |
-| GUI |  VPN: WireGuard                   |
+| Type     |               Name               |
+|----------|:--------------------------------:|
+| GUI |      Diagnostics: ARP Table      |
+| GUI | Diagnostics: Firewall statistics |
+| GUI |       Diagnostics: Netstat       |
+| GUI |        Reporting: Traffic        |
+| GUI |     Services: Unbound (MVC)      |
+| GUI |       Status: DHCP leases        |
+| GUI |       Status: DNS Overview       |
+| GUI |          Status: IPsec           |
+| GUI |         Status: OpenVPN          |
+| GUI |         Status: Services         |
+| GUI |         System: Firmware         |
+| GUI |         System: Gateways         |
+| GUI |      System: Settings: Cron      |
+| GUI |          System: Status          |
+| GUI |     VPN: OpenVPN: Instances      |
+| GUI |          VPN: WireGuard          |
+| GUI |     Services: DHCP: Kea(v4)      |
+| GUI |     Services: DHCP: Kea(v6)      |
 
 ## OPNsense settings
 
@@ -186,6 +188,8 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-ipsec` - Disable the scraping of IPsec service. Defaults to `false`.
 - `--exporter.disable-firewall` - Disable the scraping of Firewall (pf) metrics. Defaults to `false`.
 - `--exporter.disable-firmware` - Disable the scraping of Firmware infos. Defaults to `false`.
+- `--exporter.disable-kea-dhcpv4` - Disable the scraping of Kea DHCPv4 leases. Defaults to `false`.
+- `--exporter.disable-kea-dhcpv6` - Disable the scraping of Kea DHCPv6 leases. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -212,6 +216,10 @@ Flags:
                                  Disable the scraping of the firewall (pf) metrics ($OPNSENSE_EXPORTER_DISABLE_FIREWALL)
       --[no-]exporter.disable-firmware
                                  Disable the scraping of the firmware metrics ($OPNSENSE_EXPORTER_DISABLE_FIRMWARE)
+      --[no-]exporter.disable-kea-dhcpv4  
+                                 Disable the scraping of Kea DHCPv4 leases ($OPNSENSE_EXPORTER_DISABLE_KEADHCPV4)
+      --[no-]exporter.disable-kea-dhcpv6  
+                                 Disable the scraping of Kea DHCPv6 leases ($OPNSENSE_EXPORTER_DISABLE_KEADHCPV6)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics
