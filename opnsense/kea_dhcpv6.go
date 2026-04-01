@@ -5,34 +5,35 @@ import (
 	"strings"
 )
 
+type KeaDhcpv6LeasesRow struct {
+	If                    string `json:"if"`
+	Address               string `json:"address"`
+	Hwaddr                string `json:"hwaddr"`
+	Duid                  string `json:"duid"`
+	ValidLifetime         string `json:"valid_lifetime"`
+	Expiration            string `json:"expire"`
+	InterfaceDescription  string `json:"if_descr"`
+	InterfaceName         string `json:"if_name"`
+	IsReserved            string `json:"is_reserved"`
+	Hostname              string `json:"hostname"`
+	FqdnForward           string `json:"fqdn_fwd"`
+	FqdnReceived          string `json:"fqdn_rev"`
+	State                 string `json:"state"`
+	UserContext           string `json:"user_context"`
+	SubnetId              string `json:"subnet_id"`
+	PoolId                string `json:"pool_id"`
+	PreferredLifetime     string `json:"pref_lifetime"`
+	Iaid                  string `json:"iaid"`
+	PrefixLength          string `json:"prefix_len"`
+	HardwareType          string `json:"hwtype"`
+	HardwareAddressSource string `json:"hwaddr_source"`
+}
+
 type KeaDhcpv6LeasesResponse struct {
 	Total    int `json:"total"`
 	RowCount int `json:"rowCount"`
 	Current  int `json:"current"`
-	Rows     []struct {
-		If                    string `json:"if"`
-		Address               string `json:"address"`
-		Hwaddr                string `json:"hwaddr"`
-		Duid                  string `json:"duid"`
-		ValidLifetime         string `json:"valid_lifetime"`
-		Expiration            string `json:"expire"`
-		InterfaceDescription  string `json:"if_descr"`
-		InterfaceName         string `json:"if_name"`
-		IsReserved            string `json:"is_reserved"`
-		Hostname              string `json:"hostname"`
-		FqdnForward           string `json:"fqdn_fwd"`
-		FqdnReceived          string `json:"fqdn_rev"`
-		State                 string `json:"state"`
-		UserContext           string `json:"user_context"`
-		SubnetId              string `json:"subnet_id"`
-		PoolId                string `json:"pool_id"`
-		PreferredLifetime     string `json:"pref_lifetime"`
-		Iaid                  string `json:"iaid"`
-		PrefixLength          string `json:"prefix_len"`
-		HardwareType          string `json:"hwtype"`
-		HardwareAddressSource string `json:"hwaddr_source"`
-	}
-
+	Rows     []KeaDhcpv6LeasesRow
 	// This follows pattern {"name": "desc"}
 	// where name is the physical interface
 	// and desc is the human-readable name as set by the user
