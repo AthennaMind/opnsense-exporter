@@ -86,7 +86,7 @@ opnsense_protocol_arp_received_requests_total | Counter | n/a | Protocol Statist
 | --- | --- | --- | --- | --- | --- |
 opnsense_gateways_info | Gauge | name, description, device, protocol, enabled, weight, interface, upstream | Gateways | Configuration details of the gateway | n/a |
 opnsense_gateways_monitor_info | Gauge | name, enabled, no_route, address | Gateways | Configuration details of the gateway monitoring | n/a |
-opnsense_gateways_status | Gauge | address, name | Gateways | Status of the gateway by name and address (1 = up, 0 = down, 2 = unknown, 3 = pending) | n/a |
+opnsense_gateways_status | Gauge | address, name | Gateways | Status of the gateway by name and address (0 = offline, 1 = online, 2 = unknown, 3 = pending, 4 = packetloss, 5 = latency, 6 = offline forced) | n/a |
 opnsense_gateways_loss_percentage | Gauge | address, name | Gateways | The current gateway loss percentage by name and address | n/a |
 opnsense_gateways_rtt_milliseconds | Gauge | address, name | Gateways | RTT is the average (mean) of the round trip time in milliseconds by name and address | n/a |
 opnsense_gateways_rttd_milliseconds | Gauge | address, name | Gateways | RTTd is the standard deviation of the round trip time in milliseconds by name and address | n/a |
