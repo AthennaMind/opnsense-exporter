@@ -3,6 +3,7 @@ package opnsense
 import (
 	"log/slog"
 	"strconv"
+	"strings"
 )
 
 // GatewayStatus is the custom type that represents the status of a gateway
@@ -13,6 +14,9 @@ const (
 	GatewayStatusOnline
 	GatewayStatusUnknown
 	GatewayStatusPeding
+	GatewayStatusLoss
+	GatewayStatusLatency
+	GatewayStatusForcedDown
 )
 
 // gatewayConfigurationResponse is the response from the OPNsense API that contains the gateways configuration details
@@ -122,18 +126,48 @@ func convertPriorityToString(priority interface{}) string {
 }
 
 // parseGatewayStatus parses a string status to a GatewayStatus type.
+// OPNsense may report combined statuses such as "Latency, Packetloss";
+// the worst component wins (Offline > ForcedDown > Loss > Latency > Pending > Online).
 func parseGatewayStatus(statusTranslated string, logger *slog.Logger, originalStatus string) GatewayStatusType {
-	switch statusTranslated {
-	case "Online":
-		return GatewayStatusOnline
-	case "Offline":
-		return GatewayStatusOffline
-	case "Pending":
-		return GatewayStatusPeding
-	default:
+	worst := GatewayStatusType(-1)
+	worstRank := -1
+	rank := map[GatewayStatusType]int{
+		GatewayStatusOnline:     0,
+		GatewayStatusPeding:     1,
+		GatewayStatusLatency:    2,
+		GatewayStatusLoss:       3,
+		GatewayStatusForcedDown: 4,
+		GatewayStatusOffline:    5,
+	}
+	for _, part := range strings.Split(statusTranslated, ",") {
+		var s GatewayStatusType
+		switch strings.TrimSpace(part) {
+		case "Online":
+			s = GatewayStatusOnline
+		case "Offline":
+			s = GatewayStatusOffline
+		case "Pending":
+			s = GatewayStatusPeding
+		case "Packetloss":
+			s = GatewayStatusLoss
+		case "Latency":
+			s = GatewayStatusLatency
+		case "Offline (forced)":
+			s = GatewayStatusForcedDown
+		default:
+			logger.Warn("unknown gateway status detected", "status", originalStatus)
+			return GatewayStatusUnknown
+		}
+		if r := rank[s]; r > worstRank {
+			worstRank = r
+			worst = s
+		}
+	}
+	if worstRank < 0 {
 		logger.Warn("unknown gateway status detected", "status", originalStatus)
 		return GatewayStatusUnknown
 	}
+	return worst
 }
 
 // FetchGateways fetches the gateways status details from the OPNsense API

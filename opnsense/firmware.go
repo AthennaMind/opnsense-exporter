@@ -81,7 +81,7 @@ func (c *Client) FetchFirmwareStatus() (FirmwareStatus, *APICallError) {
 		return data, err
 	}
 
-	if resp.Status != "none" {
+	if resp.LastCheck != "" {
 		data.OsVersion = resp.OsVersion
 		data.ProductABI = resp.ProductAbi
 		data.ProductId = resp.ProductID
