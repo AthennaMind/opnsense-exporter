@@ -192,12 +192,12 @@ type unboundDNSStatusResponse struct {
 type UnboundDNSOverview struct {
 	AnswerRcodes      map[string]int
 	QueryTypes        map[string]int
-	Total             int
-	BlocklistSize     int
-	Passed            int
-	AnswerRcodesTotal int
-	AnnswerBogusTotal int
-	AnswerSecureTotal int
+	Total             int64
+	BlocklistSize     int64
+	Passed            int64
+	AnswerRcodesTotal int64
+	AnnswerBogusTotal int64
+	AnswerSecureTotal int64
 	UptimeSeconds     float64
 }
 

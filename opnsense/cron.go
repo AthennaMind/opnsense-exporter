@@ -23,7 +23,7 @@ type cronSearchResponse struct {
 	Current  int `json:"current"`
 }
 
-type CronStatus int
+type CronStatus int64
 
 const (
 	CronStatusDisabled CronStatus = iota

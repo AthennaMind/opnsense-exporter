@@ -72,7 +72,7 @@ func TestParsePercentage(t *testing.T) {
 
 func TestSliceIntToMapStringInt(t *testing.T) {
 	input := []string{"1", "2", "3"}
-	expected := map[string]int{"1": 1, "2": 2, "3": 3}
+	expected := map[string]int64{"1": 1, "2": 2, "3": 3}
 
 	result, _ := sliceIntToMapStringInt(input, "test")
 
