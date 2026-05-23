@@ -1,27 +1,23 @@
 package opnsense
 
-import (
-	"strings"
-)
-
 type KeaDhcpv4LeasesRow struct {
-	If                   string `json:"if"`
-	Address              string `json:"address"`
-	Hwaddr               string `json:"hwaddr"`
-	ClientId             string `json:"client_id"`
-	ValidLifetime        int    `json:"valid_lifetime"`
-	Expiration           int    `json:"expire"`
-	InterfaceDescription string `json:"if_descr"`
-	InterfaceName        string `json:"if_name"`
-	MacInfo              string `json:"mac_info"`
-	IsReserved           string `json:"is_reserved"`
-	Hostname             string `json:"hostname"`
-	FqdnForward          string `json:"fqdn_fwd"`
-	FqdnReceived         string `json:"fqdn_rev"`
-	State                string `json:"state"`
-	UserContext          string `json:"user_context"`
-	SubnetId             int    `json:"subnet_id"`
-	PoolId               int    `json:"pool_id"`
+	If                   string   `json:"if"`
+	Address              string   `json:"address"`
+	Hwaddr               string   `json:"hwaddr"`
+	ClientId             string   `json:"client_id"`
+	ValidLifetime        int      `json:"valid_lifetime"`
+	Expiration           int      `json:"expire"`
+	InterfaceDescription string   `json:"if_descr"`
+	InterfaceName        string   `json:"if_name"`
+	MacInfo              string   `json:"mac_info"`
+	IsReserved           []string `json:"is_reserved"`
+	Hostname             string   `json:"hostname"`
+	FqdnForward          string   `json:"fqdn_fwd"`
+	FqdnReceived         string   `json:"fqdn_rev"`
+	State                int      `json:"state"`
+	UserContext          string   `json:"user_context"`
+	SubnetId             int      `json:"subnet_id"`
+	PoolId               int      `json:"pool_id"`
 }
 
 type KeaDhcpv4LeasesResponse struct {
@@ -29,11 +25,6 @@ type KeaDhcpv4LeasesResponse struct {
 	RowCount int `json:"rowCount"`
 	Current  int `json:"current"`
 	Rows     []KeaDhcpv4LeasesRow
-
-	// This follows pattern {"name": "desc"}
-	// where name is the physical interface
-	// and desc is the human-readable name as set by the user
-	Interfaces map[string]string
 }
 
 type KeaDhcpv4Lease struct {
@@ -71,7 +62,7 @@ func parseDHCPv4Leases(response KeaDhcpv4LeasesResponse) (KeaDhcpv4Leases, *APIC
 		data.LeaseCount[row.InterfaceName] += 1
 
 		// Update reservation count
-		if strings.Compare("", row.IsReserved) != 0 {
+		if len(row.IsReserved) > 0 {
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
