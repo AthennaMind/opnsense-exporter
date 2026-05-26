@@ -118,6 +118,8 @@ opnsense_protocol_icmp_dropped_by_reason_total | CounterVector | reason | Protoc
 | Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
 | --- | --- | --- | --- | --- | --- |
 opnsense_unbound_dns_uptime_seconds | Gauge | n/a | Unbound | Uptime of the unbound DNS service in seconds | --exporter.disable-unbound |
+opnsense_unbound_dns_answer_bogus_total | Counter | n/a | Unbound | Total number of responses that failed DNSSEC validation | --exporter.disable-unbound |
+opnsense_unbound_dns_answer_secure_total | Counter | n/a | Unbound | Total number of responses that successfully passed DNSSEC validation | --exporter.disable-unbound |
 
 ### Kea DHCPv4
 | Metric Name | Type | Labels                                                                                     | Subsystem | Description                                          | Disable Flag                  |

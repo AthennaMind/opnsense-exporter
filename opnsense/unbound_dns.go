@@ -196,35 +196,39 @@ type UnboundDNSOverview struct {
 	BlocklistSize     int
 	Passed            int
 	AnswerRcodesTotal int
-	AnnswerBogusTotal int
+	AnswerBogusTotal  int
 	AnswerSecureTotal int
 	UptimeSeconds     float64
 }
 
 func (c *Client) FetchUnboundOverview() (UnboundDNSOverview, *APICallError) {
-	var (
-		response      unboundDNSStatusResponse
-		data          UnboundDNSOverview
-		err           error
-		errConvertion *APICallError
-	)
+	var response unboundDNSStatusResponse
 
 	url, ok := c.endpoints["unboundDNSStatus"]
 	if !ok {
-		return data, &APICallError{
+		return UnboundDNSOverview{}, &APICallError{
 			Endpoint:   "unboundDNSStatus",
 			Message:    "endpoint not found in client endpoints",
 			StatusCode: 0,
 		}
 	}
 	if err := c.do("GET", url, nil, &response); err != nil {
-		return data, err
+		return UnboundDNSOverview{}, err
 	}
 
-	data.QueryTypes = make(map[string]int)
-	data.AnswerRcodes = make(map[string]int)
+	return parseUnboundOverview(&response, url)
+}
 
-	data.UptimeSeconds, err = strconv.ParseFloat(response.Data.Time.Up, 64)
+// parseUnboundOverview transforms the raw API response into the
+// collector-facing overview. It is split from FetchUnboundOverview so the
+// parsing logic can be exercised by unit tests without an HTTP round trip.
+func parseUnboundOverview(response *unboundDNSStatusResponse, url EndpointPath) (UnboundDNSOverview, *APICallError) {
+	data := UnboundDNSOverview{
+		QueryTypes:   make(map[string]int),
+		AnswerRcodes: make(map[string]int),
+	}
+
+	uptime, err := strconv.ParseFloat(response.Data.Time.Up, 64)
 	if err != nil {
 		return data, &APICallError{
 			Endpoint:   string(url),
@@ -232,7 +236,10 @@ func (c *Client) FetchUnboundOverview() (UnboundDNSOverview, *APICallError) {
 			StatusCode: 0,
 		}
 	}
-	data.AnnswerBogusTotal, errConvertion = parseStringToInt(response.Data.Num.Answer.Bogus, url)
+	data.UptimeSeconds = uptime
+
+	var errConvertion *APICallError
+	data.AnswerBogusTotal, errConvertion = parseStringToInt(response.Data.Num.Answer.Bogus, url)
 	if errConvertion != nil {
 		return data, errConvertion
 	}
