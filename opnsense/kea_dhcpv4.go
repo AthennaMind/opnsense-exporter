@@ -272,13 +272,10 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 	switch apiVariant {
 	case 0:
 		data, err = parseDHCPv4Leases(resp)
-		break
 	case 1:
 		data, err = parseDHCPv4LeasesAllStrings(allStringsResp)
-		break
 	case 2:
 		data, err = parseDHCPv4LeasesStringInt(stringIntResp)
-		break
 	default:
 		err = &APICallError{
 			Endpoint:   "keaDhcpv4",
