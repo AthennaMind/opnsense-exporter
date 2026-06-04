@@ -8,8 +8,10 @@ import (
 )
 
 type unboundDNSCollector struct {
-	log    *slog.Logger
-	uptime *prometheus.Desc
+	log          *slog.Logger
+	uptime       *prometheus.Desc
+	answerBogus  *prometheus.Desc
+	answerSecure *prometheus.Desc
 
 	subsystem string
 	instance  string
@@ -34,10 +36,20 @@ func (c *unboundDNSCollector) Register(namespace, instanceLabel string, log *slo
 		"Uptime of the unbound DNS service in seconds",
 		nil,
 	)
+	c.answerBogus = buildPrometheusDesc(c.subsystem, "answer_bogus_total",
+		"Total number of responses that failed DNSSEC validation",
+		nil,
+	)
+	c.answerSecure = buildPrometheusDesc(c.subsystem, "answer_secure_total",
+		"Total number of responses that successfully passed DNSSEC validation",
+		nil,
+	)
 }
 
 func (c *unboundDNSCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.uptime
+	ch <- c.answerBogus
+	ch <- c.answerSecure
 }
 
 func (c *unboundDNSCollector) Update(client *opnsense.Client, ch chan<- prometheus.Metric) *opnsense.APICallError {
@@ -49,6 +61,18 @@ func (c *unboundDNSCollector) Update(client *opnsense.Client, ch chan<- promethe
 		c.uptime,
 		prometheus.GaugeValue,
 		float64(data.UptimeSeconds),
+		c.instance,
+	)
+	ch <- prometheus.MustNewConstMetric(
+		c.answerBogus,
+		prometheus.CounterValue,
+		float64(data.AnswerBogusTotal),
+		c.instance,
+	)
+	ch <- prometheus.MustNewConstMetric(
+		c.answerSecure,
+		prometheus.CounterValue,
+		float64(data.AnswerSecureTotal),
 		c.instance,
 	)
 
