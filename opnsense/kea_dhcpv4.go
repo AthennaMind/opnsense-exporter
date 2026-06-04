@@ -269,13 +269,17 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 		}
 	}
 
-	if apiVariant == 0 {
+	switch apiVariant {
+	case 0:
 		data, err = parseDHCPv4Leases(resp)
-	} else if apiVariant == 1 {
+		break
+	case 1:
 		data, err = parseDHCPv4LeasesAllStrings(allStringsResp)
-	} else if apiVariant == 2 {
+		break
+	case 2:
 		data, err = parseDHCPv4LeasesStringInt(stringIntResp)
-	} else {
+		break
+	default:
 		err = &APICallError{
 			Endpoint:   "keaDhcpv4",
 			Message:    fmt.Sprintf("unknown api variant %d", apiVariant),

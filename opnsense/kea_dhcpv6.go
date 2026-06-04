@@ -1,6 +1,9 @@
 package opnsense
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type KeaDhcpv6LeasesRow struct {
 	If                    string   `json:"if"`
@@ -304,7 +307,23 @@ func (c *Client) FetchLeasesv6() (KeaDhcpv6Leases, *APICallError) {
 		}
 	}
 
-	data, err = parseDHCPv6Leases(resp)
+	switch apiVariant {
+	case 0:
+		data, err = parseDHCPv6Leases(resp)
+		break
+	case 1:
+		data, err = parseDHCPv6LeasesAllStrings(allStringsResp)
+		break
+	case 2:
+		data, err = parseDHCPv6LeasesStringInt(stringIntResp)
+		break
+	default:
+		err = &APICallError{
+			Endpoint:   "keaDhcpv6",
+			Message:    fmt.Sprintf("unknown api variant %d", apiVariant),
+			StatusCode: 0,
+		}
+	}
 	if err != nil {
 		return data, err
 	}
