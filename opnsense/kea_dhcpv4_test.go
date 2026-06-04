@@ -137,7 +137,7 @@ func TestParseKeaDHCPv4LeasesStringInt(t *testing.T) {
 			Total:    1,
 			RowCount: 1,
 			Current:  1,
-			Rows: []KeaDhcpv4LeasesRow{{
+			Rows: []KeaDhcpv4LeasesRowIntString{{
 				If:                   "tst1",
 				Address:              "1.2.3.4",
 				Hwaddr:               "01:23:45:67:89:ab",
@@ -231,7 +231,7 @@ func TestParseKeaDHCPv4LeasesStringInt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			data, err := parseDHCPv4Leases(tt.row)
+			data, err := parseDHCPv4LeasesStringInt(tt.row)
 			if err != nil {
 				t.Error(err)
 			}
@@ -352,11 +352,11 @@ func TestParseKeaDHCPv4Leases(t *testing.T) {
 		},
 	}, {
 		name: "1 lease, 1 interface, 1 reservation",
-		row: KeaDhcpv4LeasesResponseIntString{
+		row: KeaDhcpv4LeasesResponse{
 			Total:    1,
 			RowCount: 1,
 			Current:  1,
-			Rows: []KeaDhcpv4LeasesRowIntString{{
+			Rows: []KeaDhcpv4LeasesRow{{
 				If:                   "tst1",
 				Address:              "1.2.3.4",
 				Hwaddr:               "01:23:45:67:89:ab",
@@ -373,7 +373,7 @@ func TestParseKeaDHCPv4Leases(t *testing.T) {
 				InterfaceDescription: "Test Interface",
 				InterfaceName:        "opt1",
 				MacInfo:              "CI/CD Tests, Ltd.",
-				IsReserved:           "hwaddr",
+				IsReserved:           []string{"hwaddr"},
 			}},
 		},
 		expected: KeaDhcpv4Leases{
