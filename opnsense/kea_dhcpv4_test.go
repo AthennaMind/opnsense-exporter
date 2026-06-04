@@ -125,15 +125,15 @@ func TestParseKeaDHCPv4StringLeases(t *testing.T) {
 func TestParseKeaDHCPv4LeasesStringInt(t *testing.T) {
 	tests := []struct {
 		name     string
-		row      KeaDhcpv4LeasesResponse
+		row      KeaDhcpv4LeasesResponseIntString
 		expected KeaDhcpv4Leases
 	}{{
 		name:     "no leases",
-		row:      KeaDhcpv4LeasesResponse{},
+		row:      KeaDhcpv4LeasesResponseIntString{},
 		expected: KeaDhcpv4Leases{},
 	}, {
 		name: "1 lease, 1 interface",
-		row: KeaDhcpv4LeasesResponse{
+		row: KeaDhcpv4LeasesResponseIntString{
 			Total:    1,
 			RowCount: 1,
 			Current:  1,
@@ -179,11 +179,11 @@ func TestParseKeaDHCPv4LeasesStringInt(t *testing.T) {
 		},
 	}, {
 		name: "1 lease, 1 interface, 1 reservation",
-		row: KeaDhcpv4LeasesResponse{
+		row: KeaDhcpv4LeasesResponseIntString{
 			Total:    1,
 			RowCount: 1,
 			Current:  1,
-			Rows: []KeaDhcpv4LeasesRow{{
+			Rows: []KeaDhcpv4LeasesRowIntString{{
 				If:                   "tst1",
 				Address:              "1.2.3.4",
 				Hwaddr:               "01:23:45:67:89:ab",
@@ -200,7 +200,7 @@ func TestParseKeaDHCPv4LeasesStringInt(t *testing.T) {
 				InterfaceDescription: "Test Interface",
 				InterfaceName:        "opt1",
 				MacInfo:              "CI/CD Tests, Ltd.",
-				IsReserved:           []string{"hwaddr"},
+				IsReserved:           "hwaddr",
 			}},
 		},
 		expected: KeaDhcpv4Leases{
@@ -352,11 +352,11 @@ func TestParseKeaDHCPv4Leases(t *testing.T) {
 		},
 	}, {
 		name: "1 lease, 1 interface, 1 reservation",
-		row: KeaDhcpv4LeasesResponse{
+		row: KeaDhcpv4LeasesResponseIntString{
 			Total:    1,
 			RowCount: 1,
 			Current:  1,
-			Rows: []KeaDhcpv4LeasesRow{{
+			Rows: []KeaDhcpv4LeasesRowIntString{{
 				If:                   "tst1",
 				Address:              "1.2.3.4",
 				Hwaddr:               "01:23:45:67:89:ab",
@@ -373,7 +373,7 @@ func TestParseKeaDHCPv4Leases(t *testing.T) {
 				InterfaceDescription: "Test Interface",
 				InterfaceName:        "opt1",
 				MacInfo:              "CI/CD Tests, Ltd.",
-				IsReserved:           []string{"hwaddr"},
+				IsReserved:           "hwaddr",
 			}},
 		},
 		expected: KeaDhcpv4Leases{
