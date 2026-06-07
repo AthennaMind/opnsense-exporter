@@ -31,7 +31,7 @@ func TestParseKeaDHCPv6LeasesStringInt(t *testing.T) {
 				FqdnForward:          "0",
 				FqdnReceived:         "0",
 				Hostname:             "test",
-				State:                0,
+				State:                "0",
 				UserContext:          "",
 				PoolId:               "0",
 				InterfaceDescription: "Test Interface",
@@ -55,12 +55,6 @@ func TestParseKeaDHCPv6LeasesStringInt(t *testing.T) {
 			LeaseCount: map[string]int{
 				"opt1": 1,
 			},
-			Interfaces: map[string]KeaDhcpV6InterfaceInfo{
-				"opt1": {
-					Name:        "tst1",
-					Description: "Test Interface",
-				},
-			},
 		},
 	}, {
 		name: "1 lease, 1 interface, 1 reservation",
@@ -79,7 +73,7 @@ func TestParseKeaDHCPv6LeasesStringInt(t *testing.T) {
 				FqdnForward:          "0",
 				FqdnReceived:         "0",
 				Hostname:             "test",
-				State:                0,
+				State:                "0",
 				UserContext:          "",
 				PoolId:               "0",
 				InterfaceDescription: "Test Interface",
@@ -107,12 +101,6 @@ func TestParseKeaDHCPv6LeasesStringInt(t *testing.T) {
 			ReservedLeaseCount: map[string]int{
 				"opt1": 1,
 			},
-			Interfaces: map[string]KeaDhcpV6InterfaceInfo{
-				"opt1": {
-					Name:        "tst1",
-					Description: "Test Interface",
-				},
-			},
 		},
 	}}
 
@@ -121,20 +109,6 @@ func TestParseKeaDHCPv6LeasesStringInt(t *testing.T) {
 			data, err := parseDHCPv6LeasesStringInt(tt.row)
 			if err != nil {
 				t.Error(err)
-			}
-
-			// Make sure correct amount of interfaces come back
-			if len(data.Interfaces) != len(tt.expected.Interfaces) {
-				t.Errorf("unexpected number of interfaces in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
-			}
-			if len(data.Leases) != len(tt.expected.Leases) {
-				t.Errorf("unexpected number of leases in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
-			}
-			if len(data.LeaseCount) != len(tt.expected.LeaseCount) {
-				t.Errorf("unexpected number of interfaces with leases in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
-			}
-			if len(data.ReservedLeaseCount) != len(tt.expected.ReservedLeaseCount) {
-				t.Errorf("unexpected number of interfaces with reservations in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
 			}
 
 			// Verify the leases come back as expected
@@ -235,12 +209,6 @@ func TestParseKeaDHCPv6Leases(t *testing.T) {
 			LeaseCount: map[string]int{
 				"opt1": 1,
 			},
-			Interfaces: map[string]KeaDhcpV6InterfaceInfo{
-				"opt1": {
-					Name:        "tst1",
-					Description: "Test Interface",
-				},
-			},
 		},
 	}, {
 		name: "1 lease, 1 interface, 1 reservation",
@@ -287,12 +255,6 @@ func TestParseKeaDHCPv6Leases(t *testing.T) {
 			ReservedLeaseCount: map[string]int{
 				"opt1": 1,
 			},
-			Interfaces: map[string]KeaDhcpV6InterfaceInfo{
-				"opt1": {
-					Name:        "tst1",
-					Description: "Test Interface",
-				},
-			},
 		},
 	}}
 
@@ -301,20 +263,6 @@ func TestParseKeaDHCPv6Leases(t *testing.T) {
 			data, err := parseDHCPv6Leases(tt.row)
 			if err != nil {
 				t.Error(err)
-			}
-
-			// Make sure correct amount of interfaces come back
-			if len(data.Interfaces) != len(tt.expected.Interfaces) {
-				t.Errorf("unexpected number of interfaces in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
-			}
-			if len(data.Leases) != len(tt.expected.Leases) {
-				t.Errorf("unexpected number of leases in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
-			}
-			if len(data.LeaseCount) != len(tt.expected.LeaseCount) {
-				t.Errorf("unexpected number of interfaces with leases in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
-			}
-			if len(data.ReservedLeaseCount) != len(tt.expected.ReservedLeaseCount) {
-				t.Errorf("unexpected number of interfaces with reservations in response, expected %d, got %d\n", len(tt.expected.Interfaces), len(data.Interfaces))
 			}
 
 			// Verify the leases come back as expected
