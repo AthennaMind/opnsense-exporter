@@ -20,7 +20,7 @@ type KeaDhcpv4LeasesRow struct {
 	Hostname             string   `json:"hostname"`
 	FqdnForward          string   `json:"fqdn_fwd"`
 	FqdnReceived         string   `json:"fqdn_rev"`
-	State                string   `json:"state"`
+	State                int      `json:"state"`
 	UserContext          string   `json:"user_context"`
 	SubnetId             int      `json:"subnet_id"`
 	PoolId               int      `json:"pool_id"`
@@ -60,7 +60,7 @@ type KeaDhcpv4LeasesRowIntString struct {
 	Hostname             string `json:"hostname"`
 	FqdnForward          string `json:"fqdn_fwd"`
 	FqdnReceived         string `json:"fqdn_rev"`
-	State                string `json:"state"`
+	State                int    `json:"state"`
 	UserContext          string `json:"user_context"`
 	SubnetId             int    `json:"subnet_id"`
 	PoolId               int    `json:"pool_id"`

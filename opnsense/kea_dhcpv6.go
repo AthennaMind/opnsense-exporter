@@ -79,7 +79,7 @@ type KeaDhcpv6LeasesRowStringInt struct {
 	Hostname              string `json:"hostname"`
 	FqdnForward           string `json:"fqdn_fwd"`
 	FqdnReceived          string `json:"fqdn_rev"`
-	State                 string `json:"state"`
+	State                 int    `json:"state"`
 	UserContext           string `json:"user_context"`
 	SubnetId              string `json:"subnet_id"`
 	PoolId                string `json:"pool_id"`
@@ -120,11 +120,13 @@ type KeaDhcpv6Leases struct {
 	Leases             []KeaDhcpv6Lease
 	ReservedLeaseCount map[string]int
 	LeaseCount         map[string]int
+	Interfaces         map[string]KeaDhcpV6InterfaceInfo
 }
 
 func parseDHCPv6LeasesAllStrings(leases KeaDhcpv6LeasesResponseAllStrings) (KeaDhcpv6Leases, *APICallError) {
 	data := KeaDhcpv6Leases{}
 
+	data.Interfaces = make(map[string]KeaDhcpV6InterfaceInfo)
 	data.LeaseCount = make(map[string]int)
 	data.ReservedLeaseCount = make(map[string]int)
 
@@ -183,6 +185,10 @@ func parseDHCPv6LeasesAllStrings(leases KeaDhcpv6LeasesResponseAllStrings) (KeaD
 			PreferredLifetime: preferredLifetime,
 			ValidLifetime:     lifetime,
 		})
+		data.Interfaces[row.InterfaceName] = KeaDhcpV6InterfaceInfo{
+			Name:        row.If,
+			Description: row.InterfaceDescription,
+		}
 	}
 
 	return data, nil
@@ -190,6 +196,7 @@ func parseDHCPv6LeasesAllStrings(leases KeaDhcpv6LeasesResponseAllStrings) (KeaD
 func parseDHCPv6Leases(leases KeaDhcpv6LeasesResponse) (KeaDhcpv6Leases, *APICallError) {
 	data := KeaDhcpv6Leases{}
 
+	data.Interfaces = make(map[string]KeaDhcpV6InterfaceInfo)
 	data.LeaseCount = make(map[string]int)
 	data.ReservedLeaseCount = make(map[string]int)
 
@@ -214,6 +221,10 @@ func parseDHCPv6Leases(leases KeaDhcpv6LeasesResponse) (KeaDhcpv6Leases, *APICal
 			PreferredLifetime: row.PreferredLifetime,
 			ValidLifetime:     row.ValidLifetime,
 		})
+		data.Interfaces[row.InterfaceName] = KeaDhcpV6InterfaceInfo{
+			Name:        row.If,
+			Description: row.InterfaceDescription,
+		}
 	}
 
 	return data, nil
@@ -222,6 +233,7 @@ func parseDHCPv6Leases(leases KeaDhcpv6LeasesResponse) (KeaDhcpv6Leases, *APICal
 func parseDHCPv6LeasesStringInt(leases KeaDhcpv6LeasesResponseStringInt) (KeaDhcpv6Leases, *APICallError) {
 	data := KeaDhcpv6Leases{}
 
+	data.Interfaces = make(map[string]KeaDhcpV6InterfaceInfo)
 	data.LeaseCount = make(map[string]int)
 	data.ReservedLeaseCount = make(map[string]int)
 
@@ -246,6 +258,10 @@ func parseDHCPv6LeasesStringInt(leases KeaDhcpv6LeasesResponseStringInt) (KeaDhc
 			PreferredLifetime: row.PreferredLifetime,
 			ValidLifetime:     row.ValidLifetime,
 		})
+		data.Interfaces[row.InterfaceName] = KeaDhcpV6InterfaceInfo{
+			Name:        row.If,
+			Description: row.InterfaceDescription,
+		}
 	}
 
 	return data, nil
