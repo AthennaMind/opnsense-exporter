@@ -3,6 +3,7 @@ package opnsense
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type KeaDhcpv6LeasesRow struct {
@@ -138,6 +139,7 @@ func parseDHCPv6LeasesAllStrings(leases KeaDhcpv6LeasesResponseAllStrings) (KeaD
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
+		// Parse the integer values
 		expiration, err := strconv.Atoi(row.Expiration)
 		if err != nil {
 			return data, &APICallError{
@@ -171,7 +173,7 @@ func parseDHCPv6LeasesAllStrings(leases KeaDhcpv6LeasesResponseAllStrings) (KeaD
 			}
 		}
 
-		// Add the information in
+		// Parse the lease, adding it to the list of existing leases and update the interface information
 		data.Leases = append(data.Leases, KeaDhcpv6Lease{
 			InterfaceName:     row.InterfaceName,
 			Hostname:          row.Hostname,
@@ -183,7 +185,6 @@ func parseDHCPv6LeasesAllStrings(leases KeaDhcpv6LeasesResponseAllStrings) (KeaD
 			PreferredLifetime: preferredLifetime,
 			ValidLifetime:     lifetime,
 		})
-
 		data.Interfaces[row.InterfaceName] = KeaDhcpV6InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
@@ -208,24 +209,18 @@ func parseDHCPv6Leases(leases KeaDhcpv6LeasesResponse) (KeaDhcpv6Leases, *APICal
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
-		expiration := row.Expiration
-		lifetime := row.ValidLifetime
-		preferredLifetime := row.PreferredLifetime
-		prefixLength := row.PrefixLength
-
-		// Add the information in
+		// Parse the lease, adding it to the list of existing leases and update the interface information
 		data.Leases = append(data.Leases, KeaDhcpv6Lease{
 			InterfaceName:     row.InterfaceName,
 			Hostname:          row.Hostname,
 			Address:           row.Address,
-			PrefixLength:      prefixLength,
+			PrefixLength:      row.PrefixLength,
 			Hwaddr:            row.Hwaddr,
 			Duid:              row.Duid,
-			Expiration:        expiration,
-			PreferredLifetime: preferredLifetime,
-			ValidLifetime:     lifetime,
+			Expiration:        row.Expiration,
+			PreferredLifetime: row.PreferredLifetime,
+			ValidLifetime:     row.ValidLifetime,
 		})
-
 		data.Interfaces[row.InterfaceName] = KeaDhcpV6InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
@@ -251,24 +246,18 @@ func parseDHCPv6LeasesStringInt(leases KeaDhcpv6LeasesResponseStringInt) (KeaDhc
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
-		expiration := row.Expiration
-		lifetime := row.ValidLifetime
-		preferredLifetime := row.PreferredLifetime
-		prefixLength := row.PrefixLength
-
-		// Add the information in
+		// Parse the lease, adding it to the list of existing leases and update the interface information
 		data.Leases = append(data.Leases, KeaDhcpv6Lease{
 			InterfaceName:     row.InterfaceName,
 			Hostname:          row.Hostname,
 			Address:           row.Address,
-			PrefixLength:      prefixLength,
+			PrefixLength:      row.PrefixLength,
 			Hwaddr:            row.Hwaddr,
 			Duid:              row.Duid,
-			Expiration:        expiration,
-			PreferredLifetime: preferredLifetime,
-			ValidLifetime:     lifetime,
+			Expiration:        row.Expiration,
+			PreferredLifetime: row.PreferredLifetime,
+			ValidLifetime:     row.ValidLifetime,
 		})
-
 		data.Interfaces[row.InterfaceName] = KeaDhcpV6InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
@@ -294,11 +283,12 @@ func (c *Client) FetchLeasesv6() (KeaDhcpv6Leases, *APICallError) {
 		}
 	}
 
+	// Attempt to determine the API variant based off of if parsing the response succeeded
 	err := c.do("GET", url, nil, &resp)
-	if err != nil {
+	if err != nil && strings.Contains(err.Message, "failed to unmarshal response body:") {
 		apiVariant += 1
 		err = c.do("GET", url, nil, &allStringsResp)
-		if err != nil {
+		if err != nil && strings.Contains(err.Message, "failed to unmarshal response body:") {
 			apiVariant += 1
 			err = c.do("GET", url, nil, &stringIntResp)
 			if err != nil {
@@ -307,6 +297,7 @@ func (c *Client) FetchLeasesv6() (KeaDhcpv6Leases, *APICallError) {
 		}
 	}
 
+	// Parse the response based on the API variant
 	switch apiVariant {
 	case 0:
 		data, err = parseDHCPv6Leases(resp)

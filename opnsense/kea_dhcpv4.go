@@ -3,6 +3,7 @@ package opnsense
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type KeaDhcpv4LeasesRow struct {
@@ -124,6 +125,7 @@ func parseDHCPv4LeasesAllStrings(response KeaDhcpv4LeasesResponseAllStrings) (Ke
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
+		// Parse the expiration and lifetime values
 		expiration, err := strconv.Atoi(row.Expiration)
 		if err != nil {
 			return data, &APICallError{
@@ -140,7 +142,9 @@ func parseDHCPv4LeasesAllStrings(response KeaDhcpv4LeasesResponseAllStrings) (Ke
 				StatusCode: 0,
 			}
 		}
-		lease := KeaDhcpv4Lease{
+
+		// Parse the lease, adding it to the list of existing leases and update the interface information
+		data.Leases = append(data.Leases, KeaDhcpv4Lease{
 			InterfaceName: row.InterfaceName,
 			Hostname:      row.Hostname,
 			Address:       row.Address,
@@ -149,11 +153,7 @@ func parseDHCPv4LeasesAllStrings(response KeaDhcpv4LeasesResponseAllStrings) (Ke
 			MacInfo:       row.MacInfo,
 			Expiration:    expiration,
 			ValidLifetime: lifetime,
-		}
-
-		// Add the information in
-		data.Leases = append(data.Leases, lease)
-
+		})
 		data.Interfaces[row.InterfaceName] = KeaDhcpV4InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
@@ -177,7 +177,9 @@ func parseDHCPv4LeasesStringInt(response KeaDhcpv4LeasesResponseIntString) (KeaD
 		if len(row.IsReserved) > 0 {
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
-		lease := KeaDhcpv4Lease{
+
+		// Parse the lease, adding it to the list of existing leases and update the interface information
+		data.Leases = append(data.Leases, KeaDhcpv4Lease{
 			InterfaceName: row.InterfaceName,
 			Hostname:      row.Hostname,
 			Address:       row.Address,
@@ -186,11 +188,7 @@ func parseDHCPv4LeasesStringInt(response KeaDhcpv4LeasesResponseIntString) (KeaD
 			MacInfo:       row.MacInfo,
 			Expiration:    row.Expiration,
 			ValidLifetime: row.ValidLifetime,
-		}
-
-		// Add the information in
-		data.Leases = append(data.Leases, lease)
-
+		})
 		data.Interfaces[row.InterfaceName] = KeaDhcpV4InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
@@ -216,21 +214,17 @@ func parseDHCPv4Leases(response KeaDhcpv4LeasesResponse) (KeaDhcpv4Leases, *APIC
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
-		expiration := row.Expiration
-		lifetime := row.ValidLifetime
-
-		// Add the information in
+		// Parse the lease, adding it to the list of existing leases and update the interface information
 		data.Leases = append(data.Leases, KeaDhcpv4Lease{
 			InterfaceName: row.InterfaceName,
 			Hostname:      row.Hostname,
 			Address:       row.Address,
 			Mac:           row.Hwaddr,
 			ClientId:      row.ClientId,
-			Expiration:    expiration,
-			ValidLifetime: lifetime,
+			Expiration:    row.Expiration,
+			ValidLifetime: row.ValidLifetime,
 			MacInfo:       row.MacInfo,
 		})
-
 		data.Interfaces[row.InterfaceName] = KeaDhcpV4InterfaceInfo{
 			Name:        row.If,
 			Description: row.InterfaceDescription,
@@ -256,11 +250,12 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 		}
 	}
 
+	// Attempt to determine response type based off of if the error was due to unmarshalling
 	err := c.do("GET", url, nil, &resp)
-	if err != nil {
+	if err != nil && strings.Contains(err.Message, "failed to unmarshal response body:") {
 		apiVariant += 1
 		err = c.do("GET", url, nil, &allStringsResp)
-		if err != nil {
+		if err != nil && strings.Contains(err.Message, "failed to unmarshal response body:") {
 			apiVariant += 1
 			err = c.do("GET", url, nil, &stringIntResp)
 			if err != nil {
@@ -269,6 +264,7 @@ func (c *Client) FetchLeasesv4() (KeaDhcpv4Leases, *APICallError) {
 		}
 	}
 
+	// Parse the response based on the API variant
 	switch apiVariant {
 	case 0:
 		data, err = parseDHCPv4Leases(resp)
