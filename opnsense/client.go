@@ -82,6 +82,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 			"ipsecPhase1":             "api/ipsec/sessions/search_phase1",
 			"ipsecPhase2":             "api/ipsec/sessions/search_phase2",
 			"healthCheck":             "api/core/system/status",
+			"systemTemperature":       "api/diagnostics/system/systemTemperature",
 			"firmware":                "api/core/firmware/status",
 			"keaDhcpv4":               "api/kea/leases4/search",
 			"keaDhcpv6":               "api/kea/leases6/search",

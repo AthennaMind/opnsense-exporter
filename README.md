@@ -61,6 +61,8 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 | GUI |     Services: DHCP: Kea(v4)      |
 | GUI |     Services: DHCP: Kea(v6)      |
 
+> **Note:** The temperature collector calls `api/diagnostics/system/systemTemperature`. On current OPNsense releases this URL is not covered by a dedicated GUI privilege, so a least privilege API user may receive `403` for it. Grant the `Lobby: Dashboard` privilege or disable the collector with `--exporter.disable-temperature` if that happens. Boxes without thermal sensors (most VMs) and releases without the endpoint simply report no temperature metrics.
+
 ## OPNsense settings
 
 The exporter requires that the following OPNsense settings be enabled:
@@ -190,6 +192,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-firmware` - Disable the scraping of Firmware infos. Defaults to `false`.
 - `--exporter.disable-kea-dhcpv4` - Disable the scraping of Kea DHCPv4 leases. Defaults to `false`.
 - `--exporter.disable-kea-dhcpv6` - Disable the scraping of Kea DHCPv6 leases. Defaults to `false`.
+- `--exporter.disable-temperature` - Disable the scraping of temperature sensors. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -220,6 +223,8 @@ Flags:
                                  Disable the scraping of Kea DHCPv4 leases ($OPNSENSE_EXPORTER_DISABLE_KEADHCPV4)
       --[no-]exporter.disable-kea-dhcpv6  
                                  Disable the scraping of Kea DHCPv6 leases ($OPNSENSE_EXPORTER_DISABLE_KEADHCPV6)
+      --[no-]exporter.disable-temperature
+                                 Disable the scraping of the temperature sensors ($OPNSENSE_EXPORTER_DISABLE_TEMPERATURE)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics

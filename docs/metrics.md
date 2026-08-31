@@ -172,3 +172,11 @@ opnsense_ipsec_phase2_bytes_in | Gauge | description, name, spi_in, spi_out, pha
 opnsense_ipsec_phase2_bytes_out | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 bytes going out | --exporter.disable-ipsec |
 opnsense_ipsec_phase2_packets_in | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 packets coming in | --exporter.disable-ipsec |
 opnsense_ipsec_phase2_packets_out | Gauge | description, name, spi_in, spi_out, phase1_name | IPsec | IPsec phase2 packets going out | --exporter.disable-ipsec |
+
+### Temperature
+
+| Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
+| --- | --- | --- | --- | --- | --- |
+opnsense_temperature_celsius | Gauge | device, device_seq, type | Temperature | Temperature sensor reading in degrees Celsius by device and sensor type | --exporter.disable-temperature |
+
+Sensors without a reading are skipped instead of being reported as 0. Boxes without thermal sensors (most VMs) and OPNsense releases without the `systemTemperature` endpoint report no temperature metrics and no errors.

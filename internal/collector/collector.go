@@ -19,20 +19,21 @@ const namespace = "opnsense"
 const instanceLabelName = "opnsense_instance"
 
 const (
-	ArpTableSubsystem   = "arp_table"
-	GatewaysSubsystem   = "gateways"
-	CronTableSubsystem  = "cron"
-	WireguardSubsystem  = "wireguard"
-	IPsecSubsystem      = "ipsec"
-	UnboundDNSSubsystem = "unbound_dns"
-	InterfacesSubsystem = "interfaces"
-	ProtocolSubsystem   = "protocol"
-	OpenVPNSubsystem    = "openvpn"
-	ServicesSubsystem   = "services"
-	FirewallSubsystem   = "firewall"
-	FirmwareSubsystem   = "firmware"
-	KeaDHCPv4Subsystem  = "kea_dhcpv4"
-	KeaDHCPv6Subsystem  = "kea_dhcpv6"
+	ArpTableSubsystem    = "arp_table"
+	GatewaysSubsystem    = "gateways"
+	CronTableSubsystem   = "cron"
+	WireguardSubsystem   = "wireguard"
+	IPsecSubsystem       = "ipsec"
+	UnboundDNSSubsystem  = "unbound_dns"
+	InterfacesSubsystem  = "interfaces"
+	ProtocolSubsystem    = "protocol"
+	OpenVPNSubsystem     = "openvpn"
+	ServicesSubsystem    = "services"
+	FirewallSubsystem    = "firewall"
+	FirmwareSubsystem    = "firmware"
+	KeaDHCPv4Subsystem   = "kea_dhcpv4"
+	KeaDHCPv6Subsystem   = "kea_dhcpv6"
+	TemperatureSubsystem = "temperature"
 )
 
 // CollectorInstance is the interface a service specific collectors must implement.
@@ -128,6 +129,12 @@ func WithoutKeaDHCPv4Collector() Option {
 
 func WithoutKeaDHCPv6Collector() Option {
 	return withoutCollectorInstance(KeaDHCPv6Subsystem)
+}
+
+// WithoutTemperatureCollector Option
+// removes the temperature collector from the list of collectors
+func WithoutTemperatureCollector() Option {
+	return withoutCollectorInstance(TemperatureSubsystem)
 }
 
 // New creates a new Collector instance.
