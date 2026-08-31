@@ -107,7 +107,14 @@ func main() {
 	}
 
 	registry.MustRegister(collectorInstance)
-	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
+	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{
+		// Scrapes serialize on the collector mutex. When the OPNsense
+		// host is unreachable each scrape is slow, and without this cap
+		// overlapping scrapes queue up without bound. Every queued scrape
+		// holds a goroutine, buffers and a client socket, which shows up
+		// as a fd and memory leak. Extra scrapes get 503 instead.
+		MaxRequestsInFlight: 3,
+	})
 	http.Handle(*options.MetricsPath, handler)
 
 	if *options.MetricsPath != "/" && *options.MetricsPath != "" {
