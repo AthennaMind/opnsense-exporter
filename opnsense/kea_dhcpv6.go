@@ -1,27 +1,27 @@
 package opnsense
 
 type KeaDhcpv6LeasesRow struct {
-	If                    string   `json:"if"`
-	Address               string   `json:"address"`
-	Hwaddr                string   `json:"hwaddr"`
-	Duid                  string   `json:"duid"`
-	ValidLifetime         int      `json:"valid_lifetime"`
-	Expiration            int      `json:"expire"`
-	InterfaceDescription  string   `json:"if_descr"`
-	InterfaceName         string   `json:"if_name"`
-	IsReserved            []string `json:"is_reserved"`
-	Hostname              string   `json:"hostname"`
-	FqdnForward           string   `json:"fqdn_fwd"`
-	FqdnReceived          string   `json:"fqdn_rev"`
-	State                 int      `json:"state"`
-	UserContext           string   `json:"user_context"`
-	SubnetId              string   `json:"subnet_id"`
-	PoolId                string   `json:"pool_id"`
-	PreferredLifetime     int      `json:"pref_lifetime"`
-	Iaid                  string   `json:"iaid"`
-	PrefixLength          int      `json:"prefix_len"`
-	HardwareType          string   `json:"hwtype"`
-	HardwareAddressSource string   `json:"hwaddr_source"`
+	If                    string          `json:"if"`
+	Address               string          `json:"address"`
+	Hwaddr                string          `json:"hwaddr"`
+	Duid                  string          `json:"duid"`
+	ValidLifetime         flexInt         `json:"valid_lifetime"`
+	Expiration            flexInt         `json:"expire"`
+	InterfaceDescription  string          `json:"if_descr"`
+	InterfaceName         string          `json:"if_name"`
+	IsReserved            flexStringSlice `json:"is_reserved"`
+	Hostname              string          `json:"hostname"`
+	FqdnForward           string          `json:"fqdn_fwd"`
+	FqdnReceived          string          `json:"fqdn_rev"`
+	State                 flexInt         `json:"state"`
+	UserContext           string          `json:"user_context"`
+	SubnetId              string          `json:"subnet_id"`
+	PoolId                string          `json:"pool_id"`
+	PreferredLifetime     flexInt         `json:"pref_lifetime"`
+	Iaid                  string          `json:"iaid"`
+	PrefixLength          flexInt         `json:"prefix_len"`
+	HardwareType          string          `json:"hwtype"`
+	HardwareAddressSource string          `json:"hwaddr_source"`
 }
 
 type KeaDhcpv6LeasesResponse struct {
@@ -73,10 +73,10 @@ func parseDHCPv6Leases(leases KeaDhcpv6LeasesResponse) (KeaDhcpv6Leases, *APICal
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
-		expiration := row.Expiration
-		lifetime := row.ValidLifetime
-		preferredLifetime := row.PreferredLifetime
-		prefixLength := row.PrefixLength
+		expiration := int(row.Expiration)
+		lifetime := int(row.ValidLifetime)
+		preferredLifetime := int(row.PreferredLifetime)
+		prefixLength := int(row.PrefixLength)
 
 		// Add the information in
 		data.Leases = append(data.Leases, KeaDhcpv6Lease{

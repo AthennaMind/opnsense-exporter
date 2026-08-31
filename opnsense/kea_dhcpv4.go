@@ -1,23 +1,23 @@
 package opnsense
 
 type KeaDhcpv4LeasesRow struct {
-	If                   string   `json:"if"`
-	Address              string   `json:"address"`
-	Hwaddr               string   `json:"hwaddr"`
-	ClientId             string   `json:"client_id"`
-	ValidLifetime        int      `json:"valid_lifetime"`
-	Expiration           int      `json:"expire"`
-	InterfaceDescription string   `json:"if_descr"`
-	InterfaceName        string   `json:"if_name"`
-	MacInfo              string   `json:"mac_info"`
-	IsReserved           []string `json:"is_reserved"`
-	Hostname             string   `json:"hostname"`
-	FqdnForward          string   `json:"fqdn_fwd"`
-	FqdnReceived         string   `json:"fqdn_rev"`
-	State                int      `json:"state"`
-	UserContext          string   `json:"user_context"`
-	SubnetId             int      `json:"subnet_id"`
-	PoolId               int      `json:"pool_id"`
+	If                   string          `json:"if"`
+	Address              string          `json:"address"`
+	Hwaddr               string          `json:"hwaddr"`
+	ClientId             string          `json:"client_id"`
+	ValidLifetime        flexInt         `json:"valid_lifetime"`
+	Expiration           flexInt         `json:"expire"`
+	InterfaceDescription string          `json:"if_descr"`
+	InterfaceName        string          `json:"if_name"`
+	MacInfo              string          `json:"mac_info"`
+	IsReserved           flexStringSlice `json:"is_reserved"`
+	Hostname             string          `json:"hostname"`
+	FqdnForward          string          `json:"fqdn_fwd"`
+	FqdnReceived         string          `json:"fqdn_rev"`
+	State                flexInt         `json:"state"`
+	UserContext          string          `json:"user_context"`
+	SubnetId             flexInt         `json:"subnet_id"`
+	PoolId               flexInt         `json:"pool_id"`
 }
 
 type KeaDhcpv4LeasesResponse struct {
@@ -66,8 +66,8 @@ func parseDHCPv4Leases(response KeaDhcpv4LeasesResponse) (KeaDhcpv4Leases, *APIC
 			data.ReservedLeaseCount[row.InterfaceName] += 1
 		}
 
-		expiration := row.Expiration
-		lifetime := row.ValidLifetime
+		expiration := int(row.Expiration)
+		lifetime := int(row.ValidLifetime)
 
 		// Add the information in
 		data.Leases = append(data.Leases, KeaDhcpv4Lease{
