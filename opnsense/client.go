@@ -1,6 +1,7 @@
 package opnsense
 
 import (
+	"bytes"
 	"compress/gzip"
 	"crypto/tls"
 	"crypto/x509"
@@ -9,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"regexp"
 	"runtime"
@@ -97,6 +99,13 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 					InsecureSkipVerify: cfg.Insecure,
 					RootCAs:            sslPool,
 				},
+				// Bound the TCP dial. Without this a dial to an unreachable
+				// host is canceled only by the client timeout and the
+				// half-open socket can linger in SYN-SENT far longer.
+				DialContext: (&net.Dialer{
+					Timeout:   5 * time.Second,
+					KeepAlive: 30 * time.Second,
+				}).DialContext,
 				IdleConnTimeout:       90 * time.Second,
 				TLSHandshakeTimeout:   3 * time.Second,
 				ExpectContinueTimeout: 1 * time.Second,
@@ -121,13 +130,62 @@ func (c *Client) Endpoints() map[EndpointName]EndpointPath {
 func (c *Client) do(method string, path EndpointPath, body io.Reader, responseStruct any) *APICallError {
 	url := fmt.Sprintf("%s/%s", c.baseURL, string(path))
 
+	// Buffer the payload so every retry sends a fresh body.
+	// A plain io.Reader is consumed by the first attempt.
+	var payload []byte
+	if body != nil {
+		var err error
+		payload, err = io.ReadAll(body)
+		if err != nil {
+			return &APICallError{
+				Endpoint:   string(path),
+				Message:    err.Error(),
+				StatusCode: 0,
+			}
+		}
+	}
+
+	c.log.Debug("fetching data", "component", "opnsense-client", "url", url, "method", method)
+
+	// Retry the request up to MaxRetries times
+	for i := 0; i < MaxRetries; i++ {
+		req, err := c.newRequest(method, url, payload)
+		if err != nil {
+			return &APICallError{
+				Endpoint:   string(path),
+				Message:    err.Error(),
+				StatusCode: 0,
+			}
+		}
+
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			c.log.Error("failed to send request; retrying",
+				"component", "opnsense-client",
+				"err", err.Error())
+			time.Sleep(25 * time.Millisecond)
+			continue
+		}
+
+		return c.handleResponse(resp, path, url, responseStruct)
+	}
+	return &APICallError{
+		Endpoint:   string(path),
+		Message:    fmt.Sprintf("max retries of %d times reached", MaxRetries),
+		StatusCode: 0,
+	}
+}
+
+// newRequest builds a request with auth and headers set.
+func (c *Client) newRequest(method, url string, payload []byte) (*http.Request, error) {
+	var body io.Reader
+	if payload != nil {
+		body = bytes.NewReader(payload)
+	}
+
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		return &APICallError{
-			Endpoint:   string(path),
-			Message:    err.Error(),
-			StatusCode: 0,
-		}
+		return nil, err
 	}
 
 	req.SetBasicAuth(c.key, c.secret)
@@ -140,70 +198,61 @@ func (c *Client) do(method string, path EndpointPath, body io.Reader, responseSt
 		req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	}
 
-	c.log.Debug("fetching data", "component", "opnsense-client", "url", url, "method", method)
+	return req, nil
+}
 
-	// Retry the request up to MaxRetries times
-	for i := 0; i < MaxRetries; i++ {
-		resp, err := c.httpClient.Do(req)
-		if err != nil {
-			c.log.Error("failed to send request; retrying",
-				"component", "opnsense-client",
-				"err", err.Error())
-			time.Sleep(25 * time.Millisecond)
-			continue
-		}
+// handleResponse reads the response and unmarshals it into responseStruct.
+// It always drains and closes the response body so the
+// connection is returned to the pool instead of leaked.
+func (c *Client) handleResponse(resp *http.Response, path EndpointPath, url string, responseStruct any) *APICallError {
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
+	}()
 
-		var reader io.ReadCloser
-		switch resp.Header.Get("Content-Encoding") {
-		case "gzip":
-			reader, err = gzip.NewReader(resp.Body)
-			if err != nil {
-				return &APICallError{
-					Endpoint:   string(path),
-					Message:    fmt.Sprintf("failed to decompress gzip response body: %s", err.Error()),
-					StatusCode: resp.StatusCode,
-				}
-			}
-		default:
-			reader = resp.Body
-		}
-
-		body, err := io.ReadAll(reader)
+	var reader io.Reader
+	switch resp.Header.Get("Content-Encoding") {
+	case "gzip":
+		gzReader, err := gzip.NewReader(resp.Body)
 		if err != nil {
 			return &APICallError{
 				Endpoint:   string(path),
-				Message:    fmt.Sprintf("failed to read response body: %s", err.Error()),
+				Message:    fmt.Sprintf("failed to decompress gzip response body: %s", err.Error()),
 				StatusCode: resp.StatusCode,
 			}
 		}
+		defer gzReader.Close()
+		reader = gzReader
+	default:
+		reader = resp.Body
+	}
 
-		reader.Close()
-
-		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-			err := json.Unmarshal(body, &responseStruct)
-			if err != nil {
-				return &APICallError{
-					Endpoint:   string(path),
-					Message:    fmt.Sprintf("failed to unmarshal response body: %s", err.Error()),
-					StatusCode: resp.StatusCode,
-				}
-			}
-
-			c.log.Debug("returned data", "component", "opnsense-client", "url", url, "data", string(body))
-
-			return nil
-		} else {
-			return &APICallError{
-				Endpoint:   string(path),
-				Message:    string(body),
-				StatusCode: resp.StatusCode,
-			}
+	body, err := io.ReadAll(reader)
+	if err != nil {
+		return &APICallError{
+			Endpoint:   string(path),
+			Message:    fmt.Sprintf("failed to read response body: %s", err.Error()),
+			StatusCode: resp.StatusCode,
 		}
+	}
 
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return &APICallError{
+			Endpoint:   string(path),
+			Message:    string(body),
+			StatusCode: resp.StatusCode,
+		}
 	}
-	return &APICallError{
-		Endpoint:   string(path),
-		Message:    fmt.Sprintf("max retries of %d times reached", MaxRetries),
-		StatusCode: 0,
+
+	if err := json.Unmarshal(body, &responseStruct); err != nil {
+		return &APICallError{
+			Endpoint:   string(path),
+			Message:    fmt.Sprintf("failed to unmarshal response body: %s", err.Error()),
+			StatusCode: resp.StatusCode,
+		}
 	}
+
+	c.log.Debug("returned data", "component", "opnsense-client", "url", url, "data", string(body))
+
+	return nil
 }
