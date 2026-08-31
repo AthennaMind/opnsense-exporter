@@ -43,34 +43,40 @@ var (
 		"exporter.disable-kea-dhcpv6",
 		"Disable the scraping of Kea DHCPv6 leases",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_KEADHCPV6").Default("false").Bool()
+	temperatureCollectorDisabled = kingpin.Flag(
+		"exporter.disable-temperature",
+		"Disable the scraping of the temperature sensors",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_TEMPERATURE").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
 type CollectorsDisableSwitch struct {
-	ARP       bool
-	Cron      bool
-	Wireguard bool
-	IPsec     bool
-	Unbound   bool
-	OpenVPN   bool
-	Firewall  bool
-	Firmware  bool
-	KeaDHCPv4 bool
-	KeaDHCPv6 bool
+	ARP         bool
+	Cron        bool
+	Wireguard   bool
+	IPsec       bool
+	Unbound     bool
+	OpenVPN     bool
+	Firewall    bool
+	Firmware    bool
+	KeaDHCPv4   bool
+	KeaDHCPv6   bool
+	Temperature bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
 func CollectorsSwitches() CollectorsDisableSwitch {
 	return CollectorsDisableSwitch{
-		ARP:       !*arpTableCollectorDisabled,
-		Cron:      !*cronTableCollectorDisabled,
-		Wireguard: !*wireguardCollectorDisabled,
-		IPsec:     !*ipsecCollectorDisabled,
-		Unbound:   !*unboundCollectorDisabled,
-		OpenVPN:   !*openVPNCollectorDisabled,
-		Firewall:  !*firewallCollectorDisabled,
-		Firmware:  !*firmwareCollectorDisabled,
-		KeaDHCPv4: !*keaDhcpv4Disabled,
-		KeaDHCPv6: !*keaDhcpv6Disabled,
+		ARP:         !*arpTableCollectorDisabled,
+		Cron:        !*cronTableCollectorDisabled,
+		Wireguard:   !*wireguardCollectorDisabled,
+		IPsec:       !*ipsecCollectorDisabled,
+		Unbound:     !*unboundCollectorDisabled,
+		OpenVPN:     !*openVPNCollectorDisabled,
+		Firewall:    !*firewallCollectorDisabled,
+		Firmware:    !*firmwareCollectorDisabled,
+		KeaDHCPv4:   !*keaDhcpv4Disabled,
+		KeaDHCPv6:   !*keaDhcpv6Disabled,
+		Temperature: !*temperatureCollectorDisabled,
 	}
 }

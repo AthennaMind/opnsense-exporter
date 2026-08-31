@@ -99,6 +99,10 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutKeaDHCPv6Collector())
 		logger.Info("kea dhcpv6 collector disabled")
 	}
+	if !collectorsSwitches.Temperature {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutTemperatureCollector())
+		logger.Info("temperature collector disabled")
+	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
 	if err != nil {
