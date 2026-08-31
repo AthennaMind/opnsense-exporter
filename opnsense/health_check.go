@@ -74,6 +74,20 @@ const (
 	HealthCheckStatusOK_v25_1 = 2
 )
 
+// FirewallStatusOK reports whether the health check considers the
+// firewall healthy. Newer OPNsense releases omit the firewall section
+// entirely when there is nothing to report, so an absent section
+// counts as healthy instead of producing a false negative.
+func (h *HealthCheckResponse) FirewallStatusOK() bool {
+	if h.Firewall.Status != "" {
+		return h.Firewall.Status == HealthCheckStatusOK
+	}
+	if h.Metadata.Firewall.Status != nil {
+		return h.GetMetadataFirewallStatus() == HealthCheckStatusOK_v25_1
+	}
+	return true
+}
+
 // HealthCheck checks if the OPNsense is up and running.
 func (c *Client) HealthCheck() (HealthCheckResponse, error) {
 	var resp HealthCheckResponse
