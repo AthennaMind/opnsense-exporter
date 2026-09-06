@@ -179,4 +179,4 @@ opnsense_ipsec_phase2_packets_out | Gauge | description, name, spi_in, spi_out, 
 | --- | --- | --- | --- | --- | --- |
 opnsense_temperature_celsius | Gauge | device, device_seq, type | Temperature | Temperature sensor reading in degrees Celsius by device and sensor type | --exporter.disable-temperature |
 
-Sensors without a reading are skipped instead of being reported as 0. Boxes without thermal sensors (most VMs) and OPNsense releases without the `systemTemperature` endpoint report no temperature metrics and no errors.
+Sensors without a reading are skipped instead of being reported as 0. Boxes without thermal sensors (most VMs) and OPNsense releases without the `system_temperature` endpoint report no temperature metrics and no errors.

@@ -5,7 +5,7 @@ import (
 )
 
 // temperatureResponse is the bare JSON array returned by
-// api/diagnostics/system/systemTemperature. The temperature value
+// api/diagnostics/system/system_temperature. The temperature value
 // arrives as a quoted string and may be empty when the sensor
 // has no reading.
 type temperatureResponse []struct {
