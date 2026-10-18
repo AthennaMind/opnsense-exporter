@@ -107,6 +107,14 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCarpCollector())
 		logger.Info("carp collector disabled")
 	}
+	if !collectorsSwitches.PFStates {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutPFStatesCollector())
+		logger.Info("pf states collector disabled")
+	}
+	if !collectorsSwitches.Mbuf {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutMbufCollector())
+		logger.Info("mbuf collector disabled")
+	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
 	if err != nil {
