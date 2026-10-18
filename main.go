@@ -103,6 +103,10 @@ func main() {
 		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutTemperatureCollector())
 		logger.Info("temperature collector disabled")
 	}
+	if !collectorsSwitches.Carp {
+		collectorOptionFuncs = append(collectorOptionFuncs, collector.WithoutCarpCollector())
+		logger.Info("carp collector disabled")
+	}
 
 	collectorInstance, err := collector.New(&opnsenseClient, logger, *options.InstanceLabel, collectorOptionFuncs...)
 	if err != nil {
