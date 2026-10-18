@@ -180,3 +180,16 @@ opnsense_ipsec_phase2_packets_out | Gauge | description, name, spi_in, spi_out, 
 opnsense_temperature_celsius | Gauge | device, device_seq, type | Temperature | Temperature sensor reading in degrees Celsius by device and sensor type | --exporter.disable-temperature |
 
 Sensors without a reading are skipped instead of being reported as 0. Boxes without thermal sensors (most VMs) and OPNsense releases without the `systemTemperature` endpoint report no temperature metrics and no errors.
+
+### CARP
+
+| Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
+| --- | --- | --- | --- | --- | --- |
+opnsense_carp_vip_status | Gauge | interface, vhid, vip | CARP | CARP VIP status (1 = MASTER, 0 = BACKUP, 2 = INIT, 3 = DISABLED, 4 = unknown) | --exporter.disable-carp |
+opnsense_carp_vip_advbase | Gauge | interface, vhid, vip | CARP | CARP VIP advertisement base in seconds | --exporter.disable-carp |
+opnsense_carp_vip_advskew | Gauge | interface, vhid, vip | CARP | CARP VIP advertisement skew | --exporter.disable-carp |
+opnsense_carp_demotion | Gauge | | CARP | CARP demotion factor (net.inet.carp.demotion), 0 when healthy and 240 in maintenance mode | --exporter.disable-carp |
+opnsense_carp_allowed | Gauge | | CARP | Whether CARP is allowed on this node (1 = allowed, 0 = temporarily disabled) | --exporter.disable-carp |
+opnsense_carp_maintenance_mode | Gauge | | CARP | Whether CARP maintenance mode is enabled (1 = enabled, 0 = disabled) | --exporter.disable-carp |
+
+Only VIPs in `carp` mode are exported; IP aliases stacked on a CARP VHID are skipped. To alert when an HA pair has no master or more than one master for a VIP, use `sum by (vip) (opnsense_carp_vip_status == bool 1) != 1` across both instances. Group by `vip` rather than `interface`, since the interface label is the node's own interface description.

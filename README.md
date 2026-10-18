@@ -60,8 +60,11 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 | GUI |          VPN: WireGuard          |
 | GUI |     Services: DHCP: Kea(v4)      |
 | GUI |     Services: DHCP: Kea(v6)      |
+| GUI | Interfaces: Virtual IPs: Status  |
 
 > **Note:** The temperature collector calls `api/diagnostics/system/systemTemperature`. On current OPNsense releases this URL is not covered by a dedicated GUI privilege, so a least privilege API user may receive `403` for it. Grant the `Lobby: Dashboard` privilege or disable the collector with `--exporter.disable-temperature` if that happens. Boxes without thermal sensors (most VMs) and releases without the endpoint simply report no temperature metrics.
+
+> **Note:** The CARP collector calls `api/diagnostics/interface/get_vip_status`, which requires the `Interfaces: Virtual IPs: Status` privilege. Without it the collector logs a `403` on every scrape. Grant the privilege or disable the collector with `--exporter.disable-carp`.
 
 ## OPNsense settings
 
@@ -193,6 +196,7 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-kea-dhcpv4` - Disable the scraping of Kea DHCPv4 leases. Defaults to `false`.
 - `--exporter.disable-kea-dhcpv6` - Disable the scraping of Kea DHCPv6 leases. Defaults to `false`.
 - `--exporter.disable-temperature` - Disable the scraping of temperature sensors. Defaults to `false`.
+- `--exporter.disable-carp` - Disable the scraping of the CARP VIP status. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -225,6 +229,8 @@ Flags:
                                  Disable the scraping of Kea DHCPv6 leases ($OPNSENSE_EXPORTER_DISABLE_KEADHCPV6)
       --[no-]exporter.disable-temperature
                                  Disable the scraping of the temperature sensors ($OPNSENSE_EXPORTER_DISABLE_TEMPERATURE)
+      --[no-]exporter.disable-carp
+                                 Disable the scraping of the CARP VIP status ($OPNSENSE_EXPORTER_DISABLE_CARP)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics

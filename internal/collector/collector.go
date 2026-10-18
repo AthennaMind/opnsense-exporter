@@ -34,6 +34,7 @@ const (
 	KeaDHCPv4Subsystem   = "kea_dhcpv4"
 	KeaDHCPv6Subsystem   = "kea_dhcpv6"
 	TemperatureSubsystem = "temperature"
+	CarpSubsystem        = "carp"
 )
 
 // CollectorInstance is the interface a service specific collectors must implement.
@@ -135,6 +136,12 @@ func WithoutKeaDHCPv6Collector() Option {
 // removes the temperature collector from the list of collectors
 func WithoutTemperatureCollector() Option {
 	return withoutCollectorInstance(TemperatureSubsystem)
+}
+
+// WithoutCarpCollector Option
+// removes the carp collector from the list of collectors
+func WithoutCarpCollector() Option {
+	return withoutCollectorInstance(CarpSubsystem)
 }
 
 // New creates a new Collector instance.
