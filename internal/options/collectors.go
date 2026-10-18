@@ -51,6 +51,14 @@ var (
 		"exporter.disable-carp",
 		"Disable the scraping of the CARP VIP status",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_CARP").Default("false").Bool()
+	pfStatesCollectorDisabled = kingpin.Flag(
+		"exporter.disable-pf-states",
+		"Disable PF state table usage metrics",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_PF_STATES").Default("false").Bool()
+	mbufCollectorDisabled = kingpin.Flag(
+		"exporter.disable-mbuf",
+		"Disable mbuf cluster usage metrics",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_MBUF").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
@@ -67,6 +75,8 @@ type CollectorsDisableSwitch struct {
 	KeaDHCPv6   bool
 	Temperature bool
 	Carp        bool
+	PFStates    bool
+	Mbuf        bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
@@ -84,5 +94,7 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		KeaDHCPv6:   !*keaDhcpv6Disabled,
 		Temperature: !*temperatureCollectorDisabled,
 		Carp:        !*carpCollectorDisabled,
+		PFStates:    !*pfStatesCollectorDisabled,
+		Mbuf:        !*mbufCollectorDisabled,
 	}
 }

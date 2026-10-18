@@ -52,6 +52,28 @@ opnsense_firewall_in_ipv6_pass_packets | Gauge | interface | Firewall | The numb
 opnsense_firewall_out_ipv6_block_packets | Gauge | interface | Firewall | The number of IPv6 outgoing packets that were blocked by the firewall by interface | --exporter.disable-firewall |
 opnsense_firewall_out_ipv6_pass_packets | Gauge | interface | Firewall | The number of IPv6 outgoing packets that were passed by the firewall by interface | --exporter.disable-firewall |
 
+### PF state table usage
+
+| Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
+| --- | --- | --- | --- | --- | --- |
+opnsense_pf_states_current | Gauge | n/a | PF States | Current PF state table entries | --exporter.disable-pf-states |
+opnsense_pf_states_limit | Gauge | n/a | PF States | PF state table entry limit | --exporter.disable-pf-states |
+
+State table usage percentage: `100 * opnsense_pf_states_current / opnsense_pf_states_limit`.
+
+### Mbuf cluster usage
+
+| Metric Name | Type | Labels | Subsystem | Description | Disable Flag |
+| --- | --- | --- | --- | --- | --- |
+opnsense_mbuf_clusters_current | Gauge | n/a | Mbuf | Current allocated mbuf clusters | --exporter.disable-mbuf |
+opnsense_mbuf_clusters_limit | Gauge | n/a | Mbuf | Mbuf cluster allocation limit | --exporter.disable-mbuf |
+
+Cluster usage percentage: `100 * opnsense_mbuf_clusters_current / opnsense_mbuf_clusters_limit`.
+
+Mbuf metrics use `mbuf-statistics.cluster-total` and `cluster-max`, matching OPNsense's Mbuf dashboard widget. These are allocated cluster counts, including cached clusters, rather than bytes or individual mbuf counts. [Upstream widget](https://github.com/opnsense/core/blob/master/src/opnsense/www/js/widgets/Mbuf.js).
+
+Both usage collectors require `Lobby: Dashboard` and run independently of firewall packet statistics. HTTP errors, including missing endpoints, and malformed or incomplete responses emit no usage metrics and increment `opnsense_exporter_endpoint_errors_total` for affected endpoint.
+
 ### Firmware
 
 ![firmware](assets/firmware.png)

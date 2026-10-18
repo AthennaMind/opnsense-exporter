@@ -35,6 +35,8 @@ const (
 	KeaDHCPv6Subsystem   = "kea_dhcpv6"
 	TemperatureSubsystem = "temperature"
 	CarpSubsystem        = "carp"
+	PFStatesSubsystem    = "pf_states"
+	MbufSubsystem        = "mbuf"
 )
 
 // CollectorInstance is the interface a service specific collectors must implement.
@@ -142,6 +144,16 @@ func WithoutTemperatureCollector() Option {
 // removes the carp collector from the list of collectors
 func WithoutCarpCollector() Option {
 	return withoutCollectorInstance(CarpSubsystem)
+}
+
+// WithoutPFStatesCollector disables PF state table usage metrics.
+func WithoutPFStatesCollector() Option {
+	return withoutCollectorInstance(PFStatesSubsystem)
+}
+
+// WithoutMbufCollector disables mbuf cluster usage metrics.
+func WithoutMbufCollector() Option {
+	return withoutCollectorInstance(MbufSubsystem)
 }
 
 // New creates a new Collector instance.

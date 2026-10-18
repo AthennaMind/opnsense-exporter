@@ -61,10 +61,13 @@ Finaly we have a Grafana dashboard to visualize the data from this exporter. The
 | GUI |     Services: DHCP: Kea(v4)      |
 | GUI |     Services: DHCP: Kea(v6)      |
 | GUI | Interfaces: Virtual IPs: Status  |
+| GUI |         Lobby: Dashboard         |
 
 > **Note:** The temperature collector calls `api/diagnostics/system/system_temperature`, which OPNsense covers with the `Lobby: Dashboard` privilege (`page-system-login-logout` in the core ACL). A least-privilege API user needs that privilege or the collector returns `403`; alternatively disable it with `--exporter.disable-temperature`. The URL must be the snake_case form: OPNsense matches the request URI literally against its ACL patterns, so the camelCase `systemTemperature` spelling is rejected for every non-admin user regardless of privileges. Boxes without thermal sensors (most VMs) and releases without the endpoint report no temperature metrics and no errors.
 
 > **Note:** The CARP collector calls `api/diagnostics/interface/get_vip_status`, which requires the `Interfaces: Virtual IPs: Status` privilege. Without it the collector logs a `403` on every scrape. Grant the privilege or disable the collector with `--exporter.disable-carp`.
+
+> **Note:** PF state usage and mbuf cluster usage require `Lobby: Dashboard`. Their endpoints are `api/diagnostics/firewall/pf_states` and `api/diagnostics/system/system_mbuf`. Disable them independently with `--exporter.disable-pf-states` and `--exporter.disable-mbuf`. Existing firewall packet metrics keep their separate `--exporter.disable-firewall` switch.
 
 ## OPNsense settings
 
@@ -197,6 +200,8 @@ Gathering metrics for specific subsystems can be disabled with the following fla
 - `--exporter.disable-kea-dhcpv6` - Disable the scraping of Kea DHCPv6 leases. Defaults to `false`.
 - `--exporter.disable-temperature` - Disable the scraping of temperature sensors. Defaults to `false`.
 - `--exporter.disable-carp` - Disable the scraping of the CARP VIP status. Defaults to `false`.
+- `--exporter.disable-pf-states` - Disable PF state table usage metrics. Defaults to `false`.
+- `--exporter.disable-mbuf` - Disable mbuf cluster usage metrics. Defaults to `false`.
 
 To disable the exporter metrics itself use the following flag:
 
@@ -231,6 +236,10 @@ Flags:
                                  Disable the scraping of the temperature sensors ($OPNSENSE_EXPORTER_DISABLE_TEMPERATURE)
       --[no-]exporter.disable-carp
                                  Disable the scraping of the CARP VIP status ($OPNSENSE_EXPORTER_DISABLE_CARP)
+      --[no-]exporter.disable-pf-states
+                                 Disable PF state table usage metrics ($OPNSENSE_EXPORTER_DISABLE_PF_STATES)
+      --[no-]exporter.disable-mbuf
+                                 Disable mbuf cluster usage metrics ($OPNSENSE_EXPORTER_DISABLE_MBUF)
       --web.telemetry-path="/metrics"
                                  Path under which to expose metrics.
       --[no-]web.disable-exporter-metrics
