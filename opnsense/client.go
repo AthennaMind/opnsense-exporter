@@ -86,6 +86,7 @@ func NewClient(cfg options.OPNSenseConfig, userAgentVersion string, log *slog.Lo
 			"firmware":                "api/core/firmware/status",
 			"keaDhcpv4":               "api/kea/leases4/search",
 			"keaDhcpv6":               "api/kea/leases6/search",
+			"carpVIPStatus":           "api/diagnostics/interface/get_vip_status",
 		},
 		headers: map[string]string{
 			"Accept":          "application/json",

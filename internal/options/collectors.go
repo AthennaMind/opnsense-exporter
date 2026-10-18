@@ -47,6 +47,10 @@ var (
 		"exporter.disable-temperature",
 		"Disable the scraping of the temperature sensors",
 	).Envar("OPNSENSE_EXPORTER_DISABLE_TEMPERATURE").Default("false").Bool()
+	carpCollectorDisabled = kingpin.Flag(
+		"exporter.disable-carp",
+		"Disable the scraping of the CARP VIP status",
+	).Envar("OPNSENSE_EXPORTER_DISABLE_CARP").Default("false").Bool()
 )
 
 // CollectorsDisableSwitch hold the enabled/disabled state of the collectors
@@ -62,6 +66,7 @@ type CollectorsDisableSwitch struct {
 	KeaDHCPv4   bool
 	KeaDHCPv6   bool
 	Temperature bool
+	Carp        bool
 }
 
 // CollectorsSwitches returns configured instances of CollectorsDisableSwitch
@@ -78,5 +83,6 @@ func CollectorsSwitches() CollectorsDisableSwitch {
 		KeaDHCPv4:   !*keaDhcpv4Disabled,
 		KeaDHCPv6:   !*keaDhcpv6Disabled,
 		Temperature: !*temperatureCollectorDisabled,
+		Carp:        !*carpCollectorDisabled,
 	}
 }
