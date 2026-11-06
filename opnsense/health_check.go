@@ -74,6 +74,20 @@ const (
 	HealthCheckStatusOK_v25_1 = 2
 )
 
+// SystemStatusOK reports whether the health check considers the system
+// healthy. Besides the legacy top-level section and the numeric 25.1
+// metadata code, some releases report the metadata status as the string
+// "OK", which GetMetadataSystemStatus cannot convert.
+func (h *HealthCheckResponse) SystemStatusOK() bool {
+	if h.System.Status == HealthCheckStatusOK {
+		return true
+	}
+	if s, ok := h.Metadata.System.Status.(string); ok && s == HealthCheckStatusOK {
+		return true
+	}
+	return h.GetMetadataSystemStatus() == HealthCheckStatusOK_v25_1
+}
+
 // FirewallStatusOK reports whether the health check considers the
 // firewall healthy. Newer OPNsense releases omit the firewall section
 // entirely when there is nothing to report, so an absent section

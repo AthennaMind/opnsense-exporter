@@ -236,8 +236,7 @@ func (c *Collector) collectHealthMetrics(ch chan<- prometheus.Metric) error {
 		return err
 	}
 
-	if systemStatus.System.Status != opnsense.HealthCheckStatusOK &&
-		systemStatus.GetMetadataSystemStatus() != opnsense.HealthCheckStatusOK_v25_1 {
+	if !systemStatus.SystemStatusOK() {
 		c.isUp.Set(0)
 		c.isUp.Collect(ch)
 		return nil
